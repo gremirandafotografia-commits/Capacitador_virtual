@@ -103,6 +103,18 @@ class MediaCapture {
     });
   }
 
+  pause() {
+    if (this.recorder && this.recorder.state === 'recording') this.recorder.pause();
+  }
+
+  resume() {
+    if (this.recorder && this.recorder.state === 'paused') this.recorder.resume();
+  }
+
+  get isPaused() {
+    return !!this.recorder && this.recorder.state === 'paused';
+  }
+
   _cleanupTracks() {
     if (this.stream) this.stream.getTracks().forEach(t => t.stop());
     if (this._micStream) this._micStream.getTracks().forEach(t => t.stop());

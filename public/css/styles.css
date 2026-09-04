@@ -298,6 +298,8 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 }
 .rec-indicator.on { display: inline-flex; }
 .rec-indicator .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--danger); animation: pulse 1s infinite; }
+.rec-indicator.paused { color: var(--warn); }
+.rec-indicator.paused .dot { background: var(--warn); animation: none; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
 
 /* Annotation stage */

@@ -119,8 +119,9 @@
         <label class="btn small"><span class="msym" style="font-size:16px">movie</span> Subir video<input type="file" accept="video/*" hidden data-subir="video"></label>
         <label class="btn small"><span class="msym" style="font-size:16px">image</span> Subir imagen<input type="file" accept="image/*" hidden data-subir="imagen"></label>
         <button class="btn small" data-accion="frame-video" title="Toma una foto del fotograma actual del video de este paso y la agrega como nuevo paso"><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma del video</button>
+        <button class="btn small" data-accion="pausar" hidden><span class="msym" style="font-size:16px">pause_circle</span> Pausar</button>
         <button class="btn small danger" data-accion="detener" hidden><span class="msym" style="font-size:16px">stop_circle</span> Detener grabación</button>
-        <span class="rec-indicator" data-indicador><span class="dot"></span> Grabando...</span>
+        <span class="rec-indicator" data-indicador><span class="dot"></span> <span data-indicador-texto>Grabando...</span></span>
       </div>
 
       <div class="stage-wrap">

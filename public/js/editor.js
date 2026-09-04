@@ -330,8 +330,10 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
   const btnPantalla = stepEl.querySelector('[data-accion="pantalla"]');
   const btnCamara = stepEl.querySelector('[data-accion="camara"]');
   const btnShot = stepEl.querySelector('[data-accion="pantallazo"]');
+  const btnPausar = stepEl.querySelector('[data-accion="pausar"]');
   const btnDetener = stepEl.querySelector('[data-accion="detener"]');
   const indicador = stepEl.querySelector('[data-indicador]');
+  const indicadorTexto = stepEl.querySelector('[data-indicador-texto]');
   const inputVideo = stepEl.querySelector('[data-subir="video"]');
   const inputImagen = stepEl.querySelector('[data-subir="imagen"]');
   const btnFrame = stepEl.querySelector('[data-accion="frame-video"]');
@@ -339,8 +341,20 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
 
   function setRecording(on) {
     indicador.classList.toggle('on', on);
+    indicador.classList.remove('paused');
+    indicadorTexto.textContent = 'Grabando...';
+    btnPausar.hidden = !on;
+    btnPausar.innerHTML = '<span class="msym" style="font-size:16px">pause_circle</span> Pausar';
     btnDetener.hidden = !on;
     allCaptureBtns.forEach(b => b.disabled = on);
+  }
+
+  function setPausado(paused) {
+    indicador.classList.toggle('paused', paused);
+    indicadorTexto.textContent = paused ? 'Pausado' : 'Grabando...';
+    btnPausar.innerHTML = paused
+      ? '<span class="msym" style="font-size:16px">play_circle</span> Reanudar'
+      : '<span class="msym" style="font-size:16px">pause_circle</span> Pausar';
   }
 
   async function startRec(kind) {
@@ -355,6 +369,15 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
 
   btnPantalla.addEventListener('click', () => startRec('pantalla'));
   btnCamara.addEventListener('click', () => startRec('camara'));
+  btnPausar.addEventListener('click', () => {
+    if (capture.isPaused) {
+      capture.resume();
+      setPausado(false);
+    } else {
+      capture.pause();
+      setPausado(true);
+    }
+  });
   btnDetener.addEventListener('click', async () => {
     const blob = await capture.stop();
     setRecording(false);
