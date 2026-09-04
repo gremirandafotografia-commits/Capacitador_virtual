@@ -114,8 +114,9 @@ function renderSteps() {
 
     stepEl.querySelector('[data-mover="-1"]').addEventListener('click', () => moverPaso(idx, -1));
     stepEl.querySelector('[data-mover="1"]').addEventListener('click', () => moverPaso(idx, 1));
-    stepEl.querySelector('[data-eliminar-paso]').addEventListener('click', () => {
-      if (!confirm('¿Eliminar este paso?')) return;
+    stepEl.querySelector('[data-eliminar-paso]').addEventListener('click', async () => {
+      const ok = await confirmDialog('¿Eliminar este paso?', { titulo: 'Eliminar paso' });
+      if (!ok) return;
       DOC.pasos.splice(idx, 1);
       renderSteps();
     });
@@ -231,6 +232,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
   const indicador = stepEl.querySelector('[data-indicador]');
   const inputVideo = stepEl.querySelector('[data-subir="video"]');
   const inputImagen = stepEl.querySelector('[data-subir="imagen"]');
+  const btnFrame = stepEl.querySelector('[data-accion="frame-video"]');
   const allCaptureBtns = [btnPantalla, btnCamara, btnShot];
 
   function setRecording(on) {
@@ -298,6 +300,32 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       renderStageMedia(stage, paso);
       toast('Imagen agregada al paso');
     } catch (e) { toast(e.message, true); }
+  });
+
+  btnFrame.addEventListener('click', async () => {
+    const videoEl = stage.querySelector('video');
+    if (!videoEl) {
+      toast('Este paso no tiene un video cargado para capturar', true);
+      return;
+    }
+    try {
+      btnFrame.disabled = true;
+      const canvas = document.createElement('canvas');
+      canvas.width = videoEl.videoWidth;
+      canvas.height = videoEl.videoHeight;
+      canvas.getContext('2d').drawImage(videoEl, 0, 0);
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
+      const res = await Api.uploadMedia(DOC.id, blob, `fotograma-${Date.now()}.png`);
+      const nuevoPaso = { id: makeStepId(), titulo: `Paso ${DOC.pasos.length + 1} (fotograma)`, texto: '', media: { tipo: 'imagen', src: res.src }, anotaciones: [] };
+      DOC.pasos.splice(DOC.pasos.indexOf(paso) + 1, 0, nuevoPaso);
+      renderSteps();
+      toast('Fotograma capturado como nuevo paso');
+      document.querySelector(`[data-step][data-id="${nuevoPaso.id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch (e) {
+      toast('No se pudo capturar el fotograma: ' + e.message, true);
+    } finally {
+      btnFrame.disabled = false;
+    }
   });
 }
 

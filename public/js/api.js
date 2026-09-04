@@ -84,6 +84,40 @@ function toast(msg, isError) {
   el._t = setTimeout(() => el.classList.remove('show'), 2800);
 }
 
+/* Confirmación dentro de la app (reemplaza al confirm() nativo del navegador,
+   que se ve como un cartel externo del sistema operativo). */
+function confirmDialog(mensaje, opts) {
+  opts = opts || {};
+  return new Promise((resolve) => {
+    const backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop';
+    backdrop.innerHTML = `
+      <div class="modal" style="max-width:420px">
+        <h2>${escapeHtml(opts.titulo || 'Confirmar')}</h2>
+        <p style="color:var(--text-dim);margin:0">${escapeHtml(mensaje)}</p>
+        <div class="modal-actions">
+          <button class="btn" data-confirm-cancelar>${escapeHtml(opts.cancelarTexto || 'Cancelar')}</button>
+          <button class="btn danger" data-confirm-ok>${escapeHtml(opts.confirmarTexto || 'Eliminar')}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(backdrop);
+
+    function close(result) {
+      document.removeEventListener('keydown', onKey);
+      backdrop.remove();
+      resolve(result);
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') close(false);
+    }
+    backdrop.querySelector('[data-confirm-cancelar]').addEventListener('click', () => close(false));
+    backdrop.querySelector('[data-confirm-ok]').addEventListener('click', () => close(true));
+    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) close(false); });
+    document.addEventListener('keydown', onKey);
+    backdrop.querySelector('[data-confirm-ok]').focus();
+  });
+}
+
 function escapeHtml(s) {
   return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }

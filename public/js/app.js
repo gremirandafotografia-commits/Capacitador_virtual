@@ -77,7 +77,8 @@ function render() {
 
   grid.querySelectorAll('[data-del]').forEach(btn => {
     btn.addEventListener('click', async () => {
-      if (!confirm('¿Eliminar este trámite y todos sus archivos? Esta acción no se puede deshacer.')) return;
+      const ok = await confirmDialog('¿Eliminar este trámite y todos sus archivos? Esta acción no se puede deshacer.', { titulo: 'Eliminar trámite' });
+      if (!ok) return;
       try {
         await Api.deleteTramite(btn.dataset.del);
         TRAMITES = TRAMITES.filter(t => t.id !== decodeURIComponent(btn.dataset.del));
