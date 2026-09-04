@@ -1,0 +1,96 @@
+{
+  "id": "alumbrado",
+  "titulo": "Evaluación: Alumbrado Público",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Solicitud de lámpara nueva vs. reporte de daño de lámpara existente.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qzhqu0t5",
+      "texto": "¿En qué sistema se hace la SOLICITUD de una lámpara pública nueva?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qi5u19hb",
+          "texto": "Solo en Smartflex (TTRFE)",
+          "correcta": false
+        },
+        {
+          "id": "qqxcna2y",
+          "texto": "Solo en Salesforce",
+          "correcta": true
+        },
+        {
+          "id": "qkxigkba",
+          "texto": "En ambos sistemas por igual",
+          "correcta": false
+        },
+        {
+          "id": "qxwjm9xt",
+          "texto": "En CAGCA",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La solicitud de alumbrado público nuevo se hace únicamente en Salesforce."
+    },
+    {
+      "id": "qc8huiw8",
+      "texto": "¿En qué sistema se REPORTA un daño de una lámpara ya existente?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qjix4ih9",
+          "texto": "Solo en Salesforce",
+          "correcta": false
+        },
+        {
+          "id": "qjcqzboj",
+          "texto": "Solo en Smartflex, ventana TTRFE",
+          "correcta": true
+        },
+        {
+          "id": "qq42uopm",
+          "texto": "En CCGAC",
+          "correcta": false
+        },
+        {
+          "id": "qu0ja114",
+          "texto": "En COACO",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El reporte de daño de alumbrado público se hace únicamente en Smartflex, en la ventana TTRFE."
+    },
+    {
+      "id": "qse89cmo",
+      "texto": "Al reportar un daño, ¿qué se anota como dirección en la búsqueda del elemento?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qafkem0z",
+          "texto": "El nombre de la calle",
+          "correcta": false
+        },
+        {
+          "id": "qoyawlwf",
+          "texto": "\"CR\" seguido del número de poste",
+          "correcta": true
+        },
+        {
+          "id": "qwyjb7gv",
+          "texto": "El número de cédula",
+          "correcta": false
+        },
+        {
+          "id": "qm2wihjh",
+          "texto": "El código de la cuadrilla",
+          "correcta": false
+        }
+      ],
+      "explicacion": "En dirección se anota \"CR\" junto con el número de poste correspondiente."
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "id": "infocom",
+  "titulo": "Evaluación: Venta de Infocomunicaciones (internet y TV cable)",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Venta de internet fibra/coaxial y televisión por cable.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "q569fgcz",
+      "texto": "¿Dónde se verifica la disponibilidad de FIBRA ÓPTICA antes de vender internet?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qoqxeesj",
+          "texto": "En ArcGIS",
+          "correcta": false
+        },
+        {
+          "id": "qfpsim2u",
+          "texto": "En CODISP",
+          "correcta": true
+        },
+        {
+          "id": "qufcdppt",
+          "texto": "En COACO",
+          "correcta": false
+        },
+        {
+          "id": "qh6bjksk",
+          "texto": "En FAGFI",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La disponibilidad de fibra óptica se revisa en CODISP; para coaxial se usa ArcGIS."
+    },
+    {
+      "id": "quok6274",
+      "texto": "¿Qué se debe hacer ANTES de que el asociado firme el contrato de un servicio de Infocomunicaciones?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q8cknofi",
+          "texto": "Cobrar la factura",
+          "correcta": false
+        },
+        {
+          "id": "qhqvll8w",
+          "texto": "Agendar la cita de instalación en CORCAO",
+          "correcta": true
+        },
+        {
+          "id": "qhmhwi8m",
+          "texto": "Enviar el caso a Karen",
+          "correcta": false
+        },
+        {
+          "id": "qc6xfgm1",
+          "texto": "Nada, se firma directo",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Toda venta de Infocomunicaciones requiere agendar la cita de instalación en CORCAO (\"Comprometer cita\") antes de la firma, respetando el protocolo de horario."
+    },
+    {
+      "id": "qgcmx3np",
+      "texto": "Para el paquete básico de TV cable de 30 canales analógico, ¿qué equipo se requiere?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qxylzouj",
+          "texto": "Decodificador y tarjeta",
+          "correcta": false
+        },
+        {
+          "id": "qrw1u3p1",
+          "texto": "Ningún equipo",
+          "correcta": true
+        },
+        {
+          "id": "qriv661e",
+          "texto": "Router fibra",
+          "correcta": false
+        },
+        {
+          "id": "qwnkkr2s",
+          "texto": "Modem coaxial obligatorio",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El paquete básico analógico de 30 canales no requiere ningún equipo; el decodificador y tarjeta son para el paquete digital."
+    },
+    {
+      "id": "qfk15o2u",
+      "texto": "¿Por qué se modifica levemente la dirección al usar el medidor vecino como referencia?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qmlgsao7",
+          "texto": "Por error del sistema",
+          "correcta": false
+        },
+        {
+          "id": "qy4n1sa6",
+          "texto": "Para que no quede una dirección exactamente duplicada",
+          "correcta": true
+        },
+        {
+          "id": "qqcb7wl3",
+          "texto": "Porque lo exige ARESEP",
+          "correcta": false
+        },
+        {
+          "id": "q5v3afgh",
+          "texto": "No se modifica nunca",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se cambia un número o letra de la dirección para que no vaya idéntica a la del medidor vecino usado como referencia."
+    }
+  ]
+}

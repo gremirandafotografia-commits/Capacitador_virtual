@@ -1,0 +1,96 @@
+{
+  "id": "quejas",
+  "titulo": "Evaluación: Registro de Quejas",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Registro y seguimiento de quejas de asociados.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qa19ziql",
+      "texto": "¿La primera visita de revisión por una queja tiene costo?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qo6uhmvv",
+          "texto": "Sí, siempre",
+          "correcta": false
+        },
+        {
+          "id": "q0k9csun",
+          "texto": "No, es gratis",
+          "correcta": true
+        },
+        {
+          "id": "qemwmjkx",
+          "texto": "Solo en zona rural",
+          "correcta": false
+        },
+        {
+          "id": "q14nsb9v",
+          "texto": "Depende del clima",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La primera visita de revisión es gratis; si se solicita una segunda visita en el mismo año, esa sí se cobra."
+    },
+    {
+      "id": "qbhc6tsl",
+      "texto": "¿Qué tres datos técnicos deben quedar SIEMPRE registrados al anotar una queja en CCGAC?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q5an3rhd",
+          "texto": "Nombre del asesor, fecha y hora",
+          "correcta": false
+        },
+        {
+          "id": "qtujqtmx",
+          "texto": "Número de contrato, acometida y medidor",
+          "correcta": true
+        },
+        {
+          "id": "qbpuwki9",
+          "texto": "Correo electrónico, cédula y firma",
+          "correcta": false
+        },
+        {
+          "id": "q7gio1ga",
+          "texto": "Color del medidor, tipo de casa y clima",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Es muy importante anotar siempre el número de contrato, acometida y número de medidor."
+    },
+    {
+      "id": "qbn41gwa",
+      "texto": "Si la falla fue provocada por Coopelesca, ¿cuántos días tiene el asociado para presentar la queja sobre ese hecho?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "quzly9ji",
+          "texto": "3 días",
+          "correcta": false
+        },
+        {
+          "id": "q55amzfz",
+          "texto": "8 días",
+          "correcta": true
+        },
+        {
+          "id": "qkntx5u0",
+          "texto": "30 días",
+          "correcta": false
+        },
+        {
+          "id": "qeaf3b1j",
+          "texto": "No hay límite",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Cuando el hecho es cometido por Coopelesca, hay 8 días para presentar la queja sobre esa falla."
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "id": "medidores",
+  "titulo": "Evaluación: Venta e instalación de medidores",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Requisitos, cálculo de corriente y proceso completo de venta de medidor.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qf6p8z01",
+      "texto": "Una boleta eléctrica indica una carga de 23 kVA. ¿Cuál es la corriente aproximada y qué base de medidor aplica?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qguvg3ob",
+          "texto": "200 A, base CL20",
+          "correcta": false
+        },
+        {
+          "id": "qwdbh6av",
+          "texto": "95,83 A, base clase 100",
+          "correcta": true
+        },
+        {
+          "id": "qr6nr74h",
+          "texto": "50 A, base clase 50",
+          "correcta": false
+        },
+        {
+          "id": "qgntg18b",
+          "texto": "23 A, no requiere base",
+          "correcta": false
+        }
+      ],
+      "explicacion": "23.000 ÷ 240 = 95,83 A, por lo que cabe en una base clase 100 (paquete básico de medidor)."
+    },
+    {
+      "id": "qgarxnsf",
+      "texto": "¿Cuál es el aporte de capital para un medidor RESIDENCIAL?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qespqdai",
+          "texto": "¢28.250",
+          "correcta": false
+        },
+        {
+          "id": "qn0xjf1g",
+          "texto": "¢40.000",
+          "correcta": true
+        },
+        {
+          "id": "qv5rujo0",
+          "texto": "¢60.000",
+          "correcta": false
+        },
+        {
+          "id": "qmtewgfb",
+          "texto": "¢1.000",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El aporte de capital para residencial es ¢40.000 (comercial es ¢60.000)."
+    },
+    {
+      "id": "qm0iz1bs",
+      "texto": "Un asociado trae un plano con un breaker de 150 A y pide que Coopelesca haga todo el trabajo. ¿Qué se debe hacer?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qnygmsui",
+          "texto": "Generar una inspección estándar de todas formas",
+          "correcta": false
+        },
+        {
+          "id": "qujuyomb",
+          "texto": "Generar una oportunidad de venta de servicios de Ingeniería, no una inspección estándar",
+          "correcta": true
+        },
+        {
+          "id": "qwc4hcnv",
+          "texto": "Rechazar la solicitud definitivamente",
+          "correcta": false
+        },
+        {
+          "id": "qg3yb70q",
+          "texto": "Instalar el paquete básico igual",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Cuando la carga supera los 100 A que soporta el paquete estándar, el caso se debe canalizar como oportunidad de venta de servicios de Ingeniería, evitando una visita innecesaria del inspector."
+    },
+    {
+      "id": "qvlbxrhi",
+      "texto": "¿Por qué es importante registrar la orden de inspección con el medidor o poste MÁS CERCANO al sitio real?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qru2079m",
+          "texto": "Por estética del sistema",
+          "correcta": false
+        },
+        {
+          "id": "q6r7m4j2",
+          "texto": "Porque el sistema es georreferenciado y una orden mal ubicada lleva al inspector al lugar equivocado",
+          "correcta": true
+        },
+        {
+          "id": "q45a0sav",
+          "texto": "Porque así es más barato",
+          "correcta": false
+        },
+        {
+          "id": "qrr46f1c",
+          "texto": "No tiene ninguna importancia",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El sistema maneja los medidores y postes de forma georreferenciada; una orden con referencia incorrecta genera retrasos y reprocesos en campo."
+    },
+    {
+      "id": "q2pvzn8k",
+      "texto": "¿Qué significa que un trámite de medidor tenga 7 documentos por firmar?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q52n2cyw",
+          "texto": "Que el asociado presenta boleta eléctrica",
+          "correcta": false
+        },
+        {
+          "id": "qevj9vpz",
+          "texto": "Que lleva materiales",
+          "correcta": false
+        },
+        {
+          "id": "qsdaod0o",
+          "texto": "Que no presenta plano ni postura",
+          "correcta": true
+        },
+        {
+          "id": "q48joxik",
+          "texto": "Que es un medidor industrial",
+          "correcta": false
+        }
+      ],
+      "explicacion": "7 documentos corresponde a los casos donde el asociado no presenta plano ni postura."
+    }
+  ]
+}

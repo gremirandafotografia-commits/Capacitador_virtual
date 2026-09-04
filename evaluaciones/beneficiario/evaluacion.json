@@ -1,0 +1,124 @@
+{
+  "id": "beneficiario",
+  "titulo": "Evaluación: Cambio de beneficiario",
+  "tema": "Salesforce",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Registrar o cambiar beneficiario, con o sin cuenta existente.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qj12jz7n",
+      "texto": "¿Qué porcentaje se coloca en el campo de \"porcentaje de beneficiario\" cuando solo hay un beneficiario?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qxpb6xvv",
+          "texto": "50%",
+          "correcta": false
+        },
+        {
+          "id": "q7ifwl2w",
+          "texto": "100%",
+          "correcta": true
+        },
+        {
+          "id": "qjcyb7yt",
+          "texto": "Depende del parentesco",
+          "correcta": false
+        },
+        {
+          "id": "q3cc7fpw",
+          "texto": "25%",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se coloca 100% en el campo de porcentaje de beneficiario."
+    },
+    {
+      "id": "q81hjvs6",
+      "texto": "¿Cuál es la diferencia entre B.1 y B.2?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qs8533ou",
+          "texto": "B.1 es para cambios y B.2 para registros nuevos",
+          "correcta": false
+        },
+        {
+          "id": "q5u6lssr",
+          "texto": "B.1 es cuando el beneficiario ya tiene cuenta en Salesforce y B.2 cuando no la tiene",
+          "correcta": true
+        },
+        {
+          "id": "qog64tvt",
+          "texto": "B.1 aplica solo a comercios",
+          "correcta": false
+        },
+        {
+          "id": "qzj4e81q",
+          "texto": "No hay diferencia",
+          "correcta": false
+        }
+      ],
+      "explicacion": "B.1 es \"Registro de beneficiario con cuenta existente\" y B.2 es \"Registro de beneficiario sin cuenta\" (hay que crear el contacto)."
+    },
+    {
+      "id": "q6zn5b4u",
+      "texto": "Al hacer un CAMBIO de beneficiario (B.3/B.4), ¿cuál es el primer paso antes de crear la nueva relación?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qzsi7vwk",
+          "texto": "Cobrar ¢1.000",
+          "correcta": false
+        },
+        {
+          "id": "qtgbtxp8",
+          "texto": "Eliminar la relación de beneficiario anterior",
+          "correcta": true
+        },
+        {
+          "id": "q39j0mzt",
+          "texto": "Imprimir el contrato de energía",
+          "correcta": false
+        },
+        {
+          "id": "quzes8x7",
+          "texto": "Ir a CORCAO",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Primero se da clic en el recuadro de relación y se selecciona \"eliminar\" antes de registrar al nuevo beneficiario."
+    },
+    {
+      "id": "qsdg4hby",
+      "texto": "¿Qué documento físico se le debe hacer firmar siempre al asociado tras un cambio de beneficiario?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qj0zosao",
+          "texto": "Contrato de venta de energía",
+          "correcta": false
+        },
+        {
+          "id": "qrcesngj",
+          "texto": "Campaña Actualización de Datos Físico",
+          "correcta": true
+        },
+        {
+          "id": "qjthgog3",
+          "texto": "Boleta de declaración de carga",
+          "correcta": false
+        },
+        {
+          "id": "qf34yjs3",
+          "texto": "Hoja Mutual",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Es indispensable el documento \"Campaña Actualización de Datos Físico\" firmado por el asociado."
+    }
+  ]
+}

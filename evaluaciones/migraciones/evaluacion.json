@@ -1,0 +1,124 @@
+{
+  "id": "migraciones",
+  "titulo": "Evaluación: Migraciones",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Cambios de red dentro del mismo hogar.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qo3uy0nj",
+      "texto": "¿Qué es una \"migración\" en este contexto?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qxbqv3pj",
+          "texto": "Un traspaso de medidor a otra persona",
+          "correcta": false
+        },
+        {
+          "id": "qhsuoe9o",
+          "texto": "Un cambio de red dentro del mismo hogar",
+          "correcta": true
+        },
+        {
+          "id": "qiqvaoz5",
+          "texto": "Una venta nueva de TV cable",
+          "correcta": false
+        },
+        {
+          "id": "qzc58xjy",
+          "texto": "Un retiro de servicio",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Una migración es un cambio de red en el mismo hogar del asociado."
+    },
+    {
+      "id": "qve22you",
+      "texto": "¿Qué sistema de Smartflex se usa para confirmar mejor la disponibilidad cuando ArcGIS y Codisp no coinciden?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qkw57yx2",
+          "texto": "FAGFI",
+          "correcta": false
+        },
+        {
+          "id": "qps5mwry",
+          "texto": "IECRT",
+          "correcta": true
+        },
+        {
+          "id": "qmkuua0p",
+          "texto": "QUPOS",
+          "correcta": false
+        },
+        {
+          "id": "qel26l0p",
+          "texto": "CAGCA",
+          "correcta": false
+        }
+      ],
+      "explicacion": "IECRT permite validar mejor la disponibilidad y posición cuando hay discrepancia entre ArcGIS y Codisp."
+    },
+    {
+      "id": "qutrym3t",
+      "texto": "¿Qué NO se debe hacer en Codisp durante una migración?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qoixn0wj",
+          "texto": "Consultar la disponibilidad",
+          "correcta": false
+        },
+        {
+          "id": "q5wkwt2z",
+          "texto": "Reservar el espacio",
+          "correcta": true
+        },
+        {
+          "id": "qouxx7eo",
+          "texto": "Buscar el DOP",
+          "correcta": false
+        },
+        {
+          "id": "qblt12tw",
+          "texto": "Revisar el código de red",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Es importante NO reservar el espacio en Codisp durante la validación."
+    },
+    {
+      "id": "q7vxo08o",
+      "texto": "¿Qué opción de \"Atención inmediata\" se debe marcar siempre en una migración?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q5hjbelf",
+          "texto": "Nunca se marca",
+          "correcta": false
+        },
+        {
+          "id": "q68jkzug",
+          "texto": "Depende del cliente",
+          "correcta": false
+        },
+        {
+          "id": "q3fxvfte",
+          "texto": "Siempre se debe marcar",
+          "correcta": true
+        },
+        {
+          "id": "qxxlkeer",
+          "texto": "Solo si el asociado insiste",
+          "correcta": false
+        }
+      ],
+      "explicacion": "En migraciones siempre se debe marcar \"Atención inmediata\"."
+    }
+  ]
+}

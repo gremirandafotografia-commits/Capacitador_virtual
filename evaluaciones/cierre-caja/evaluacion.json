@@ -1,0 +1,124 @@
+{
+  "id": "cierre-caja",
+  "titulo": "Evaluación: Procedimiento de cierre de caja (CAGCA)",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Diez pasos para cerrar caja correctamente cada día.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qmxqi61w",
+      "texto": "¿Cuál es la regla de oro al contar el efectivo de caja?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qck792r0",
+          "texto": "Contar con el sistema cerrado",
+          "correcta": false
+        },
+        {
+          "id": "qekplb3e",
+          "texto": "Contar el efectivo SIN cerrar el sistema",
+          "correcta": true
+        },
+        {
+          "id": "qpgkrhud",
+          "texto": "Contar solo una vez por semana",
+          "correcta": false
+        },
+        {
+          "id": "qgxzwzfr",
+          "texto": "Contar en presencia del líder siempre",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El efectivo se debe contar sin cerrar el sistema, comparándolo contra lo que indica en pantalla."
+    },
+    {
+      "id": "q2zllun3",
+      "texto": "¿Cuánto es el fondo de caja que debe quedar después del cierre, y cuál es la diferencia máxima permitida?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qrwf84l3",
+          "texto": "¢100.000, sin diferencia permitida",
+          "correcta": false
+        },
+        {
+          "id": "q8i7vsnk",
+          "texto": "¢200.000, con diferencia máxima de ¢1.000",
+          "correcta": true
+        },
+        {
+          "id": "q60thw6t",
+          "texto": "¢50.000, con diferencia máxima de ¢5.000",
+          "correcta": false
+        },
+        {
+          "id": "qhet8bbf",
+          "texto": "¢200.000, sin ninguna diferencia permitida",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El fondo de caja correspondiente es ¢200.000, con una diferencia máxima permitida de ¢1.000."
+    },
+    {
+      "id": "qqpy3aid",
+      "texto": "Si al cuadrar la caja hay un SOBRANTE, ¿qué se hace?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qmwq203m",
+          "texto": "Se reporta como ingreso extra en el sistema",
+          "correcta": false
+        },
+        {
+          "id": "q9wleijm",
+          "texto": "Se hace boleta de Open aparte, se entrega, pero no se reporta en el sistema",
+          "correcta": true
+        },
+        {
+          "id": "qkg1nlak",
+          "texto": "Se guarda para el día siguiente sin boleta",
+          "correcta": false
+        },
+        {
+          "id": "qemt7ejy",
+          "texto": "Se descarta",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Con sobrante se hace una boleta de Open en bolsa aparte y se entrega, pero no se reporta en el sistema (a diferencia del faltante, que sí debe reponerse)."
+    },
+    {
+      "id": "qtortw0a",
+      "texto": "¿Dónde se sube finalmente el registro de cierre de caja del día (PDFs y Excel)?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q4q88jrp",
+          "texto": "A CAGCA únicamente",
+          "correcta": false
+        },
+        {
+          "id": "qqyb5e0s",
+          "texto": "A SharePoint, en \"Cierre de cajas por punto de venta\"",
+          "correcta": true
+        },
+        {
+          "id": "qjn3pt5i",
+          "texto": "Al correo del asociado",
+          "correcta": false
+        },
+        {
+          "id": "qsqwm58l",
+          "texto": "A COACO",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El registro final con fecha, punto de venta, cajero y adjuntos (PDFs + Excel) se sube a SharePoint en \"Cierre de cajas por punto de venta\"."
+    }
+  ]
+}

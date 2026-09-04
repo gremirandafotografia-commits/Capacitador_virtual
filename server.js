@@ -501,14 +501,18 @@ app.post('/api/evaluaciones/:slug/intentos', (req, res) => {
 });
 
 app.get('/api/evaluaciones/:slug/intentos', requireAdmin, (req, res) => {
-  const dir = evalIntentosDir(req.params.slug);
-  if (!fs.existsSync(dir)) return res.json({ items: [] });
-  const items = fs.readdirSync(dir)
-    .filter(f => f.endsWith('.json'))
-    .map(f => readJSON(path.join(dir, f), null))
-    .filter(Boolean)
-    .sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
-  res.json({ items });
+  try {
+    const dir = evalIntentosDir(req.params.slug);
+    if (!fs.existsSync(dir)) return res.json({ items: [] });
+    const items = fs.readdirSync(dir)
+      .filter(f => f.endsWith('.json'))
+      .map(f => readJSON(path.join(dir, f), null))
+      .filter(Boolean)
+      .sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
+    res.json({ items });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 app.put('/api/evaluaciones/:slug/intentos/:intentoId', requireAdmin, (req, res) => {

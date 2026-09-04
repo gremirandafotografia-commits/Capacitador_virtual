@@ -1,0 +1,96 @@
+{
+  "id": "traspaso-medidor",
+  "titulo": "Evaluación: Traspaso de medidor",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Cambio de titularidad de un medidor entre asociados.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qhmgr33w",
+      "texto": "Si una propiedad se vendió y el nuevo dueño no se presenta a firmar el traspaso, ¿cuántos días de plazo se manejan antes de tener que repetir el trámite?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qb9f15ht",
+          "texto": "5 días",
+          "correcta": false
+        },
+        {
+          "id": "qq493pl2",
+          "texto": "15 días",
+          "correcta": true
+        },
+        {
+          "id": "q6k2ff6x",
+          "texto": "30 días",
+          "correcta": false
+        },
+        {
+          "id": "qgsf4vgk",
+          "texto": "60 días",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se da un máximo de 15 días para que el nuevo dueño se presente a firmar los documentos."
+    },
+    {
+      "id": "qii6mcm9",
+      "texto": "¿Cuál opción de CCGAC traspasa TODO el contrato, sin importar si hay deuda o no?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qwjnnnr1",
+          "texto": "Cambio de contrato",
+          "correcta": false
+        },
+        {
+          "id": "qur0lb0m",
+          "texto": "Cesión de Derechos",
+          "correcta": true
+        },
+        {
+          "id": "qb1h1ad8",
+          "texto": "Traslado de productos",
+          "correcta": false
+        },
+        {
+          "id": "q4ogbrwg",
+          "texto": "Registro de quejas",
+          "correcta": false
+        }
+      ],
+      "explicacion": "\"Cesión de Derechos\" traspasa el contrato completo, haya o no deuda pendiente."
+    },
+    {
+      "id": "q7ggpoxt",
+      "texto": "¿Qué debe existir ANTES de hacer un \"Cambio de contrato\" para traspasar el medidor?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qenuanol",
+          "texto": "Un pago de kilometraje",
+          "correcta": false
+        },
+        {
+          "id": "q2qt5ht0",
+          "texto": "Un contrato ya creado a nombre de quien recibirá el medidor",
+          "correcta": true
+        },
+        {
+          "id": "qz3l44ea",
+          "texto": "Una queja registrada",
+          "correcta": false
+        },
+        {
+          "id": "qbly8h3m",
+          "texto": "Una migración de red",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Debe existir previamente un contrato nuevo (creado con \"Venta de servicios de ingeniería\") a nombre de quien va a recibir el medidor."
+    }
+  ]
+}

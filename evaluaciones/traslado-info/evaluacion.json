@@ -1,0 +1,96 @@
+{
+  "id": "traslado-info",
+  "titulo": "Evaluación: Traslado de Infocomunicaciones",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Traslado de servicios de coaxial o TV cable a una nueva dirección.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qqhny1ac",
+      "texto": "¿Qué tipo de servicio de Infocomunicaciones NO se puede trasladar?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q5gwzs0v",
+          "texto": "Coaxial",
+          "correcta": false
+        },
+        {
+          "id": "q3cnh2jx",
+          "texto": "TV cable",
+          "correcta": false
+        },
+        {
+          "id": "qjx83qhe",
+          "texto": "Fibra óptica",
+          "correcta": true
+        },
+        {
+          "id": "qs93xego",
+          "texto": "Ninguno, todos se trasladan",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La fibra óptica no se traslada: se retira el producto anterior y se hace una venta nueva de internet."
+    },
+    {
+      "id": "qgu4atl5",
+      "texto": "¿Qué se debe verificar en el nuevo medidor antes de hacer un traslado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qwz7ifz0",
+          "texto": "Que tenga saldo a favor",
+          "correcta": false
+        },
+        {
+          "id": "qo0ynzg0",
+          "texto": "Que no tenga ya un producto asociado",
+          "correcta": true
+        },
+        {
+          "id": "qaqrp5t6",
+          "texto": "Que sea prepago",
+          "correcta": false
+        },
+        {
+          "id": "qp9br96h",
+          "texto": "Que esté en zona urbana",
+          "correcta": false
+        }
+      ],
+      "explicacion": "No puede haber dos productos en el mismo medidor, por lo que se verifica que el nuevo medidor esté libre."
+    },
+    {
+      "id": "qgra9cg0",
+      "texto": "En un traslado, ¿qué pasa con el número de contrato del asociado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qzwy4l2t",
+          "texto": "Cambia siempre",
+          "correcta": false
+        },
+        {
+          "id": "qn68f9ar",
+          "texto": "Se mantiene igual",
+          "correcta": true
+        },
+        {
+          "id": "qqft5o2i",
+          "texto": "Se elimina",
+          "correcta": false
+        },
+        {
+          "id": "qlug0o6j",
+          "texto": "Se duplica",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El número de contrato se mantiene igual; lo que cambia es la dirección georreferenciada."
+    }
+  ]
+}

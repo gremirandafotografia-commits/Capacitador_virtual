@@ -1,0 +1,152 @@
+{
+  "id": "fondomutual",
+  "titulo": "Evaluación: Fondo Mutual",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Trámite por fallecimiento de un asociado, con o sin deudas.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "q28zy5z0",
+      "texto": "¿Cuál es el plazo máximo para solicitar el Fondo Mutual tras el fallecimiento del asociado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qvrmniw9",
+          "texto": "6 meses",
+          "correcta": false
+        },
+        {
+          "id": "q2d36rwz",
+          "texto": "1 año",
+          "correcta": true
+        },
+        {
+          "id": "qdznxj9w",
+          "texto": "2 años",
+          "correcta": false
+        },
+        {
+          "id": "qushvvj5",
+          "texto": "No hay plazo",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Hay 1 año de tiempo para gestionar la solicitud de Fondo Mutual."
+    },
+    {
+      "id": "q8q2x95v",
+      "texto": "¿Qué condición hace que un fallecido NO sea sujeto de Fondo Mutual?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q25conhd",
+          "texto": "Que tenga más de un beneficiario",
+          "correcta": false
+        },
+        {
+          "id": "qqah2li8",
+          "texto": "Que no tenga ningún producto activo",
+          "correcta": true
+        },
+        {
+          "id": "q0b2pbyh",
+          "texto": "Que viva en zona urbana",
+          "correcta": false
+        },
+        {
+          "id": "q38sknou",
+          "texto": "Que el beneficiario no sea familiar",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Si el asociado fallecido no cuenta con ningún producto activo, no es sujeto al Fondo Mutual, ya que el pago se calcula en función de ese producto activo."
+    },
+    {
+      "id": "qxzaxikz",
+      "texto": "Si el fallecido tenía deudas pendientes, ¿qué debe pasar ANTES de la Cesión de Derechos?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q35ymrou",
+          "texto": "Nada, se hace la cesión igual",
+          "correcta": false
+        },
+        {
+          "id": "q2uwo7o7",
+          "texto": "Se deben cancelar/liquidar los saldos pendientes",
+          "correcta": true
+        },
+        {
+          "id": "qxpomgmk",
+          "texto": "Se le perdona la deuda automáticamente",
+          "correcta": false
+        },
+        {
+          "id": "qcy6ydn9",
+          "texto": "Se traslada la deuda a otro producto",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Con deudas, primero se deben cancelar los saldos pendientes (facturación, almacén) antes de proceder con la Cesión de Derechos."
+    },
+    {
+      "id": "qh7ls1v7",
+      "texto": "¿Dónde se generan los machotes de Hoja Mutual, Solicitud de Fondo Mutual y Traspaso de Capital?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qek1onyn",
+          "texto": "En Salesforce",
+          "correcta": false
+        },
+        {
+          "id": "qcuqd8si",
+          "texto": "En COACO",
+          "correcta": true
+        },
+        {
+          "id": "qsckezev",
+          "texto": "En CORCAO",
+          "correcta": false
+        },
+        {
+          "id": "qqpkplju",
+          "texto": "En ArcGIS",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Estos documentos (con sus machotes) se obtienen desde COACO, solo sustituyendo los datos del caso."
+    },
+    {
+      "id": "qvgk182l",
+      "texto": "¿En qué sistema se revisan actualmente los ingresos anticipados y las facturas a crédito del fallecido y del beneficiario, en un trámite de Fondo Mutual CON deuda?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qj9avlp9",
+          "texto": "En MBACASE",
+          "correcta": false
+        },
+        {
+          "id": "qbgt30nr",
+          "texto": "En QUPOS, en la sección de Estado de cuenta",
+          "correcta": true
+        },
+        {
+          "id": "qc5451zn",
+          "texto": "En ArcGIS",
+          "correcta": false
+        },
+        {
+          "id": "q1it4ixv",
+          "texto": "En CODISP",
+          "correcta": false
+        }
+      ],
+      "explicacion": "MBACASE fue reemplazado por QUPOS. Ahora esa revisión se hace en QUPOS, en la sección \"Estado de cuenta\", que muestra los ingresos anticipados y las facturas a crédito corriente del asociado."
+    }
+  ]
+}

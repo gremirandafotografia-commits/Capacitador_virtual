@@ -1,0 +1,180 @@
+{
+  "id": "aspectos-clave-medidores",
+  "titulo": "Evaluación: Aspectos clave: gestión y venta de servicios eléctricos",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Casos especiales de venta de medidores, medidores provisionales y modalidad prepago.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "q6ws1jtg",
+      "texto": "Si quien solicita el medidor no es el dueño registral ni familiar de primer grado, ¿qué puede presentar?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q7ncrnj1",
+          "texto": "Solo su cédula",
+          "correcta": false
+        },
+        {
+          "id": "qexh3bsm",
+          "texto": "Un poder o una nota autenticada por un abogado",
+          "correcta": true
+        },
+        {
+          "id": "q8grt64c",
+          "texto": "Nada, no se puede hacer el trámite",
+          "correcta": false
+        },
+        {
+          "id": "qj79n0pe",
+          "texto": "Una factura de otro servicio",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se puede presentar un poder, una nota autenticada por un abogado, o presentarse con el dueño si son familiares de primer grado y firman autorización en plataforma."
+    },
+    {
+      "id": "qm65s4je",
+      "texto": "Si el plano eléctrico no está inscrito, ¿qué se debe llenar para continuar con la venta?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qi2ohmum",
+          "texto": "Un contrato notarial nuevo",
+          "correcta": false
+        },
+        {
+          "id": "q8k7tk0z",
+          "texto": "La declaración jurada de propiedades sin inscribir, con VB del líder",
+          "correcta": true
+        },
+        {
+          "id": "q2q0gszl",
+          "texto": "No se puede continuar",
+          "correcta": false
+        },
+        {
+          "id": "qiwflqp2",
+          "texto": "Un estudio de factibilidad obligatorio",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se puede hacer la venta llenando la declaración jurada de propiedades sin inscribir, con el visto bueno del líder."
+    },
+    {
+      "id": "qqoyvb1x",
+      "texto": "Si no pasa línea eléctrica frente a la propiedad o el poste más cercano está a 15 metros o más, ¿qué se hace?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qde2pjhy",
+          "texto": "Se rechaza la solicitud",
+          "correcta": false
+        },
+        {
+          "id": "qmrc23ik",
+          "texto": "Se envía a inspección mediante venta de ingeniería, actividad 302288",
+          "correcta": true
+        },
+        {
+          "id": "qvwf0an5",
+          "texto": "Se instala igual sin revisión",
+          "correcta": false
+        },
+        {
+          "id": "qo83vrs6",
+          "texto": "Se cobra el doble del aporte de capital",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se envía a inspección mediante venta de ingeniería, actividad 302288 \"Inspección para proyecto de redes\"."
+    },
+    {
+      "id": "q1qozakr",
+      "texto": "¿Cuánto tiempo mínimo se debe permanecer en la modalidad de prepago por Acceso VOLUNTARIO?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qrkajc9h",
+          "texto": "3 meses",
+          "correcta": false
+        },
+        {
+          "id": "q7orlk1h",
+          "texto": "6 meses",
+          "correcta": true
+        },
+        {
+          "id": "qbgu7dw8",
+          "texto": "12 meses",
+          "correcta": false
+        },
+        {
+          "id": "qied54j2",
+          "texto": "18 meses",
+          "correcta": false
+        }
+      ],
+      "explicacion": "En Acceso Voluntario se debe permanecer al menos 6 meses en la modalidad (en Acceso Obligatorio son 18 meses)."
+    },
+    {
+      "id": "qwy7tul5",
+      "texto": "¿Qué código CIIU se utiliza para una casa/hogar aún no construida que se registra como medidor comercial?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qw0ge32m",
+          "texto": "H-52-521-5210-5210.0",
+          "correcta": true
+        },
+        {
+          "id": "q12ngb4o",
+          "texto": "A-01-011-0111",
+          "correcta": false
+        },
+        {
+          "id": "qxd5us3v",
+          "texto": "C-10-101-1010",
+          "correcta": false
+        },
+        {
+          "id": "q3mydert",
+          "texto": "302288",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se utiliza el código H-52-521-5210-5210.0, correspondiente a \"Almacenamiento y depósito\"."
+    },
+    {
+      "id": "qq7u63h4",
+      "texto": "Para medidores provisionales de fiestas o actividades comunales, ¿a quién se debe enviar la información recopilada?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q3bk4wjm",
+          "texto": "A Michael Chaves Soto",
+          "correcta": false
+        },
+        {
+          "id": "qotugdsh",
+          "texto": "A Danny Alberto Díaz, del Centro de Contacto",
+          "correcta": true
+        },
+        {
+          "id": "qvssxn9g",
+          "texto": "A ARESEP",
+          "correcta": false
+        },
+        {
+          "id": "qws7mamu",
+          "texto": "A la líder de Atención al Asociado únicamente",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se envía la información vía correo a Danny Alberto Díaz, del Centro de Contacto, para el seguimiento del caso."
+    }
+  ]
+}

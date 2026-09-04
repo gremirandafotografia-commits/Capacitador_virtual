@@ -1,0 +1,180 @@
+{
+  "id": "qupos",
+  "titulo": "Evaluación: QUPOS: facturación y caja del almacén",
+  "tema": "Qupos",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Sistema de facturación, créditos, notas de crédito y cierre de caja del almacén/ferretería. Sustituye a MBACASE.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "q68u7zr2",
+      "texto": "¿Qué sistema reemplazó a MBACASE para la facturación, créditos y estado de cuenta del almacén?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qteg6v1v",
+          "texto": "CAGCA",
+          "correcta": false
+        },
+        {
+          "id": "quy1muvw",
+          "texto": "QUPOS",
+          "correcta": true
+        },
+        {
+          "id": "qk06jt9p",
+          "texto": "CODISP",
+          "correcta": false
+        },
+        {
+          "id": "q400rkx4",
+          "texto": "COACO",
+          "correcta": false
+        }
+      ],
+      "explicacion": "QUPOS es el sistema actual de Ventas, procesos y facturación que sustituyó a MBACASE."
+    },
+    {
+      "id": "q4nxb015",
+      "texto": "En el proceso de facturación de QUPOS, ¿qué se debe anotar al recibir un pago por Transferencia?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q6lvxcab",
+          "texto": "Solo el monto total",
+          "correcta": false
+        },
+        {
+          "id": "q5h6egai",
+          "texto": "Número de transacción, número de cuenta y banco",
+          "correcta": true
+        },
+        {
+          "id": "qgys5324",
+          "texto": "El número de cédula únicamente",
+          "correcta": false
+        },
+        {
+          "id": "qbgcyyxw",
+          "texto": "Nada, se acepta directo",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Con transferencia se anota el número de transacción, número de cuenta y el banco donde se realizó, y se acepta."
+    },
+    {
+      "id": "qzgx62ut",
+      "texto": "¿Qué facturas se pueden ANULAR en QUPOS?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q8xaey9q",
+          "texto": "Cualquier factura, sin importar la fecha",
+          "correcta": false
+        },
+        {
+          "id": "qiyhxhbl",
+          "texto": "Solo las facturas del mismo día y pagadas en efectivo",
+          "correcta": true
+        },
+        {
+          "id": "qmc94txf",
+          "texto": "Solo las facturas a crédito",
+          "correcta": false
+        },
+        {
+          "id": "qfoe4a4p",
+          "texto": "Ninguna, siempre se hace nota de crédito",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Solo se pueden anular facturas del mismo día y que hayan sido pagadas en efectivo; si fue con otra forma de pago se recomienda hacer nota de crédito."
+    },
+    {
+      "id": "qvpznt9q",
+      "texto": "¿Cuál es el fondo de caja base que debe quedar en QUPOS después del retiro de efectivo sobrante?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qy3sogwv",
+          "texto": "¢100.000",
+          "correcta": false
+        },
+        {
+          "id": "qikik3tl",
+          "texto": "¢200.000",
+          "correcta": true
+        },
+        {
+          "id": "qhn1k2iv",
+          "texto": "¢390.000",
+          "correcta": false
+        },
+        {
+          "id": "q2ka6ocl",
+          "texto": "¢45.000",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El fondo de caja base es de ¢200.000, igual que en el cierre de CAGCA."
+    },
+    {
+      "id": "q92qq8uw",
+      "texto": "¿Para qué sirve la pantalla de \"Estado de cuenta\" en QUPOS?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qsf549wq",
+          "texto": "Para ver el clima",
+          "correcta": false
+        },
+        {
+          "id": "qkmir6l2",
+          "texto": "Para ver los ingresos anticipados y las facturas a crédito corriente del asociado",
+          "correcta": true
+        },
+        {
+          "id": "q0pwfqej",
+          "texto": "Para registrar quejas",
+          "correcta": false
+        },
+        {
+          "id": "qsmaz3iv",
+          "texto": "Para agendar citas de instalación",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El Estado de cuenta muestra los ingresos anticipados y las facturas a crédito del asociado; es clave, por ejemplo, para revisar deudas en un trámite de Fondo Mutual."
+    },
+    {
+      "id": "qeo5ejiu",
+      "texto": "¿Qué se debe hacer si toda una nota de crédito se convierte en efectivo pero NO se le va a entregar el dinero al asociado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qtnwqvrd",
+          "texto": "Se pierde el dinero",
+          "correcta": false
+        },
+        {
+          "id": "quw6a683",
+          "texto": "Se marca el check de \"genera ingreso anticipado\"",
+          "correcta": true
+        },
+        {
+          "id": "qn278ntv",
+          "texto": "Se anula la factura",
+          "correcta": false
+        },
+        {
+          "id": "q4apjmga",
+          "texto": "Se hace un reintegro",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Si el dinero no se entrega en efectivo, se marca \"genera ingreso anticipado\" para que quede a favor del asociado."
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "id": "sistemas-rapidos",
+  "titulo": "Evaluación: Guía rápida: CCGAC, FAGFI y ArcGIS",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Códigos y atajos operativos frecuentes en ventas y cobros.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qy3ggy93",
+      "texto": "¿Cuál es el costo base de la venta de servicio de cable (antes de asociar)?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qpn31el4",
+          "texto": "¢1.000",
+          "correcta": false
+        },
+        {
+          "id": "qf9kncxd",
+          "texto": "¢12.500",
+          "correcta": true
+        },
+        {
+          "id": "qrjd3ive",
+          "texto": "¢28.250",
+          "correcta": false
+        },
+        {
+          "id": "qymgtgsd",
+          "texto": "¢45.000",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El servicio de cable cuesta ¢12.500 (más ¢1.000 adicional si hay que asociar al cliente)."
+    },
+    {
+      "id": "qybs3q6h",
+      "texto": "¿Cuál es la distancia máxima permitida para instalar cable coaxial?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qay6uv0z",
+          "texto": "50 m",
+          "correcta": false
+        },
+        {
+          "id": "qbga4tpp",
+          "texto": "100 m",
+          "correcta": true
+        },
+        {
+          "id": "q2tzqhpx",
+          "texto": "300 m",
+          "correcta": false
+        },
+        {
+          "id": "qgepe38c",
+          "texto": "No hay límite",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La distancia máxima para cable coaxial es de 100 metros."
+    },
+    {
+      "id": "qkn30diw",
+      "texto": "Si un asociado retira el servicio de cable y NO devuelve la caja decodificadora, ¿cuánto se le cobra por la caja?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q10oadu9",
+          "texto": "¢7.000",
+          "correcta": false
+        },
+        {
+          "id": "quf79cj0",
+          "texto": "¢12.500",
+          "correcta": false
+        },
+        {
+          "id": "qiimboub",
+          "texto": "¢45.000",
+          "correcta": true
+        },
+        {
+          "id": "q0ark7fp",
+          "texto": "No se cobra nada",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Si no se devuelve el equipo completo, la caja decodificadora tiene un valor de ¢45.000 (cada cable/control, ¢7.000)."
+    },
+    {
+      "id": "qplogosb",
+      "texto": "¿Dónde se revisa la \"cartera castigada\" de un asociado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qisxwxzp",
+          "texto": "En QUPOS",
+          "correcta": false
+        },
+        {
+          "id": "qco5cuj8",
+          "texto": "En COACO, \"Consulta de cartera castigada\"",
+          "correcta": true
+        },
+        {
+          "id": "qhtdwuwu",
+          "texto": "En ArcGIS",
+          "correcta": false
+        },
+        {
+          "id": "q6w0zkbr",
+          "texto": "En Salesforce",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La cartera castigada se revisa en COACO, en la opción \"Consulta de cartera castigada\"."
+    },
+    {
+      "id": "q09yc0ff",
+      "texto": "¿Qué código de concepto se usa en FAGFI para cobrar el \"diseño de planos eléctricos\" (declaración de carga)?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qpba3qye",
+          "texto": "700",
+          "correcta": false
+        },
+        {
+          "id": "qbq0m1yl",
+          "texto": "2705",
+          "correcta": true
+        },
+        {
+          "id": "q3tmeypk",
+          "texto": "12500",
+          "correcta": false
+        },
+        {
+          "id": "qiz6gl12",
+          "texto": "9",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El concepto \"diseño de planos eléctricos\" (declaración de carga) usa el código 2705 en FAGFI, con código de IVA 700."
+    }
+  ]
+}

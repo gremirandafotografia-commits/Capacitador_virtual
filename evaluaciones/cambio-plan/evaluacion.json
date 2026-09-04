@@ -1,0 +1,96 @@
+{
+  "id": "cambio-plan",
+  "titulo": "Evaluación: Cambio de Condiciones o Plan Comercial",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Diferencia entre cambiar de plan y cambiar condiciones del mismo servicio.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qrnvas02",
+      "texto": "Un asociado tiene fibra de 100 megas y pide que le dejen solo 40 megas. ¿Qué trámite es?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qqx0qodm",
+          "texto": "Cambio de plan comercial",
+          "correcta": false
+        },
+        {
+          "id": "qx579nea",
+          "texto": "Cambio de condiciones",
+          "correcta": true
+        },
+        {
+          "id": "qgc6v78b",
+          "texto": "Traspaso de medidor",
+          "correcta": false
+        },
+        {
+          "id": "q12dmf17",
+          "texto": "Migración",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Quitar o reducir un componente del mismo servicio que ya posee es un cambio de condiciones."
+    },
+    {
+      "id": "qlax77l3",
+      "texto": "¿Qué documento firma el asociado al finalizar un cambio de plan o de condiciones?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qypolz7b",
+          "texto": "Hoja Mutual",
+          "correcta": false
+        },
+        {
+          "id": "qbtetvmq",
+          "texto": "Cambio de clase de servicio",
+          "correcta": true
+        },
+        {
+          "id": "qw5hfs6k",
+          "texto": "Contrato de Fondo Mutual",
+          "correcta": false
+        },
+        {
+          "id": "q3qv92n3",
+          "texto": "Boleta general de trámites",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se firma el documento \"Cambio de clase de servicio\" desde Documentos para Asociados."
+    },
+    {
+      "id": "qx55k31m",
+      "texto": "¿Qué se debe tener especial cuidado al cambiar un plan de internet de FONATEL?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qztctp8e",
+          "texto": "El color del router",
+          "correcta": false
+        },
+        {
+          "id": "qwdt9ai0",
+          "texto": "Las fechas de corte de facturación",
+          "correcta": true
+        },
+        {
+          "id": "q53uszsv",
+          "texto": "El número de beneficiarios",
+          "correcta": false
+        },
+        {
+          "id": "qpxw5ldl",
+          "texto": "El tipo de moneda",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Por las fechas de corte de facturación, el cambio en servicios FONATEL puede no poder aplicarse de inmediato; puede requerir coordinar con Seguimiento de Trámites."
+    }
+  ]
+}

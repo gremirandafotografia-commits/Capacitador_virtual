@@ -1,0 +1,180 @@
+{
+  "id": "cambio-condiciones-comercial",
+  "titulo": "Evaluación: Cambio de condiciones de medidores comerciales/industriales",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Modificación de características del servicio, CTs/PTs, aumentos de carga y estudios de factibilidad.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qupzj4sg",
+      "texto": "¿A partir de qué consumo un medidor cambia a plan comercial/industrial?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qkxd2oat",
+          "texto": "1.000 kWh",
+          "correcta": false
+        },
+        {
+          "id": "qb8hjuo6",
+          "texto": "3.000 kWh o superior",
+          "correcta": true
+        },
+        {
+          "id": "qezvzwqq",
+          "texto": "5.000 kWh",
+          "correcta": false
+        },
+        {
+          "id": "qiycpjj6",
+          "texto": "10.000 kWh",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Un medidor cambia a plan comercial/industrial cuando su consumo es igual o superior a 3.000 kWh."
+    },
+    {
+      "id": "qhtoloj4",
+      "texto": "¿Cuál es el causal de venta de ingeniería que se usa tanto para \"Cambio de condiciones\" como para \"Aumentos de carga\"?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qfutp3it",
+          "texto": "302279",
+          "correcta": false
+        },
+        {
+          "id": "q2wx7dzz",
+          "texto": "302288",
+          "correcta": true
+        },
+        {
+          "id": "q533f32n",
+          "texto": "302318",
+          "correcta": false
+        },
+        {
+          "id": "q1878gby",
+          "texto": "300100",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Ambos trámites se gestionan mediante la venta de ingeniería \"Inspección para Redes Eléctricas\", causal 302288."
+    },
+    {
+      "id": "qul0tdz5",
+      "texto": "¿Qué son los CTs (Transformadores de Corriente)?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q5xs9oxx",
+          "texto": "Reducen el voltaje a niveles seguros",
+          "correcta": false
+        },
+        {
+          "id": "quzu0vsj",
+          "texto": "Reducen la corriente para que el medidor pueda medirla correctamente",
+          "correcta": true
+        },
+        {
+          "id": "qsyq9mtv",
+          "texto": "Aumentan la potencia del servicio",
+          "correcta": false
+        },
+        {
+          "id": "qufa0ygq",
+          "texto": "Sirven para cobrar en CAGCA",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Los CTs reducen la corriente para que el medidor pueda medirla correctamente; los PTs, en cambio, reducen el voltaje."
+    },
+    {
+      "id": "qvxdwa6m",
+      "texto": "¿Con base en qué se calcula el aporte de capital de un medidor de máxima demanda?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qh7hcrjw",
+          "texto": "El número de empleados del negocio",
+          "correcta": false
+        },
+        {
+          "id": "qhi36lhw",
+          "texto": "La demanda calculada en el documento eléctrico",
+          "correcta": true
+        },
+        {
+          "id": "q6rhmk38",
+          "texto": "El tamaño del terreno",
+          "correcta": false
+        },
+        {
+          "id": "q2m0pi72",
+          "texto": "El tipo de moneda de pago",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El cálculo del aporte de capital se realiza con base en la demanda calculada en el documento eléctrico, coordinado con la líder de Atención al Asociado."
+    },
+    {
+      "id": "qex4zenq",
+      "texto": "¿Dónde se genera la solicitud de Estudio de Factibilidad de máxima demanda?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qaaja9er",
+          "texto": "En QUPOS",
+          "correcta": false
+        },
+        {
+          "id": "qz0x7hvn",
+          "texto": "En CCGAC → Procesos → \"Estudio de Factibilidad del Servicio\"",
+          "correcta": true
+        },
+        {
+          "id": "q0bc6igj",
+          "texto": "En COACO",
+          "correcta": false
+        },
+        {
+          "id": "q5sc83lk",
+          "texto": "En Salesforce únicamente",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se genera desde la pantalla de CCGAC, en la pestaña \"Estudio de Factibilidad del Servicio\" dentro de Procesos."
+    },
+    {
+      "id": "qvraixw2",
+      "texto": "¿Con quién se puede coordinar cualquier consulta sobre estos trámites de medidores comerciales/industriales?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qmw9ixmc",
+          "texto": "Con cualquier cajero",
+          "correcta": false
+        },
+        {
+          "id": "q540j9dm",
+          "texto": "Con el equipo de Proyectos Pagos o con Michael Chaves Soto",
+          "correcta": true
+        },
+        {
+          "id": "qhum4isl",
+          "texto": "Solo con ARESEP",
+          "correcta": false
+        },
+        {
+          "id": "qsnwqonq",
+          "texto": "Con el CFIA",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Estos casos pueden revisarse con el equipo de Proyectos Pagos o con Michael Chaves Soto, encargado de medidores de máxima demanda."
+    }
+  ]
+}

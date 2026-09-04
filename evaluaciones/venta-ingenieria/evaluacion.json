@@ -1,0 +1,96 @@
+{
+  "id": "venta-ingenieria",
+  "titulo": "Evaluación: Venta de ingeniería",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Servicios de ingeniería con causales/actividades por código.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "q0u4h0nw",
+      "texto": "¿Qué distingue principalmente a los distintos tipos de \"Venta de ingeniería\"?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q5xj1w8r",
+          "texto": "El color del contrato",
+          "correcta": false
+        },
+        {
+          "id": "qngmipxe",
+          "texto": "El código de actividad/causal según la situación",
+          "correcta": true
+        },
+        {
+          "id": "q2fllrqz",
+          "texto": "El nombre del asesor",
+          "correcta": false
+        },
+        {
+          "id": "qxjqb8sd",
+          "texto": "La zona geográfica",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El ejecutivo debe buscar el código de la actividad correspondiente según la situación específica del asociado."
+    },
+    {
+      "id": "qpgyx7wu",
+      "texto": "¿Qué datos son obligatorios en las observaciones de una venta de ingeniería?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q757dg20",
+          "texto": "Solo el número de cédula",
+          "correcta": false
+        },
+        {
+          "id": "qtjorhmx",
+          "texto": "#poste, #medidor, #plano, señas y teléfono de contacto",
+          "correcta": true
+        },
+        {
+          "id": "q0olm4xw",
+          "texto": "Solo el nombre del asesor",
+          "correcta": false
+        },
+        {
+          "id": "qbebqah5",
+          "texto": "El color del router",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Siempre se debe anotar de forma clara #poste, #medidor, #plano, otras señas y teléfono de contacto."
+    },
+    {
+      "id": "q7yqomfs",
+      "texto": "¿En qué documento firma finalmente el asociado una venta de ingeniería?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qyoz0kzq",
+          "texto": "Cambio de clase de servicio",
+          "correcta": false
+        },
+        {
+          "id": "qbtl80lj",
+          "texto": "Genérico",
+          "correcta": true
+        },
+        {
+          "id": "qy9a6sdk",
+          "texto": "Hoja Mutual",
+          "correcta": false
+        },
+        {
+          "id": "qkodlx3p",
+          "texto": "Cesión de derechos",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Con el número de solicitud se va a Documentos para Asociados → \"Genérico\" para que el asociado firme."
+    }
+  ]
+}

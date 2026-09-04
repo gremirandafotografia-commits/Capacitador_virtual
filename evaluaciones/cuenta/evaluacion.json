@@ -1,0 +1,124 @@
+{
+  "id": "cuenta",
+  "titulo": "Evaluación: Creación de cuenta de asociado",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Registro de un nuevo asociado en Salesforce y beneficiarios.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qrwoo3cf",
+      "texto": "¿Qué se debe verificar siempre antes de iniciar cualquier trámite con un cliente?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q20ap4he",
+          "texto": "Si tiene deudas en el almacén",
+          "correcta": false
+        },
+        {
+          "id": "qm68uvw0",
+          "texto": "Si la persona ya es asociada de Coopelesca",
+          "correcta": true
+        },
+        {
+          "id": "qugsagmj",
+          "texto": "Si vive en la zona rural",
+          "correcta": false
+        },
+        {
+          "id": "qhcv4txj",
+          "texto": "Si tiene WhatsApp registrado",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Correcto: siempre se verifica primero si la persona ya es asociada; si no lo es, se debe asociar antes de continuar."
+    },
+    {
+      "id": "q6nl0ikz",
+      "texto": "¿Cuánto cuesta asociarse a Coopelesca?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qgjinb84",
+          "texto": "¢28.250",
+          "correcta": false
+        },
+        {
+          "id": "qml4irio",
+          "texto": "¢1.000",
+          "correcta": true
+        },
+        {
+          "id": "qsdwzzjc",
+          "texto": "¢40.000",
+          "correcta": false
+        },
+        {
+          "id": "qk9y1rzi",
+          "texto": "No tiene costo",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Asociarse tiene un costo de ¢1.000. Aparte de eso se cobra un aporte de capital de ingreso según el trámite."
+    },
+    {
+      "id": "qz03i8uu",
+      "texto": "Al finalizar el registro de una cuenta nueva en Salesforce, ¿qué es obligatorio solicitar al asociado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qghokfbg",
+          "texto": "Su correo corporativo",
+          "correcta": false
+        },
+        {
+          "id": "q6g1n42h",
+          "texto": "Dejar al menos un beneficiario",
+          "correcta": true
+        },
+        {
+          "id": "q0n6qd51",
+          "texto": "Firmar la boleta eléctrica",
+          "correcta": false
+        },
+        {
+          "id": "qe9ntoyv",
+          "texto": "Presentar el plano catastro",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Es indispensable pedir al asociado dejar como mínimo una persona beneficiaria, en caso de fallecimiento."
+    },
+    {
+      "id": "qx8d42j4",
+      "texto": "¿Qué opción del formulario de Salesforce es opcional al crear la cuenta?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qgicayoi",
+          "texto": "Número de cédula",
+          "correcta": false
+        },
+        {
+          "id": "qbwgxgu8",
+          "texto": "Tipo de cuenta",
+          "correcta": false
+        },
+        {
+          "id": "q2e9p525",
+          "texto": "Datos de la SUGEF",
+          "correcta": true
+        },
+        {
+          "id": "qebvwwsw",
+          "texto": "Nombre completo",
+          "correcta": false
+        }
+      ],
+      "explicacion": "\"Datos de la SUGEF\" es opcional; sirve por si en el futuro se requiere un financiamiento, pero se puede omitir y continuar."
+    }
+  ]
+}

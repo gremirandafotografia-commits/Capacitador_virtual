@@ -1,0 +1,124 @@
+{
+  "id": "hogares",
+  "titulo": "Evaluación: Hogares Conectados",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Gestiones sobre beneficios ya otorgados (el programa nuevo está cerrado).",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qiizf8nx",
+      "texto": "¿Se reciben solicitudes NUEVAS del programa Hogares Conectados actualmente?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q1kcd56n",
+          "texto": "Sí, sin restricciones",
+          "correcta": false
+        },
+        {
+          "id": "qivhc88w",
+          "texto": "No, el programa ya está cerrado; solo se gestiona a quienes ya tienen el beneficio",
+          "correcta": true
+        },
+        {
+          "id": "qjo9hhsl",
+          "texto": "Solo los fines de semana",
+          "correcta": false
+        },
+        {
+          "id": "q99iu6h9",
+          "texto": "Solo para comercios",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El programa ya cerró para solicitudes nuevas; solo aplica para gestiones de quienes ya poseen el beneficio."
+    },
+    {
+      "id": "qemdcy3z",
+      "texto": "En la validación del IMAS, ¿qué color indica que la persona pertenece a \"Becados MEP\" (y no a Hogares Conectados)?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qgfqgtjz",
+          "texto": "Azul",
+          "correcta": false
+        },
+        {
+          "id": "q9o6xty5",
+          "texto": "Verde",
+          "correcta": false
+        },
+        {
+          "id": "qbrqbggy",
+          "texto": "Rojo",
+          "correcta": true
+        },
+        {
+          "id": "q7ij82nn",
+          "texto": "Amarillo",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Azul = Hogares Conectados; Rojo = Becados MEP. Hay que distinguirlos con cuidado."
+    },
+    {
+      "id": "qnu2z1nl",
+      "texto": "¿Se puede trasladar una deuda diferida de un internet a un servicio de luz?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qphkuvtt",
+          "texto": "Sí, siempre",
+          "correcta": false
+        },
+        {
+          "id": "qxbzpg80",
+          "texto": "No, no se permite trasladar diferidos entre productos distintos",
+          "correcta": true
+        },
+        {
+          "id": "qnump2n6",
+          "texto": "Solo con autorización de Karen",
+          "correcta": false
+        },
+        {
+          "id": "q7ujnp1o",
+          "texto": "Solo si el asociado lo pide por escrito",
+          "correcta": false
+        }
+      ],
+      "explicacion": "No se pueden trasladar diferidos entre productos distintos; no se permite pasar una deuda diferida de internet a luz."
+    },
+    {
+      "id": "qkkic8e3",
+      "texto": "¿A quién se le envía la documentación de los trámites de Hogares Conectados para seguimiento?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q1tbr0sa",
+          "texto": "Al líder de plataforma",
+          "correcta": false
+        },
+        {
+          "id": "qpm6eel1",
+          "texto": "A Karen",
+          "correcta": true
+        },
+        {
+          "id": "qo36m00t",
+          "texto": "A Tesorería",
+          "correcta": false
+        },
+        {
+          "id": "qtafgne7",
+          "texto": "A CFIA",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La documentación se envía por correo a Karen, encargada de dar seguimiento y aplicar los cambios cuando corresponda."
+    }
+  ]
+}

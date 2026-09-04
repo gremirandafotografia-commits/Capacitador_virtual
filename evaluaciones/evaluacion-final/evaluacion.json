@@ -1,0 +1,1076 @@
+{
+  "id": "evaluacion-final",
+  "titulo": "Evaluación Final - Todos los temas",
+  "tema": "Final",
+  "esFinal": true,
+  "tramiteId": "",
+  "descripcion": "Evaluación integral con 38 preguntas de los 19 temas del capacitador: gestión de asociados, medidores, infocomunicaciones, ingeniería, quejas, cierre de caja y sistemas operativos.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qqcjau8n",
+      "texto": "[Creación de cuenta de asociado] ¿Qué se debe verificar siempre antes de iniciar cualquier trámite con un cliente?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qc5u6lqr",
+          "texto": "Si tiene deudas en el almacén",
+          "correcta": false
+        },
+        {
+          "id": "qkkkwfdn",
+          "texto": "Si la persona ya es asociada de Coopelesca",
+          "correcta": true
+        },
+        {
+          "id": "q4e8qa1l",
+          "texto": "Si vive en la zona rural",
+          "correcta": false
+        },
+        {
+          "id": "qz6u3nvx",
+          "texto": "Si tiene WhatsApp registrado",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Correcto: siempre se verifica primero si la persona ya es asociada; si no lo es, se debe asociar antes de continuar."
+    },
+    {
+      "id": "qr4gtrcc",
+      "texto": "[Creación de cuenta de asociado] Al finalizar el registro de una cuenta nueva en Salesforce, ¿qué es obligatorio solicitar al asociado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qh1mwtmf",
+          "texto": "Su correo corporativo",
+          "correcta": false
+        },
+        {
+          "id": "q2f6qrxx",
+          "texto": "Dejar al menos un beneficiario",
+          "correcta": true
+        },
+        {
+          "id": "q8j1h9ys",
+          "texto": "Firmar la boleta eléctrica",
+          "correcta": false
+        },
+        {
+          "id": "qf8u93ur",
+          "texto": "Presentar el plano catastro",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Es indispensable pedir al asociado dejar como mínimo una persona beneficiaria, en caso de fallecimiento."
+    },
+    {
+      "id": "qlwsbr0x",
+      "texto": "[Cambio de beneficiario] ¿Qué porcentaje se coloca en el campo de \"porcentaje de beneficiario\" cuando solo hay un beneficiario?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q17fd9zx",
+          "texto": "50%",
+          "correcta": false
+        },
+        {
+          "id": "qyxz7b05",
+          "texto": "100%",
+          "correcta": true
+        },
+        {
+          "id": "qvap5ypn",
+          "texto": "Depende del parentesco",
+          "correcta": false
+        },
+        {
+          "id": "qo5e9qcd",
+          "texto": "25%",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se coloca 100% en el campo de porcentaje de beneficiario."
+    },
+    {
+      "id": "qfhrxxs8",
+      "texto": "[Cambio de beneficiario] Al hacer un CAMBIO de beneficiario (B.3/B.4), ¿cuál es el primer paso antes de crear la nueva relación?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q2zyw6nk",
+          "texto": "Cobrar ¢1.000",
+          "correcta": false
+        },
+        {
+          "id": "qdshvk9n",
+          "texto": "Eliminar la relación de beneficiario anterior",
+          "correcta": true
+        },
+        {
+          "id": "qjan7zbm",
+          "texto": "Imprimir el contrato de energía",
+          "correcta": false
+        },
+        {
+          "id": "q4meut52",
+          "texto": "Ir a CORCAO",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Primero se da clic en el recuadro de relación y se selecciona \"eliminar\" antes de registrar al nuevo beneficiario."
+    },
+    {
+      "id": "q8lf202a",
+      "texto": "[Retiro de productos y recepción de equipos] Si un servicio ya está suspendido y además tiene saldo pendiente, ¿qué se hace primero?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q8wy0ymf",
+          "texto": "Cobrar y luego retirar",
+          "correcta": false
+        },
+        {
+          "id": "q98l8lxh",
+          "texto": "Retirar primero y luego proceder con el pago",
+          "correcta": true
+        },
+        {
+          "id": "qwka29v7",
+          "texto": "No se puede hacer el retiro",
+          "correcta": false
+        },
+        {
+          "id": "qyh0vi70",
+          "texto": "Enviar el caso a Karen",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Si el servicio está suspendido, primero se hace el retiro y luego se procede con el pago del saldo."
+    },
+    {
+      "id": "q53k7ykh",
+      "texto": "[Retiro de productos y recepción de equipos] ¿En qué etapa del caso de Salesforce se agrega el número de solicitud generado en Smartflex?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qqxz0iu3",
+          "texto": "Solicitud",
+          "correcta": false
+        },
+        {
+          "id": "qvagkmsq",
+          "texto": "Análisis",
+          "correcta": false
+        },
+        {
+          "id": "qub65xsg",
+          "texto": "Registro",
+          "correcta": true
+        },
+        {
+          "id": "qk2kgi5y",
+          "texto": "Cierre",
+          "correcta": false
+        }
+      ],
+      "explicacion": "En la etapa de \"Registro\" se agrega el número de solicitud generado en Smartflex."
+    },
+    {
+      "id": "qulwp6vq",
+      "texto": "[Fondo Mutual] ¿Cuál es el plazo máximo para solicitar el Fondo Mutual tras el fallecimiento del asociado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qe7y6kj6",
+          "texto": "6 meses",
+          "correcta": false
+        },
+        {
+          "id": "qc3gyq27",
+          "texto": "1 año",
+          "correcta": true
+        },
+        {
+          "id": "qq3utq0r",
+          "texto": "2 años",
+          "correcta": false
+        },
+        {
+          "id": "qjinqkr2",
+          "texto": "No hay plazo",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Hay 1 año de tiempo para gestionar la solicitud de Fondo Mutual."
+    },
+    {
+      "id": "qby6vpbq",
+      "texto": "[Fondo Mutual] Si el fallecido tenía deudas pendientes, ¿qué debe pasar ANTES de la Cesión de Derechos?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qfc78pho",
+          "texto": "Nada, se hace la cesión igual",
+          "correcta": false
+        },
+        {
+          "id": "qh61j2a4",
+          "texto": "Se deben cancelar/liquidar los saldos pendientes",
+          "correcta": true
+        },
+        {
+          "id": "qqa4dib3",
+          "texto": "Se le perdona la deuda automáticamente",
+          "correcta": false
+        },
+        {
+          "id": "qbkfaex3",
+          "texto": "Se traslada la deuda a otro producto",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Con deudas, primero se deben cancelar los saldos pendientes (facturación, almacén) antes de proceder con la Cesión de Derechos."
+    },
+    {
+      "id": "qt2eb6fl",
+      "texto": "[Venta e instalación de medidores] Una boleta eléctrica indica una carga de 23 kVA. ¿Cuál es la corriente aproximada y qué base de medidor aplica?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q0qt53wc",
+          "texto": "200 A, base CL20",
+          "correcta": false
+        },
+        {
+          "id": "qtyy8cv0",
+          "texto": "95,83 A, base clase 100",
+          "correcta": true
+        },
+        {
+          "id": "qal7ec8t",
+          "texto": "50 A, base clase 50",
+          "correcta": false
+        },
+        {
+          "id": "q2bwmrd5",
+          "texto": "23 A, no requiere base",
+          "correcta": false
+        }
+      ],
+      "explicacion": "23.000 ÷ 240 = 95,83 A, por lo que cabe en una base clase 100 (paquete básico de medidor)."
+    },
+    {
+      "id": "qqiy1926",
+      "texto": "[Venta e instalación de medidores] Un asociado trae un plano con un breaker de 150 A y pide que Coopelesca haga todo el trabajo. ¿Qué se debe hacer?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qnzv451l",
+          "texto": "Generar una inspección estándar de todas formas",
+          "correcta": false
+        },
+        {
+          "id": "qz727vue",
+          "texto": "Generar una oportunidad de venta de servicios de Ingeniería, no una inspección estándar",
+          "correcta": true
+        },
+        {
+          "id": "qzuot688",
+          "texto": "Rechazar la solicitud definitivamente",
+          "correcta": false
+        },
+        {
+          "id": "q9rrd893",
+          "texto": "Instalar el paquete básico igual",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Cuando la carga supera los 100 A que soporta el paquete estándar, el caso se debe canalizar como oportunidad de venta de servicios de Ingeniería, evitando una visita innecesaria del inspector."
+    },
+    {
+      "id": "qu5gxcjj",
+      "texto": "[Venta de Infocomunicaciones (internet y TV cable)] ¿Dónde se verifica la disponibilidad de FIBRA ÓPTICA antes de vender internet?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qjf5v07d",
+          "texto": "En ArcGIS",
+          "correcta": false
+        },
+        {
+          "id": "qr8og7jy",
+          "texto": "En CODISP",
+          "correcta": true
+        },
+        {
+          "id": "qzuiaaem",
+          "texto": "En COACO",
+          "correcta": false
+        },
+        {
+          "id": "qbs8wx69",
+          "texto": "En FAGFI",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La disponibilidad de fibra óptica se revisa en CODISP; para coaxial se usa ArcGIS."
+    },
+    {
+      "id": "q4qpyuw3",
+      "texto": "[Venta de Infocomunicaciones (internet y TV cable)] Para el paquete básico de TV cable de 30 canales analógico, ¿qué equipo se requiere?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qlkqayb0",
+          "texto": "Decodificador y tarjeta",
+          "correcta": false
+        },
+        {
+          "id": "q0q7kgl0",
+          "texto": "Ningún equipo",
+          "correcta": true
+        },
+        {
+          "id": "qyxe6uho",
+          "texto": "Router fibra",
+          "correcta": false
+        },
+        {
+          "id": "qn14xnar",
+          "texto": "Modem coaxial obligatorio",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El paquete básico analógico de 30 canales no requiere ningún equipo; el decodificador y tarjeta son para el paquete digital."
+    },
+    {
+      "id": "qt66h6zn",
+      "texto": "[Traslado de Infocomunicaciones] ¿Qué tipo de servicio de Infocomunicaciones NO se puede trasladar?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qurhme38",
+          "texto": "Coaxial",
+          "correcta": false
+        },
+        {
+          "id": "qp6naegn",
+          "texto": "TV cable",
+          "correcta": false
+        },
+        {
+          "id": "qzzn7744",
+          "texto": "Fibra óptica",
+          "correcta": true
+        },
+        {
+          "id": "qbajxajy",
+          "texto": "Ninguno, todos se trasladan",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La fibra óptica no se traslada: se retira el producto anterior y se hace una venta nueva de internet."
+    },
+    {
+      "id": "qvjc3ey5",
+      "texto": "[Traslado de Infocomunicaciones] En un traslado, ¿qué pasa con el número de contrato del asociado?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q8nwc7yp",
+          "texto": "Cambia siempre",
+          "correcta": false
+        },
+        {
+          "id": "qpmv7nxt",
+          "texto": "Se mantiene igual",
+          "correcta": true
+        },
+        {
+          "id": "qzd4quzu",
+          "texto": "Se elimina",
+          "correcta": false
+        },
+        {
+          "id": "q4abcmr8",
+          "texto": "Se duplica",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El número de contrato se mantiene igual; lo que cambia es la dirección georreferenciada."
+    },
+    {
+      "id": "qifn0xv1",
+      "texto": "[Traspaso de medidor] Si una propiedad se vendió y el nuevo dueño no se presenta a firmar el traspaso, ¿cuántos días de plazo se manejan antes de tener que repetir el trámite?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qmtvg06o",
+          "texto": "5 días",
+          "correcta": false
+        },
+        {
+          "id": "qfnjcllc",
+          "texto": "15 días",
+          "correcta": true
+        },
+        {
+          "id": "qu1sipei",
+          "texto": "30 días",
+          "correcta": false
+        },
+        {
+          "id": "qo4vyw3v",
+          "texto": "60 días",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se da un máximo de 15 días para que el nuevo dueño se presente a firmar los documentos."
+    },
+    {
+      "id": "qea4n4zc",
+      "texto": "[Traspaso de medidor] ¿Qué debe existir ANTES de hacer un \"Cambio de contrato\" para traspasar el medidor?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qi116yyp",
+          "texto": "Un pago de kilometraje",
+          "correcta": false
+        },
+        {
+          "id": "qn81v4py",
+          "texto": "Un contrato ya creado a nombre de quien recibirá el medidor",
+          "correcta": true
+        },
+        {
+          "id": "qekajfbj",
+          "texto": "Una queja registrada",
+          "correcta": false
+        },
+        {
+          "id": "qtoxbhqb",
+          "texto": "Una migración de red",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Debe existir previamente un contrato nuevo (creado con \"Venta de servicios de ingeniería\") a nombre de quien va a recibir el medidor."
+    },
+    {
+      "id": "qcc7upbw",
+      "texto": "[Cambio de Condiciones o Plan Comercial] Un asociado tiene fibra de 100 megas y pide que le dejen solo 40 megas. ¿Qué trámite es?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q1mztqvw",
+          "texto": "Cambio de plan comercial",
+          "correcta": false
+        },
+        {
+          "id": "q0nq7yc1",
+          "texto": "Cambio de condiciones",
+          "correcta": true
+        },
+        {
+          "id": "qhu6dksf",
+          "texto": "Traspaso de medidor",
+          "correcta": false
+        },
+        {
+          "id": "qkl0sydd",
+          "texto": "Migración",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Quitar o reducir un componente del mismo servicio que ya posee es un cambio de condiciones."
+    },
+    {
+      "id": "qvj7jdlk",
+      "texto": "[Cambio de Condiciones o Plan Comercial] ¿Qué se debe tener especial cuidado al cambiar un plan de internet de FONATEL?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qfcaapsx",
+          "texto": "El color del router",
+          "correcta": false
+        },
+        {
+          "id": "q2es1da8",
+          "texto": "Las fechas de corte de facturación",
+          "correcta": true
+        },
+        {
+          "id": "qql5087s",
+          "texto": "El número de beneficiarios",
+          "correcta": false
+        },
+        {
+          "id": "qq9wb29o",
+          "texto": "El tipo de moneda",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Por las fechas de corte de facturación, el cambio en servicios FONATEL puede no poder aplicarse de inmediato; puede requerir coordinar con Seguimiento de Trámites."
+    },
+    {
+      "id": "qa2fyue6",
+      "texto": "[Migraciones] ¿Qué es una \"migración\" en este contexto?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qf97iwon",
+          "texto": "Un traspaso de medidor a otra persona",
+          "correcta": false
+        },
+        {
+          "id": "q1wr3q7k",
+          "texto": "Un cambio de red dentro del mismo hogar",
+          "correcta": true
+        },
+        {
+          "id": "q0zlmbh1",
+          "texto": "Una venta nueva de TV cable",
+          "correcta": false
+        },
+        {
+          "id": "qhh10ymd",
+          "texto": "Un retiro de servicio",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Una migración es un cambio de red en el mismo hogar del asociado."
+    },
+    {
+      "id": "qio73yww",
+      "texto": "[Migraciones] ¿Qué NO se debe hacer en Codisp durante una migración?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q8859fr4",
+          "texto": "Consultar la disponibilidad",
+          "correcta": false
+        },
+        {
+          "id": "qqyxg1a8",
+          "texto": "Reservar el espacio",
+          "correcta": true
+        },
+        {
+          "id": "q4qrtcne",
+          "texto": "Buscar el DOP",
+          "correcta": false
+        },
+        {
+          "id": "qjyc9fmo",
+          "texto": "Revisar el código de red",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Es importante NO reservar el espacio en Codisp durante la validación."
+    },
+    {
+      "id": "qyo6rdrp",
+      "texto": "[Venta de ingeniería] ¿Qué distingue principalmente a los distintos tipos de \"Venta de ingeniería\"?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qp2foo89",
+          "texto": "El color del contrato",
+          "correcta": false
+        },
+        {
+          "id": "qjwwnhav",
+          "texto": "El código de actividad/causal según la situación",
+          "correcta": true
+        },
+        {
+          "id": "qsnc3q2r",
+          "texto": "El nombre del asesor",
+          "correcta": false
+        },
+        {
+          "id": "qrub3elb",
+          "texto": "La zona geográfica",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El ejecutivo debe buscar el código de la actividad correspondiente según la situación específica del asociado."
+    },
+    {
+      "id": "qqn1kefw",
+      "texto": "[Venta de ingeniería] ¿En qué documento firma finalmente el asociado una venta de ingeniería?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q4barhg7",
+          "texto": "Cambio de clase de servicio",
+          "correcta": false
+        },
+        {
+          "id": "qjnappib",
+          "texto": "Genérico",
+          "correcta": true
+        },
+        {
+          "id": "qg7latyx",
+          "texto": "Hoja Mutual",
+          "correcta": false
+        },
+        {
+          "id": "qwfzj3py",
+          "texto": "Cesión de derechos",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Con el número de solicitud se va a Documentos para Asociados → \"Genérico\" para que el asociado firme."
+    },
+    {
+      "id": "qdcslckl",
+      "texto": "[Registro de Quejas] ¿La primera visita de revisión por una queja tiene costo?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qlnubjlf",
+          "texto": "Sí, siempre",
+          "correcta": false
+        },
+        {
+          "id": "quy2evs6",
+          "texto": "No, es gratis",
+          "correcta": true
+        },
+        {
+          "id": "qpuyu7lj",
+          "texto": "Solo en zona rural",
+          "correcta": false
+        },
+        {
+          "id": "q320zxge",
+          "texto": "Depende del clima",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La primera visita de revisión es gratis; si se solicita una segunda visita en el mismo año, esa sí se cobra."
+    },
+    {
+      "id": "qu135y7v",
+      "texto": "[Registro de Quejas] Si la falla fue provocada por Coopelesca, ¿cuántos días tiene el asociado para presentar la queja sobre ese hecho?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qydtsepq",
+          "texto": "3 días",
+          "correcta": false
+        },
+        {
+          "id": "qrupkpmf",
+          "texto": "8 días",
+          "correcta": true
+        },
+        {
+          "id": "qnnejfx4",
+          "texto": "30 días",
+          "correcta": false
+        },
+        {
+          "id": "qp617ci3",
+          "texto": "No hay límite",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Cuando el hecho es cometido por Coopelesca, hay 8 días para presentar la queja sobre esa falla."
+    },
+    {
+      "id": "qfqmljpg",
+      "texto": "[Hogares Conectados] ¿Se reciben solicitudes NUEVAS del programa Hogares Conectados actualmente?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qy4i8s3k",
+          "texto": "Sí, sin restricciones",
+          "correcta": false
+        },
+        {
+          "id": "qmrpa121",
+          "texto": "No, el programa ya está cerrado; solo se gestiona a quienes ya tienen el beneficio",
+          "correcta": true
+        },
+        {
+          "id": "qbuhotj9",
+          "texto": "Solo los fines de semana",
+          "correcta": false
+        },
+        {
+          "id": "q8xh42fs",
+          "texto": "Solo para comercios",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El programa ya cerró para solicitudes nuevas; solo aplica para gestiones de quienes ya poseen el beneficio."
+    },
+    {
+      "id": "q2yq6pe8",
+      "texto": "[Hogares Conectados] ¿Se puede trasladar una deuda diferida de un internet a un servicio de luz?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qmf36vwz",
+          "texto": "Sí, siempre",
+          "correcta": false
+        },
+        {
+          "id": "qxnkr9wc",
+          "texto": "No, no se permite trasladar diferidos entre productos distintos",
+          "correcta": true
+        },
+        {
+          "id": "qpffev01",
+          "texto": "Solo con autorización de Karen",
+          "correcta": false
+        },
+        {
+          "id": "qm8ekq8o",
+          "texto": "Solo si el asociado lo pide por escrito",
+          "correcta": false
+        }
+      ],
+      "explicacion": "No se pueden trasladar diferidos entre productos distintos; no se permite pasar una deuda diferida de internet a luz."
+    },
+    {
+      "id": "qkm788n0",
+      "texto": "[Alumbrado Público] ¿En qué sistema se hace la SOLICITUD de una lámpara pública nueva?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qoa042w4",
+          "texto": "Solo en Smartflex (TTRFE)",
+          "correcta": false
+        },
+        {
+          "id": "qu7kawl0",
+          "texto": "Solo en Salesforce",
+          "correcta": true
+        },
+        {
+          "id": "qzy51l3c",
+          "texto": "En ambos sistemas por igual",
+          "correcta": false
+        },
+        {
+          "id": "qj21dql1",
+          "texto": "En CAGCA",
+          "correcta": false
+        }
+      ],
+      "explicacion": "La solicitud de alumbrado público nuevo se hace únicamente en Salesforce."
+    },
+    {
+      "id": "q0ranspg",
+      "texto": "[Alumbrado Público] Al reportar un daño, ¿qué se anota como dirección en la búsqueda del elemento?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qgsg0q56",
+          "texto": "El nombre de la calle",
+          "correcta": false
+        },
+        {
+          "id": "q23p257l",
+          "texto": "\"CR\" seguido del número de poste",
+          "correcta": true
+        },
+        {
+          "id": "qkjxq65h",
+          "texto": "El número de cédula",
+          "correcta": false
+        },
+        {
+          "id": "qe5h741c",
+          "texto": "El código de la cuadrilla",
+          "correcta": false
+        }
+      ],
+      "explicacion": "En dirección se anota \"CR\" junto con el número de poste correspondiente."
+    },
+    {
+      "id": "q1cvunlo",
+      "texto": "[Procedimiento de cierre de caja (CAGCA)] ¿Cuál es la regla de oro al contar el efectivo de caja?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q1ldw5up",
+          "texto": "Contar con el sistema cerrado",
+          "correcta": false
+        },
+        {
+          "id": "qau14kyo",
+          "texto": "Contar el efectivo SIN cerrar el sistema",
+          "correcta": true
+        },
+        {
+          "id": "qd3s41bw",
+          "texto": "Contar solo una vez por semana",
+          "correcta": false
+        },
+        {
+          "id": "qgscl9xm",
+          "texto": "Contar en presencia del líder siempre",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El efectivo se debe contar sin cerrar el sistema, comparándolo contra lo que indica en pantalla."
+    },
+    {
+      "id": "qsch318t",
+      "texto": "[Procedimiento de cierre de caja (CAGCA)] Si al cuadrar la caja hay un SOBRANTE, ¿qué se hace?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qvih5kjm",
+          "texto": "Se reporta como ingreso extra en el sistema",
+          "correcta": false
+        },
+        {
+          "id": "qw8hsvyg",
+          "texto": "Se hace boleta de Open aparte, se entrega, pero no se reporta en el sistema",
+          "correcta": true
+        },
+        {
+          "id": "qeq36xiy",
+          "texto": "Se guarda para el día siguiente sin boleta",
+          "correcta": false
+        },
+        {
+          "id": "qj9jfrrk",
+          "texto": "Se descarta",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Con sobrante se hace una boleta de Open en bolsa aparte y se entrega, pero no se reporta en el sistema (a diferencia del faltante, que sí debe reponerse)."
+    },
+    {
+      "id": "qwuftev3",
+      "texto": "[Guía rápida: CCGAC, FAGFI y ArcGIS] ¿Cuál es el costo base de la venta de servicio de cable (antes de asociar)?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qqm3xv8p",
+          "texto": "¢1.000",
+          "correcta": false
+        },
+        {
+          "id": "ql794mcv",
+          "texto": "¢12.500",
+          "correcta": true
+        },
+        {
+          "id": "q4ccpscu",
+          "texto": "¢28.250",
+          "correcta": false
+        },
+        {
+          "id": "ql35w449",
+          "texto": "¢45.000",
+          "correcta": false
+        }
+      ],
+      "explicacion": "El servicio de cable cuesta ¢12.500 (más ¢1.000 adicional si hay que asociar al cliente)."
+    },
+    {
+      "id": "qqfn6a6m",
+      "texto": "[Guía rápida: CCGAC, FAGFI y ArcGIS] Si un asociado retira el servicio de cable y NO devuelve la caja decodificadora, ¿cuánto se le cobra por la caja?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qtb7ifdn",
+          "texto": "¢7.000",
+          "correcta": false
+        },
+        {
+          "id": "qdbuoge1",
+          "texto": "¢12.500",
+          "correcta": false
+        },
+        {
+          "id": "q2tx2apy",
+          "texto": "¢45.000",
+          "correcta": true
+        },
+        {
+          "id": "qmo9kqrh",
+          "texto": "No se cobra nada",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Si no se devuelve el equipo completo, la caja decodificadora tiene un valor de ¢45.000 (cada cable/control, ¢7.000)."
+    },
+    {
+      "id": "qoatp6cz",
+      "texto": "[QUPOS: facturación y caja del almacén] ¿Qué sistema reemplazó a MBACASE para la facturación, créditos y estado de cuenta del almacén?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qlmuis2j",
+          "texto": "CAGCA",
+          "correcta": false
+        },
+        {
+          "id": "q76ppdh6",
+          "texto": "QUPOS",
+          "correcta": true
+        },
+        {
+          "id": "qeul3rt6",
+          "texto": "CODISP",
+          "correcta": false
+        },
+        {
+          "id": "qb54syqu",
+          "texto": "COACO",
+          "correcta": false
+        }
+      ],
+      "explicacion": "QUPOS es el sistema actual de Ventas, procesos y facturación que sustituyó a MBACASE."
+    },
+    {
+      "id": "qvmdpyiz",
+      "texto": "[QUPOS: facturación y caja del almacén] ¿Qué facturas se pueden ANULAR en QUPOS?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q041u23i",
+          "texto": "Cualquier factura, sin importar la fecha",
+          "correcta": false
+        },
+        {
+          "id": "qfy2u26u",
+          "texto": "Solo las facturas del mismo día y pagadas en efectivo",
+          "correcta": true
+        },
+        {
+          "id": "qkfnowow",
+          "texto": "Solo las facturas a crédito",
+          "correcta": false
+        },
+        {
+          "id": "qk46kn84",
+          "texto": "Ninguna, siempre se hace nota de crédito",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Solo se pueden anular facturas del mismo día y que hayan sido pagadas en efectivo; si fue con otra forma de pago se recomienda hacer nota de crédito."
+    },
+    {
+      "id": "qnao99d6",
+      "texto": "[Cambio de condiciones de medidores comerciales/industriales] ¿A partir de qué consumo un medidor cambia a plan comercial/industrial?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q4o076qz",
+          "texto": "1.000 kWh",
+          "correcta": false
+        },
+        {
+          "id": "qpn25i35",
+          "texto": "3.000 kWh o superior",
+          "correcta": true
+        },
+        {
+          "id": "qsyhux0a",
+          "texto": "5.000 kWh",
+          "correcta": false
+        },
+        {
+          "id": "qdk0jyu7",
+          "texto": "10.000 kWh",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Un medidor cambia a plan comercial/industrial cuando su consumo es igual o superior a 3.000 kWh."
+    },
+    {
+      "id": "qs9ro6h4",
+      "texto": "[Cambio de condiciones de medidores comerciales/industriales] ¿Qué son los CTs (Transformadores de Corriente)?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qygc3wnk",
+          "texto": "Reducen el voltaje a niveles seguros",
+          "correcta": false
+        },
+        {
+          "id": "qda6o1xt",
+          "texto": "Reducen la corriente para que el medidor pueda medirla correctamente",
+          "correcta": true
+        },
+        {
+          "id": "qe3pghph",
+          "texto": "Aumentan la potencia del servicio",
+          "correcta": false
+        },
+        {
+          "id": "q5pb4bja",
+          "texto": "Sirven para cobrar en CAGCA",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Los CTs reducen la corriente para que el medidor pueda medirla correctamente; los PTs, en cambio, reducen el voltaje."
+    },
+    {
+      "id": "q9jbw9mv",
+      "texto": "[Aspectos clave: gestión y venta de servicios eléctricos] Si quien solicita el medidor no es el dueño registral ni familiar de primer grado, ¿qué puede presentar?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qb1k3mqe",
+          "texto": "Solo su cédula",
+          "correcta": false
+        },
+        {
+          "id": "q6bq2fbg",
+          "texto": "Un poder o una nota autenticada por un abogado",
+          "correcta": true
+        },
+        {
+          "id": "qfxg68pq",
+          "texto": "Nada, no se puede hacer el trámite",
+          "correcta": false
+        },
+        {
+          "id": "qcgtigfs",
+          "texto": "Una factura de otro servicio",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se puede presentar un poder, una nota autenticada por un abogado, o presentarse con el dueño si son familiares de primer grado y firman autorización en plataforma."
+    },
+    {
+      "id": "qes3pfv8",
+      "texto": "[Aspectos clave: gestión y venta de servicios eléctricos] Si no pasa línea eléctrica frente a la propiedad o el poste más cercano está a 15 metros o más, ¿qué se hace?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "q6uj8rmi",
+          "texto": "Se rechaza la solicitud",
+          "correcta": false
+        },
+        {
+          "id": "qtrpj201",
+          "texto": "Se envía a inspección mediante venta de ingeniería, actividad 302288",
+          "correcta": true
+        },
+        {
+          "id": "q7qsvwd6",
+          "texto": "Se instala igual sin revisión",
+          "correcta": false
+        },
+        {
+          "id": "qpsz4dhx",
+          "texto": "Se cobra el doble del aporte de capital",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se envía a inspección mediante venta de ingeniería, actividad 302288 \"Inspección para proyecto de redes\"."
+    }
+  ]
+}

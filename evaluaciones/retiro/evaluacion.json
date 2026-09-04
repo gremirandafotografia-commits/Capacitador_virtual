@@ -1,0 +1,124 @@
+{
+  "id": "retiro",
+  "titulo": "Evaluación: Retiro de productos y recepción de equipos",
+  "tema": "Sistema Open",
+  "esFinal": false,
+  "tramiteId": "",
+  "descripcion": "Retiro de servicios y devolución de equipos en Salesforce y Open Smartflex.",
+  "creado": "2026-09-04T05:05:27.206Z",
+  "actualizado": "2026-09-04T05:05:27.206Z",
+  "preguntas": [
+    {
+      "id": "qw0vi6yu",
+      "texto": "Si un servicio ya está suspendido y además tiene saldo pendiente, ¿qué se hace primero?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qnzqhrvf",
+          "texto": "Cobrar y luego retirar",
+          "correcta": false
+        },
+        {
+          "id": "qmmjff28",
+          "texto": "Retirar primero y luego proceder con el pago",
+          "correcta": true
+        },
+        {
+          "id": "qeitwis6",
+          "texto": "No se puede hacer el retiro",
+          "correcta": false
+        },
+        {
+          "id": "q1d8vcg9",
+          "texto": "Enviar el caso a Karen",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Si el servicio está suspendido, primero se hace el retiro y luego se procede con el pago del saldo."
+    },
+    {
+      "id": "q6a8srcj",
+      "texto": "¿En qué DOS sistemas se debe registrar un retiro de productos?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qjcx8nb6",
+          "texto": "CAGCA y FAGFI",
+          "correcta": false
+        },
+        {
+          "id": "qgnevqt8",
+          "texto": "Salesforce y Open Smartflex",
+          "correcta": true
+        },
+        {
+          "id": "qwko2qq2",
+          "texto": "QUPOS y ArcGIS",
+          "correcta": false
+        },
+        {
+          "id": "q48qgki4",
+          "texto": "CODISP y COACO",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Se requiere un procedimiento en Salesforce (caso) y otro en Open Smartflex (CCGAC/CORCAO)."
+    },
+    {
+      "id": "qz835swr",
+      "texto": "¿En qué etapa del caso de Salesforce se agrega el número de solicitud generado en Smartflex?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qp8dr9xv",
+          "texto": "Solicitud",
+          "correcta": false
+        },
+        {
+          "id": "qasc3uh7",
+          "texto": "Análisis",
+          "correcta": false
+        },
+        {
+          "id": "qdegsrds",
+          "texto": "Registro",
+          "correcta": true
+        },
+        {
+          "id": "qb7wuhd0",
+          "texto": "Cierre",
+          "correcta": false
+        }
+      ],
+      "explicacion": "En la etapa de \"Registro\" se agrega el número de solicitud generado en Smartflex."
+    },
+    {
+      "id": "qv22zoyq",
+      "texto": "Después de \"Legalizar\" el retiro en CORCAO, ¿qué documento se genera y se hace firmar?",
+      "tipo": "opcion",
+      "opciones": [
+        {
+          "id": "qs9paob6",
+          "texto": "La boleta de declaración de carga",
+          "correcta": false
+        },
+        {
+          "id": "qkf1146f",
+          "texto": "El documento \"Genérico\" de Documentos para Asociados",
+          "correcta": true
+        },
+        {
+          "id": "q1c7ty0f",
+          "texto": "La Hoja Mutual",
+          "correcta": false
+        },
+        {
+          "id": "qtgi2816",
+          "texto": "El contrato de venta de energía",
+          "correcta": false
+        }
+      ],
+      "explicacion": "Con el número de solicitud se busca el documento \"Genérico\" en Documentos para Asociados, se descarga y se hace firmar."
+    }
+  ]
+}
