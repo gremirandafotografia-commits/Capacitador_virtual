@@ -60,9 +60,9 @@
     </div>
   </section>
 
-  <section class="card">
+  <section class="card" id="videoExternoZona">
     <h3 style="margin-top:0">Video externo de referencia (opcional)</h3>
-    <p class="helper">Carga un video ya grabado (Zoom, Teams, celular, etc.). Reprodúcelo y captura fotogramas para convertirlos en pasos con pantallazo listo para anotar.</p>
+    <p class="helper">Carga un video ya grabado (Zoom, Teams, celular, etc.). Reprodúcelo y captura fotogramas para convertirlos en pasos con pantallazo listo para anotar. También podés arrastrar el archivo y soltarlo en esta sección.</p>
     <div class="capture-row">
       <label class="btn small"><span class="msym" style="font-size:16px">upload_file</span> Subir video externo<input type="file" id="inputVideoExterno" accept="video/*" hidden></label>
       <button class="btn small" id="btnCapturarFotograma" disabled><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma como nuevo paso</button>
@@ -161,6 +161,7 @@
 </template>
 
 <script src="/js/api.js"></script>
+<script src="/js/admin-auth.js"></script>
 <script src="/js/recorder.js"></script>
 <script src="/js/annotator.js"></script>
 <script src="/js/editor.js"></script>

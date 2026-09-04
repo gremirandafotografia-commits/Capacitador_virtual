@@ -24,23 +24,26 @@ const Api = {
   async createTramite(data) {
     const r = await fetch('/api/tramites', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
       body: JSON.stringify(data)
     });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error((await r.json()).error || 'Error al crear');
     return r.json();
   },
   async saveTramite(slug, data) {
     const r = await fetch(`/api/tramites/${encodeURIComponent(slug)}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
       body: JSON.stringify(data)
     });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error((await r.json()).error || 'Error al guardar');
     return r.json();
   },
   async deleteTramite(slug) {
-    const r = await fetch(`/api/tramites/${encodeURIComponent(slug)}`, { method: 'DELETE' });
+    const r = await fetch(`/api/tramites/${encodeURIComponent(slug)}`, { method: 'DELETE', headers: adminHeaders() });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error('Error al eliminar');
     return r.json();
   },
@@ -49,10 +52,11 @@ const Api = {
     fd.append('archivo', blob, filename || 'captura');
     let r;
     try {
-      r = await fetch(`/api/tramites/${encodeURIComponent(slug)}/media`, { method: 'POST', body: fd });
+      r = await fetch(`/api/tramites/${encodeURIComponent(slug)}/media`, { method: 'POST', headers: adminHeaders(), body: fd });
     } catch (e) {
       throw new Error('No se pudo conectar con el servidor para subir el archivo.');
     }
+    await checkAdminAuth(r);
     if (!r.ok) {
       let msg = 'Error al subir archivo';
       try { msg = (await r.json()).error || msg; } catch (e) { /* respuesta no era JSON */ }
@@ -100,16 +104,18 @@ const Api = {
     fd.append('categoria', meta.categoria || 'General');
     fd.append('descripcion', meta.descripcion || '');
     fd.append('tags', meta.tags || '');
-    const r = await fetch('/api/manuales/upload', { method: 'POST', body: fd });
+    const r = await fetch('/api/manuales/upload', { method: 'POST', headers: adminHeaders(), body: fd });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error('Error al subir manual');
     return r.json();
   },
   async saveManualMeta(id, meta) {
     const r = await fetch(`/api/manuales/${encodeURIComponent(id)}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
       body: JSON.stringify(meta)
     });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error('Error al guardar manual');
     return r.json();
   },

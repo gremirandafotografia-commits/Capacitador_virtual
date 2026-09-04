@@ -25,12 +25,12 @@ async function init() {
     body.innerHTML = `<div class="empty">No se pudo cargar el contenido: ${escapeHtml(e.message)}</div>`;
   }
 
-  document.getElementById('btnEditarMeta').addEventListener('click', () => {
+  document.getElementById('btnEditarMeta').addEventListener('click', () => adminGuard().then(() => {
     document.getElementById('eTitulo').value = MANUAL.titulo;
     document.getElementById('eCategoria').value = MANUAL.categoria;
     document.getElementById('eDescripcion').value = MANUAL.descripcion || '';
     document.getElementById('modalMeta').hidden = false;
-  });
+  }));
   document.getElementById('eCancelar').addEventListener('click', () => { document.getElementById('modalMeta').hidden = true; });
   document.getElementById('eGuardar').addEventListener('click', guardarMeta);
 }

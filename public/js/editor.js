@@ -21,6 +21,29 @@ function mensajeSubida(base, res) {
   return `${base} (comprimido de ${fmtBytes(res.tamanoOriginal)} a ${fmtBytes(res.tamanoFinal)})`;
 }
 
+// Permite soltar un archivo directamente sobre `el` en vez de tener que
+// abrir siempre el selector nativo del sistema operativo (que en Windows
+// puede tardar en generar miniaturas/buscar sobre carpetas con videos).
+function bindDropZone(el, onFile) {
+  if (!el) return;
+  ['dragenter', 'dragover'].forEach(ev => el.addEventListener(ev, (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    el.classList.add('dragover');
+  }));
+  ['dragleave', 'dragend'].forEach(ev => el.addEventListener(ev, (e) => {
+    if (ev === 'dragleave' && el.contains(e.relatedTarget)) return;
+    el.classList.remove('dragover');
+  }));
+  el.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    el.classList.remove('dragover');
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) onFile(file);
+  });
+}
+
 async function init() {
   const id = qs('id');
   if (!id) { toast('Falta el id del trámite', true); return; }
@@ -76,8 +99,9 @@ function bindGlobal() {
   const inputVideo = document.getElementById('inputVideoExterno');
   const videoEl = document.getElementById('videoExterno');
   const btnCapturar = document.getElementById('btnCapturarFotograma');
-  inputVideo.addEventListener('change', async () => {
-    const file = inputVideo.files[0];
+  const zonaVideoExterno = document.getElementById('videoExternoZona');
+
+  async function subirVideoExterno(file) {
     if (!file) return;
     toast('Subiendo video externo...');
     try {
@@ -88,7 +112,11 @@ function bindGlobal() {
       btnCapturar.disabled = false;
       toast(mensajeSubida('Video externo cargado', res));
     } catch (e) { toast(e.message, true); }
-  });
+  }
+
+  inputVideo.addEventListener('change', () => subirVideoExterno(inputVideo.files[0]));
+  bindDropZone(zonaVideoExterno, (file) => subirVideoExterno(file));
+
   if (DOC.videoExterno && DOC.videoExterno.src) {
     videoEl.src = DOC.videoExterno.src;
     videoEl.hidden = false;
@@ -282,7 +310,7 @@ function renderStageMedia(stage, paso) {
   if (!paso.media) {
     const div = document.createElement('div');
     div.className = 'empty-stage';
-    div.textContent = 'Sin imagen ni video todavía. Graba, toma un pantallazo o sube un archivo.';
+    div.textContent = 'Sin imagen ni video todavía. Graba, toma un pantallazo, sube un archivo o arrastralo aquí.';
     stage.prepend(div);
     return;
   }
@@ -355,8 +383,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
     }
   });
 
-  inputVideo.addEventListener('change', async () => {
-    const file = inputVideo.files[0];
+  async function subirVideoPaso(file) {
     if (!file) return;
     try {
       const res = await Api.uploadMedia(DOC.id, file, file.name);
@@ -364,9 +391,8 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       renderStageMedia(stage, paso);
       toast(mensajeSubida('Video agregado al paso', res));
     } catch (e) { toast(e.message, true); }
-  });
-  inputImagen.addEventListener('change', async () => {
-    const file = inputImagen.files[0];
+  }
+  async function subirImagenPaso(file) {
     if (!file) return;
     try {
       const res = await Api.uploadMedia(DOC.id, file, file.name);
@@ -374,6 +400,15 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       renderStageMedia(stage, paso);
       toast('Imagen agregada al paso');
     } catch (e) { toast(e.message, true); }
+  }
+
+  inputVideo.addEventListener('change', () => subirVideoPaso(inputVideo.files[0]));
+  inputImagen.addEventListener('change', () => subirImagenPaso(inputImagen.files[0]));
+
+  bindDropZone(stage, (file) => {
+    if (file.type.startsWith('video/')) subirVideoPaso(file);
+    else if (file.type.startsWith('image/')) subirImagenPaso(file);
+    else toast('Solo se pueden soltar archivos de video o imagen aqui', true);
   });
 
   btnFrame.addEventListener('click', async () => {
@@ -470,4 +505,4 @@ async function guardar() {
   }
 }
 
-init();
+adminGuard().then(init);

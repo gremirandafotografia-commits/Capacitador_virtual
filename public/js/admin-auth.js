@@ -41,7 +41,14 @@ function adminGuard() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ password })
           });
-          if (!r.ok) { err.textContent = 'Contraseña incorrecta'; pass.value = ''; pass.focus(); return; }
+          if (!r.ok) {
+            let msg = 'Contraseña incorrecta';
+            try { msg = (await r.json()).error || msg; } catch (e) { /* respuesta no era JSON */ }
+            err.textContent = msg;
+            pass.value = '';
+            pass.focus();
+            return;
+          }
           const { token } = await r.json();
           AdminAuth.setToken(token);
           overlay.remove();
