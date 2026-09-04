@@ -54,9 +54,13 @@ const Api = {
   // encima se parte en pedazos de 8MB.
   UMBRAL_SUBIDA_POR_PARTES: 8 * 1024 * 1024,
 
-  async uploadMedia(slug, blob, filename) {
+  // onEstado(mensaje) es opcional: se llama con un texto corto en cada
+  // paso largo (subida por partes, espera de compresion) para que quien
+  // llama pueda mostrar progreso -sin esto, una subida grande se ve
+  // igual de "colgada" este funcionando bien o no.
+  async uploadMedia(slug, blob, filename, onEstado) {
     if (blob.size > Api.UMBRAL_SUBIDA_POR_PARTES) {
-      return Api.uploadMediaPorPartes(slug, blob, filename);
+      return Api.uploadMediaPorPartes(slug, blob, filename, onEstado);
     }
     const fd = new FormData();
     fd.append('archivo', blob, filename || 'captura');
@@ -74,15 +78,16 @@ const Api = {
     }
     const data = await r.json();
     if (!data.comprimiendo) return data;
-    return Api.esperarCompresion(slug, data);
+    return Api.esperarCompresion(slug, data, onEstado);
   },
 
-  async uploadMediaPorPartes(slug, blob, filename) {
+  async uploadMediaPorPartes(slug, blob, filename, onEstado) {
     const CHUNK = Api.UMBRAL_SUBIDA_POR_PARTES;
     const uploadId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     const total = Math.ceil(blob.size / CHUNK);
     let data = null;
     for (let i = 0; i < total; i++) {
+      if (onEstado) onEstado(`Subiendo video... parte ${i + 1} de ${total}`);
       const parte = blob.slice(i * CHUNK, Math.min((i + 1) * CHUNK, blob.size));
       const fd = new FormData();
       fd.append('chunk', parte, filename || 'archivo');
@@ -106,15 +111,24 @@ const Api = {
       data = await r.json();
     }
     if (!data.comprimiendo) return data;
-    return Api.esperarCompresion(slug, data);
+    return Api.esperarCompresion(slug, data, onEstado);
   },
   // La subida responde apenas el archivo esta guardado; si el servidor
   // esta comprimiendolo (puede tardar varios minutos en un video largo),
   // se consulta el estado cada pocos segundos en vez de dejar una sola
   // conexion abierta todo ese tiempo (eso es lo que cortaban los proxys).
-  async esperarCompresion(slug, data) {
+  async esperarCompresion(slug, data, onEstado) {
     const maxIntentos = 200; // ~10 minutos a 3s cada uno
     for (let i = 0; i < maxIntentos; i++) {
+      // Se repite en cada vuelta (no solo al principio) para que el
+      // aviso siga visible todo el tiempo que tarde -si solo se avisara
+      // una vez, desaparece a los pocos segundos y da la sensacion de
+      // que la subida quedo colgada aunque siga funcionando bien.
+      if (onEstado) {
+        onEstado(i === 0
+          ? 'Video subido. Optimizando el archivo (puede tardar varios minutos en videos largos)...'
+          : `Optimizando el video... (${i * 3}s)`);
+      }
       await new Promise((resolve) => setTimeout(resolve, 3000));
       let r;
       try {
