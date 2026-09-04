@@ -24,6 +24,15 @@ npm install
 npm start
 ```
 
+**Opcional pero recomendado:** si `ffmpeg` está instalado en el sistema (`ffmpeg -version` funciona en la terminal), el servidor comprime automáticamente cada video que se sube o graba, para ahorrar espacio en disco. Si no está instalado, la app funciona igual, solo que guarda los videos sin comprimir.
+
+```bash
+# Debian/Ubuntu
+sudo apt-get install -y ffmpeg
+# macOS (con Homebrew)
+brew install ffmpeg
+```
+
 Abre `http://localhost:4173` en el navegador (Chrome/Edge recomendado para la captura de pantalla y cámara). El servidor debe correr en `localhost` porque la grabación de pantalla/cámara solo funciona en contextos seguros.
 
 ## Estructura del proyecto

@@ -16,6 +16,11 @@ const stepRuntime = new Map(); // stepId -> { annotator, capture }
 function qs(name) { return new URLSearchParams(location.search).get(name); }
 function makeStepId() { return 's' + Math.random().toString(36).slice(2, 9); }
 
+function mensajeSubida(base, res) {
+  if (!res.comprimido) return base;
+  return `${base} (comprimido de ${fmtBytes(res.tamanoOriginal)} a ${fmtBytes(res.tamanoFinal)})`;
+}
+
 async function init() {
   const id = qs('id');
   if (!id) { toast('Falta el id del trámite', true); return; }
@@ -81,7 +86,7 @@ function bindGlobal() {
       videoEl.src = res.src;
       videoEl.hidden = false;
       btnCapturar.disabled = false;
-      toast('Video externo cargado');
+      toast(mensajeSubida('Video externo cargado', res));
     } catch (e) { toast(e.message, true); }
   });
   if (DOC.videoExterno && DOC.videoExterno.src) {
@@ -331,7 +336,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       const res = await Api.uploadMedia(DOC.id, blob, `paso-${Date.now()}.webm`);
       paso.media = { tipo: 'video', src: res.src };
       renderStageMedia(stage, paso);
-      toast('Grabación guardada en el paso');
+      toast(mensajeSubida('Grabación guardada en el paso', res));
     } catch (e) { toast(e.message, true); }
   });
 
@@ -357,7 +362,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       const res = await Api.uploadMedia(DOC.id, file, file.name);
       paso.media = { tipo: 'video', src: res.src };
       renderStageMedia(stage, paso);
-      toast('Video agregado al paso');
+      toast(mensajeSubida('Video agregado al paso', res));
     } catch (e) { toast(e.message, true); }
   });
   inputImagen.addEventListener('change', async () => {

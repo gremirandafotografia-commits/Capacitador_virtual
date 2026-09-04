@@ -1,9 +1,37 @@
 const path = require('path');
 const fs = require('fs');
+const { execFile, execFileSync } = require('child_process');
 const express = require('express');
 const multer = require('multer');
 const { marked } = require('marked');
 const { v4: uuidv4 } = require('uuid');
+
+let FFMPEG_AVAILABLE = false;
+try {
+  execFileSync('ffmpeg', ['-version'], { stdio: 'ignore' });
+  FFMPEG_AVAILABLE = true;
+  console.log('ffmpeg disponible: los videos subidos se comprimen automaticamente');
+} catch (e) {
+  console.log('ffmpeg no esta instalado: los videos se guardan sin comprimir');
+}
+
+function compressVideo(inputPath, outputPath) {
+  return new Promise((resolve, reject) => {
+    const args = [
+      '-y', '-i', inputPath,
+      '-vf', "scale='min(1920,iw)':-2",
+      '-r', '20',
+      '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '28',
+      '-c:a', 'aac', '-b:a', '96k',
+      '-movflags', '+faststart',
+      outputPath
+    ];
+    execFile('ffmpeg', args, { maxBuffer: 1024 * 1024 * 20, timeout: 20 * 60 * 1000 }, (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
 
 const ROOT = __dirname;
 const TRAMITES_DIR = path.join(ROOT, 'tramites');
@@ -248,10 +276,39 @@ function guessExt(mime) {
   return map[mime] || '';
 }
 
-app.post('/api/tramites/:slug/media', upload.single('archivo'), (req, res) => {
+app.post('/api/tramites/:slug/media', upload.single('archivo'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Archivo requerido' });
-  const rel = `/tramites/${req.params.slug}/media/${req.file.filename}`;
-  res.status(201).json({ src: rel, nombre: req.file.filename, tipo: req.file.mimetype });
+
+  let filename = req.file.filename;
+  let tipo = req.file.mimetype;
+  const tamanoOriginal = req.file.size;
+  let tamanoFinal = req.file.size;
+  let comprimido = false;
+
+  if (FFMPEG_AVAILABLE && tipo.startsWith('video/')) {
+    const dir = path.dirname(req.file.path);
+    const outName = path.basename(filename, path.extname(filename)) + '-comp.mp4';
+    const outPath = path.join(dir, outName);
+    try {
+      await compressVideo(req.file.path, outPath);
+      const outSize = fs.statSync(outPath).size;
+      if (outSize > 0 && outSize < tamanoOriginal) {
+        fs.unlinkSync(req.file.path);
+        filename = outName;
+        tipo = 'video/mp4';
+        tamanoFinal = outSize;
+        comprimido = true;
+      } else {
+        fs.unlinkSync(outPath);
+      }
+    } catch (e) {
+      console.warn('No se pudo comprimir el video, se guarda el original:', e.message);
+      try { fs.unlinkSync(outPath); } catch (_) { /* no se llego a crear */ }
+    }
+  }
+
+  const rel = `/tramites/${req.params.slug}/media/${filename}`;
+  res.status(201).json({ src: rel, nombre: filename, tipo, comprimido, tamanoOriginal, tamanoFinal });
 });
 
 // ---------- Manuales ----------

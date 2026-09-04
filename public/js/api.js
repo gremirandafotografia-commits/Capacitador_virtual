@@ -203,6 +203,12 @@ function escapeHtml(s) {
   return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+function fmtBytes(n) {
+  if (!n || n < 0) return '0 KB';
+  if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
+  return `${(n / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 function fmtDate(iso) {
   if (!iso) return '';
   const d = new Date(iso);
