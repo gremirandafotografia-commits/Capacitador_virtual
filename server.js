@@ -5,6 +5,7 @@ const express = require('express');
 const multer = require('multer');
 const { marked } = require('marked');
 const { v4: uuidv4 } = require('uuid');
+const { nodewhisper } = require('nodejs-whisper');
 
 let FFMPEG_AVAILABLE = false;
 try {
@@ -14,6 +15,17 @@ try {
 } catch (e) {
   console.log('ffmpeg no esta instalado: los videos se guardan sin comprimir');
 }
+
+// whisper.cpp (via nodejs-whisper) transcribe el audio de un video a
+// texto con marcas de tiempo. Se prepara con `npm install` (ver
+// scripts/setup-whisper.sh); si nunca se compilo/descargo el modelo en
+// este entorno, la transcripcion simplemente no se ofrece.
+const WHISPER_MODEL = process.env.WHISPER_MODEL || 'base';
+const WHISPER_CLI_PATH = path.join(__dirname, 'node_modules', 'nodejs-whisper', 'cpp', 'whisper.cpp', 'build', 'bin', 'whisper-cli');
+const WHISPER_AVAILABLE = fs.existsSync(WHISPER_CLI_PATH);
+console.log(WHISPER_AVAILABLE
+  ? `whisper disponible (modelo "${WHISPER_MODEL}"): se puede transcribir el audio de los videos`
+  : 'whisper no esta preparado: la transcripcion de audio no esta disponible');
 
 function compressVideo(inputPath, outputPath) {
   return new Promise((resolve, reject) => {
@@ -429,6 +441,68 @@ app.get('/api/tramites/:slug/media/:nombre/estado', (req, res) => {
   if (!job) return res.json({ done: true, comprimido: false });
   if (job.done) compressionJobs.delete(req.params.nombre);
   res.json(job);
+});
+
+// ---------- Transcripcion de audio ----------
+
+const MEDIA_NAME_RE = /^[a-zA-Z0-9_.-]+$/;
+// slug/nombre -> { done, error?, segmentos? }. Se guarda entre pedidos
+// (no se borra al leerla) para no tener que retranscribir cada vez que
+// se recarga la pagina del editor.
+const transcriptionJobs = new Map();
+
+function segundosDesdeTimestamp(ts) {
+  const [h, m, s] = ts.split(':');
+  return (parseInt(h, 10) * 3600) + (parseInt(m, 10) * 60) + parseFloat(s);
+}
+
+function parsearTranscripcion(texto) {
+  const re = /\[(\d\d:\d\d:\d\d\.\d\d\d) --> (\d\d:\d\d:\d\d\.\d\d\d)\]\s*(.*)/g;
+  const segmentos = [];
+  let m;
+  while ((m = re.exec(texto || ''))) {
+    const t = m[3].trim();
+    if (t) segmentos.push({ inicio: segundosDesdeTimestamp(m[1]), fin: segundosDesdeTimestamp(m[2]), texto: t });
+  }
+  return segmentos;
+}
+
+function transcribirEnSegundoPlano(jobKey, mediaPath) {
+  nodewhisper(mediaPath, {
+    modelName: WHISPER_MODEL,
+    autoDownloadModelName: WHISPER_MODEL,
+    whisperOptions: { outputInText: false, language: 'es' }
+  })
+    .then((resultado) => {
+      transcriptionJobs.set(jobKey, { done: true, segmentos: parsearTranscripcion(resultado) });
+    })
+    .catch((e) => {
+      console.warn('No se pudo transcribir el audio:', e.message);
+      transcriptionJobs.set(jobKey, { done: true, error: 'No se pudo transcribir el audio de este archivo.' });
+    });
+}
+
+app.post('/api/tramites/:slug/media/:nombre/transcribir', requireAdmin, (req, res) => {
+  if (!WHISPER_AVAILABLE) return res.status(503).json({ error: 'La transcripcion no esta disponible en este servidor.' });
+  const { slug, nombre } = req.params;
+  if (!MEDIA_NAME_RE.test(nombre)) return res.status(400).json({ error: 'Nombre de archivo invalido' });
+  const mediaPath = path.join(tramitePath(slug), 'media', nombre);
+  if (!fs.existsSync(mediaPath)) return res.status(404).json({ error: 'Archivo no encontrado' });
+
+  const jobKey = `${slug}/${nombre}`;
+  const existente = transcriptionJobs.get(jobKey);
+  if (existente && !existente.done) return res.json({ iniciado: true });
+  transcriptionJobs.set(jobKey, { done: false });
+  transcribirEnSegundoPlano(jobKey, mediaPath);
+  res.json({ iniciado: true });
+});
+
+app.get('/api/tramites/:slug/media/:nombre/transcripcion', requireAdmin, (req, res) => {
+  const { slug, nombre } = req.params;
+  if (!MEDIA_NAME_RE.test(nombre)) return res.status(400).json({ error: 'Nombre de archivo invalido' });
+  const job = transcriptionJobs.get(`${slug}/${nombre}`);
+  if (!job) return res.json({ done: false, iniciada: false });
+  res.json({ ...job, iniciada: true });
 });
 
 // ---------- Manuales ----------

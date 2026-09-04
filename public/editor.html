@@ -66,8 +66,14 @@
     <div class="capture-row">
       <label class="btn small"><span class="msym" style="font-size:16px">upload_file</span> Subir video externo<input type="file" id="inputVideoExterno" accept="video/*" hidden></label>
       <button class="btn small" id="btnCapturarFotograma" disabled><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma como nuevo paso</button>
+      <button class="btn small" id="btnTranscribir" disabled><span class="msym" style="font-size:16px">subtitles</span> Transcribir audio</button>
     </div>
     <video id="videoExterno" controls style="width:100%;max-height:360px;border-radius:8px;margin-top:10px;background:#000" hidden></video>
+    <div id="transcripcionBox" class="transcripcion-box" hidden>
+      <p class="helper">Hacé clic en un fragmento para ir a ese momento del video. "Usar" deja ese texto listo para el próximo paso que crees con "Capturar fotograma".</p>
+      <div id="transcripcionEstado" class="helper"></div>
+      <div id="transcripcionLista"></div>
+    </div>
   </section>
 
   <section>

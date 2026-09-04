@@ -144,6 +144,22 @@ const Api = {
     }
     return data; // se agoto la espera: se sigue usando el original sin comprimir
   },
+  async iniciarTranscripcion(slug, nombre) {
+    const r = await fetch(`/api/tramites/${encodeURIComponent(slug)}/media/${encodeURIComponent(nombre)}/transcribir`, {
+      method: 'POST', headers: adminHeaders()
+    });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error((await r.json()).error || 'No se pudo iniciar la transcripcion');
+    return r.json();
+  },
+  async getTranscripcion(slug, nombre) {
+    const r = await fetch(`/api/tramites/${encodeURIComponent(slug)}/media/${encodeURIComponent(nombre)}/transcripcion`, {
+      headers: adminHeaders()
+    });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error('No se pudo consultar la transcripcion');
+    return r.json();
+  },
   async listManuales() {
     const r = await fetch('/api/manuales');
     return r.json();
