@@ -4,18 +4,53 @@
   "categoria": "Sistema Open",
   "descripcion": "Proceso para la apertura de caja del sistema  Open Smartflex - CAGCA.",
   "creado": "2026-09-03T23:26:19.629Z",
-  "actualizado": "2026-09-03T23:36:50.682Z",
+  "actualizado": "2026-09-04T18:20:10.027Z",
   "pasos": [
     {
-      "id": "s0k0jqvf",
-      "titulo": "Paso 1",
-      "texto": "<b>Apertura de Gestión de Cajas:</b> Se realiza en la opción de sistema OPEN Smartflex en la pantalla <b>CAGCA</b>.",
+      "id": "sqtqxjmm",
+      "titulo": "Video Ejemplo",
+      "texto": "<span style=\"font-size: 14px;\">Apertura de Caja Sistema Open Smartflex</span>",
       "media": {
         "tipo": "video",
-        "src": "/tramites/apertura-de-caja-open-smartflex/media/1788478407421-5c9bcc54.webm"
+        "src": "/tramites/apertura-de-caja-open-smartflex/media/1788544926892-23856317.webm"
       },
-      "anotaciones": []
+      "anotaciones": [],
+      "seccion": "Apertura de Caja Sistema Open Smartflex"
+    },
+    {
+      "id": "s82hbe4f",
+      "titulo": "Paso 1 - Gestión de Cajas (CAGCA) ",
+      "texto": "Realizamos la búsqueda en el sistema de producción de Open Smartflex de la&nbsp;Gestión de Cajas,&nbsp; digitando en la casilla de acceso rápido el form (CAGCA).",
+      "media": {
+        "tipo": "imagen",
+        "src": "/tramites/apertura-de-caja-open-smartflex/media/1788545045951-c65d2060.png"
+      },
+      "anotaciones": [],
+      "seccion": "Apertura de Caja Sistema Open Smartflex"
+    },
+    {
+      "id": "smrfed7z",
+      "titulo": "Paso 2 - Apertura de Caja",
+      "texto": "Dentro de la gestión de cajas, seleccionamos la opción del menú principal <b>Operación</b>, y seleccionamos&nbsp; la opción de <b>Apertura de Caja.</b>",
+      "media": {
+        "tipo": "imagen",
+        "src": "/tramites/apertura-de-caja-open-smartflex/media/1788545579760-508ad34e.png"
+      },
+      "anotaciones": [],
+      "seccion": "Apertura de Caja"
+    },
+    {
+      "id": "s5mk41xg",
+      "titulo": "Paso 3 - Apertura de Caja - Parámetros",
+      "texto": "En la ventana Emergente se valida los&nbsp;<b>Parámetros de Apertura</b>, los cuales nos indican cual es la caja asignada por usuario, al igual que<b> Monto Inicial</b> del fondo de cajero. <i>Estos parámetros son configurados por el Líder Inmediato del departamento y varían según la sucursal.</i>",
+      "media": {
+        "tipo": "imagen",
+        "src": "/tramites/apertura-de-caja-open-smartflex/media/1788545707162-cd6c50a3.png"
+      },
+      "anotaciones": [],
+      "seccion": "Parámetros de Apertura"
     }
   ],
-  "vinculos": []
+  "vinculos": [],
+  "etiquetas": []
 }
