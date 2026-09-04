@@ -21,6 +21,15 @@ function mensajeSubida(base, res) {
   return `${base} (comprimido de ${fmtBytes(res.tamanoOriginal)} a ${fmtBytes(res.tamanoFinal)})`;
 }
 
+// Sin esto, soltar un archivo fuera de una zona valida (o apenas
+// desviado del recuadro exacto) hace que el navegador navegue fuera de
+// la app para intentar mostrar ese archivo directamente -se ve como si
+// la pagina se "rompiera" o se quedara pegada. Cada zona valida ya hace
+// su propio preventDefault+stopPropagation, asi que esto solo actua
+// como red de seguridad para el resto de la pagina.
+window.addEventListener('dragover', (e) => e.preventDefault());
+window.addEventListener('drop', (e) => e.preventDefault());
+
 // Permite soltar un archivo directamente sobre `el` en vez de tener que
 // abrir siempre el selector nativo del sistema operativo (que en Windows
 // puede tardar en generar miniaturas/buscar sobre carpetas con videos).
