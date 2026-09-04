@@ -40,26 +40,14 @@ async function crear() {
   }
 }
 
-function render() {
-  const q = document.getElementById('buscar').value.toLowerCase();
-  const cat = document.getElementById('filtroCategoria').value;
-  const grid = document.getElementById('grid');
-  const items = TRAMITES.filter(t => {
-    const matchQ = !q || t.titulo.toLowerCase().includes(q) || (t.descripcion || '').toLowerCase().includes(q);
-    const matchC = !cat || t.categoria === cat;
-    return matchQ && matchC;
-  });
-
-  if (!items.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column: 1/-1">
-      No hay trámites que coincidan. Crea uno nuevo con "+ Nuevo trámite".
-    </div>`;
-    return;
-  }
-
-  grid.innerHTML = items.map(t => `
+function cardHtml(t) {
+  const tags = (t.etiquetas || []).map(e =>
+    `<span class="tag-pill" style="--tc:${escapeHtml(e.color)}">${escapeHtml(e.texto)}</span>`
+  ).join('');
+  return `
     <div class="card">
       <span class="pill" data-cat="${escapeHtml(t.categoria)}">${escapeHtml(t.categoria)}</span>
+      ${tags ? `<div class="tag-row">${tags}</div>` : ''}
       <h3>${escapeHtml(t.titulo)}</h3>
       <p>${escapeHtml(t.descripcion || 'Sin descripción')}</p>
       <div class="meta">
@@ -73,6 +61,40 @@ function render() {
         <button class="btn small danger" data-del="${encodeURIComponent(t.id)}"><span class="msym" style="font-size:15px">delete</span></button>
       </div>
     </div>
+  `;
+}
+
+function render() {
+  const q = document.getElementById('buscar').value.toLowerCase();
+  const cat = document.getElementById('filtroCategoria').value;
+  const grid = document.getElementById('grid');
+  const items = TRAMITES.filter(t => {
+    const matchQ = !q || t.titulo.toLowerCase().includes(q) || (t.descripcion || '').toLowerCase().includes(q);
+    const matchC = !cat || t.categoria === cat;
+    return matchQ && matchC;
+  });
+
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty">No hay trámites que coincidan. Crea uno nuevo con "+ Nuevo trámite".</div>`;
+    return;
+  }
+
+  const conocidas = new Set(CATEGORIAS);
+  const secciones = CATEGORIAS
+    .map(c => ({ cat: c, items: items.filter(t => t.categoria === c) }))
+    .filter(s => s.items.length);
+  const otros = items.filter(t => !conocidas.has(t.categoria));
+  if (otros.length) secciones.push({ cat: null, items: otros });
+
+  grid.innerHTML = secciones.map(sec => `
+    <section class="cat-section">
+      <div class="cat-section-head" data-cat="${escapeHtml(sec.cat || 'General')}">
+        <span class="dot"></span>
+        <h2>${escapeHtml(sec.cat || 'Otros')}</h2>
+        <span class="count">${sec.items.length}</span>
+      </div>
+      <div class="grid">${sec.items.map(cardHtml).join('')}</div>
+    </section>
   `).join('');
 
   grid.querySelectorAll('[data-del]').forEach(btn => {

@@ -94,6 +94,8 @@ class Annotator {
       item = { id, tipo: 'arrow', x1: p.x, y1: p.y, x2: Math.min(96, p.x + 15), y2: Math.min(96, p.y + 8), color: '#ff3b30', grosor: 3 };
     } else if (this.pendingTool === 'texto') {
       item = { id, tipo: 'texto', x: p.x, y: p.y, texto: 'Texto', color: '#ffffff', tamano: 20, negrita: true };
+    } else if (this.pendingTool === 'etiqueta') {
+      item = { id, tipo: 'etiqueta', x: p.x, y: p.y, w: 22, texto: 'Etiqueta', color: '#0072BC' };
     } else if (this.pendingTool.startsWith('callout:')) {
       const estilo = this.pendingTool.split(':')[1];
       item = { id, tipo: 'callout', x: p.x, y: p.y, w: 26, texto: CALLOUT_STYLES[estilo].label + ': escribe aquí', estilo };
@@ -193,6 +195,17 @@ class Annotator {
       box.querySelector('.txt').textContent = a.texto;
       wrap.appendChild(box);
       if (this.editable) this._bindInlineEdit(box.querySelector('.txt'), a, 'texto');
+      this._addResizeHandle(wrap, a, true);
+    } else if (a.tipo === 'etiqueta') {
+      wrap.style.left = a.x + '%';
+      wrap.style.top = a.y + '%';
+      wrap.style.width = (a.w || 22) + '%';
+      const chip = document.createElement('div');
+      chip.className = 'anno-etiqueta';
+      chip.style.background = a.color;
+      chip.textContent = a.texto;
+      wrap.appendChild(chip);
+      if (this.editable) this._bindInlineEdit(chip, a, 'texto');
       this._addResizeHandle(wrap, a, true);
     } else if (a.tipo === 'imagen') {
       wrap.style.left = a.x + '%';

@@ -20,11 +20,28 @@ async function init() {
   document.getElementById('vTitulo').textContent = doc.titulo;
   document.getElementById('vDescripcion').textContent = doc.descripcion || '';
 
+  const tagsBox = document.getElementById('vEtiquetas');
+  if (doc.etiquetas && doc.etiquetas.length) {
+    tagsBox.innerHTML = doc.etiquetas.map(e =>
+      `<span class="tag-pill" style="--tc:${escapeHtml(e.color)}">${escapeHtml(e.texto)}</span>`
+    ).join('');
+  }
+
   const cont = document.getElementById('vPasos');
   if (!doc.pasos || !doc.pasos.length) {
     cont.innerHTML = '<div class="empty">Este trámite todavía no tiene pasos.</div>';
   } else {
+    let prevSeccion = '';
     doc.pasos.forEach((paso, idx) => {
+      const seccion = (paso.seccion || '').trim();
+      if (seccion && seccion !== prevSeccion) {
+        const head = document.createElement('div');
+        head.className = 'seccion-head';
+        head.innerHTML = `<span class="msym" style="font-size:16px">folder_open</span> ${escapeHtml(seccion)}`;
+        cont.appendChild(head);
+      }
+      prevSeccion = seccion;
+
       const stepDiv = document.createElement('div');
       stepDiv.className = 'viewer-step';
       stepDiv.innerHTML = `

@@ -1,3 +1,12 @@
+const CATEGORY_COLORS = {
+  'Sistema Open': '#0072BC',
+  'Salesforce': '#1E77A8',
+  'Qupos': '#C97600',
+  'MBA Case': '#6C4FBC',
+  'Agentes de Ayuda': '#C13F3B',
+  'General': '#56636F'
+};
+
 let DOC = null;
 let TRAMITES_AUX = [];
 let CATEGORIAS_AUX = [];
@@ -36,8 +45,16 @@ function bindGlobal() {
     DOC.titulo = e.target.value;
     document.getElementById('tituloTopbar').textContent = DOC.titulo || 'Editor de trámite';
   });
-  document.getElementById('mCategoria').addEventListener('change', (e) => { DOC.categoria = e.target.value; });
+  document.getElementById('mCategoria').addEventListener('change', (e) => {
+    DOC.categoria = e.target.value;
+    document.getElementById('tagColor').value = CATEGORY_COLORS[DOC.categoria] || '#0072BC';
+  });
   document.getElementById('mDescripcion').addEventListener('input', (e) => { DOC.descripcion = e.target.value; });
+
+  document.getElementById('btnAgregarEtiqueta').addEventListener('click', agregarEtiqueta);
+  document.getElementById('tagTexto').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); agregarEtiqueta(); }
+  });
 
   document.getElementById('btnAgregarPaso').addEventListener('click', () => {
     DOC.pasos.push({ id: makeStepId(), titulo: `Paso ${DOC.pasos.length + 1}`, texto: '', media: null, anotaciones: [] });
@@ -89,12 +106,46 @@ function bindGlobal() {
   });
 }
 
+function agregarEtiqueta() {
+  const input = document.getElementById('tagTexto');
+  const texto = input.value.trim();
+  if (!texto) return;
+  const color = document.getElementById('tagColor').value;
+  DOC.etiquetas = DOC.etiquetas || [];
+  DOC.etiquetas.push({ id: makeStepId(), texto, color });
+  input.value = '';
+  renderEtiquetas();
+}
+
 function renderMeta() {
   document.getElementById('mTitulo').value = DOC.titulo || '';
   document.getElementById('mDescripcion').value = DOC.descripcion || '';
   const sel = document.getElementById('mCategoria');
   sel.innerHTML = '';
   for (const c of CATEGORIAS_AUX) sel.appendChild(new Option(c, c, false, c === DOC.categoria));
+  document.getElementById('tagColor').value = CATEGORY_COLORS[DOC.categoria] || '#0072BC';
+  renderEtiquetas();
+}
+
+function renderEtiquetas() {
+  DOC.etiquetas = DOC.etiquetas || [];
+  const box = document.getElementById('tagEditor');
+  if (!DOC.etiquetas.length) {
+    box.innerHTML = '<span class="helper">Sin etiquetas todavía.</span>';
+    return;
+  }
+  box.innerHTML = DOC.etiquetas.map(e => `
+    <span class="tag-pill editable" style="--tc:${escapeHtml(e.color)}">
+      ${escapeHtml(e.texto)}
+      <button type="button" data-tag-del="${e.id}" title="Quitar etiqueta">&times;</button>
+    </span>
+  `).join('');
+  box.querySelectorAll('[data-tag-del]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      DOC.etiquetas = DOC.etiquetas.filter(e => e.id !== btn.dataset.tagDel);
+      renderEtiquetas();
+    });
+  });
 }
 
 function renderSteps() {
@@ -103,7 +154,17 @@ function renderSteps() {
   document.getElementById('stepsEmpty').hidden = DOC.pasos.length > 0;
   stepRuntime.clear();
 
+  let prevSeccion = '';
   DOC.pasos.forEach((paso, idx) => {
+    const seccion = (paso.seccion || '').trim();
+    if (seccion && seccion !== prevSeccion) {
+      const head = document.createElement('div');
+      head.className = 'seccion-head';
+      head.innerHTML = `<span class="msym" style="font-size:15px">folder_open</span> ${escapeHtml(seccion)}`;
+      list.appendChild(head);
+    }
+    prevSeccion = seccion;
+
     const tpl = document.getElementById('tplStep').content.cloneNode(true);
     const stepEl = tpl.querySelector('[data-step]');
     stepEl.dataset.id = paso.id;
@@ -111,6 +172,11 @@ function renderSteps() {
     const tituloInput = stepEl.querySelector('.step-titulo');
     tituloInput.value = paso.titulo || '';
     tituloInput.addEventListener('input', () => { paso.titulo = tituloInput.value; });
+
+    const seccionInput = stepEl.querySelector('.step-seccion');
+    seccionInput.value = paso.seccion || '';
+    seccionInput.addEventListener('input', () => { paso.seccion = seccionInput.value; });
+    seccionInput.addEventListener('change', () => renderSteps());
 
     stepEl.querySelector('[data-mover="-1"]').addEventListener('click', () => moverPaso(idx, -1));
     stepEl.querySelector('[data-mover="1"]').addEventListener('click', () => moverPaso(idx, 1));
@@ -187,6 +253,9 @@ function renderAnnoProps(box, annotator, sel) {
       <option value="importante">❗ Importante</option><option value="info">ℹ️ Info</option>
     </select></label>`;
     html += `<span class="helper">Doble clic sobre el texto para editarlo</span>`;
+  } else if (sel.tipo === 'etiqueta') {
+    html += `<label>Color <input type="color" data-p="color" value="${sel.color}"></label>`;
+    html += `<span class="helper">Doble clic sobre la etiqueta para editar el texto</span>`;
   } else if (sel.tipo === 'imagen') {
     html += `<span class="helper">Arrastra para mover, usa la esquina para redimensionar</span>`;
   }

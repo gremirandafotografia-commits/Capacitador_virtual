@@ -76,7 +76,8 @@ function listTramites() {
         categoria: doc.categoria,
         descripcion: doc.descripcion,
         actualizado: doc.actualizado,
-        pasos: (doc.pasos || []).length
+        pasos: (doc.pasos || []).length,
+        etiquetas: doc.etiquetas || []
       };
     })
     .filter(Boolean)
@@ -165,7 +166,8 @@ app.post('/api/tramites', (req, res) => {
     creado: now,
     actualizado: now,
     pasos: [],
-    vinculos: []
+    vinculos: [],
+    etiquetas: []
   };
   writeJSON(path.join(dir, 'tramite.json'), doc);
   res.status(201).json(doc);
