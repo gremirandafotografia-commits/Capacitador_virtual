@@ -35,6 +35,14 @@ brew install ffmpeg
 
 Abre `http://localhost:4173` en el navegador (Chrome/Edge recomendado para la captura de pantalla y cámara). El servidor debe correr en `localhost` porque la grabación de pantalla/cámara solo funciona en contextos seguros.
 
+**Contraseña de edición:** crear, editar o borrar trámites/manuales, y subir archivos, requiere la contraseña de Administración (`ADMIN_PASSWORD`). Este repositorio es público, así que el valor por defecto en `server.js` queda visible para cualquiera — si vas a exponer el servidor fuera de tu máquina (link público, Codespace público, etc.), definí siempre tu propia contraseña por variable de entorno antes de arrancar:
+
+```bash
+ADMIN_PASSWORD="tu-contraseña-propia" npm start
+```
+
+La vista de trámites/manuales/evaluaciones queda pública para cualquiera con el link; solo la edición pide esa contraseña.
+
 ## Estructura del proyecto
 
 ```

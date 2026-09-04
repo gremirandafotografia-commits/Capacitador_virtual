@@ -60,9 +60,9 @@
     </div>
   </section>
 
-  <section class="card">
+  <section class="card" id="videoExternoZona">
     <h3 style="margin-top:0">Video externo de referencia (opcional)</h3>
-    <p class="helper">Carga un video ya grabado (Zoom, Teams, celular, etc.). Reprodúcelo y captura fotogramas para convertirlos en pasos con pantallazo listo para anotar.</p>
+    <p class="helper">Carga un video ya grabado (Zoom, Teams, celular, etc.). Reprodúcelo y captura fotogramas para convertirlos en pasos con pantallazo listo para anotar. También podés arrastrar el archivo y soltarlo en esta sección.</p>
     <div class="capture-row">
       <label class="btn small"><span class="msym" style="font-size:16px">upload_file</span> Subir video externo<input type="file" id="inputVideoExterno" accept="video/*" hidden></label>
       <button class="btn small" id="btnCapturarFotograma" disabled><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma como nuevo paso</button>
@@ -119,8 +119,9 @@
         <label class="btn small"><span class="msym" style="font-size:16px">movie</span> Subir video<input type="file" accept="video/*" hidden data-subir="video"></label>
         <label class="btn small"><span class="msym" style="font-size:16px">image</span> Subir imagen<input type="file" accept="image/*" hidden data-subir="imagen"></label>
         <button class="btn small" data-accion="frame-video" title="Toma una foto del fotograma actual del video de este paso y la agrega como nuevo paso"><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma del video</button>
+        <button class="btn small" data-accion="pausar" hidden><span class="msym" style="font-size:16px">pause_circle</span> Pausar</button>
         <button class="btn small danger" data-accion="detener" hidden><span class="msym" style="font-size:16px">stop_circle</span> Detener grabación</button>
-        <span class="rec-indicator" data-indicador><span class="dot"></span> Grabando...</span>
+        <span class="rec-indicator" data-indicador><span class="dot"></span> <span data-indicador-texto>Grabando...</span></span>
       </div>
 
       <div class="stage-wrap">
@@ -161,6 +162,7 @@
 </template>
 
 <script src="/js/api.js"></script>
+<script src="/js/admin-auth.js"></script>
 <script src="/js/recorder.js"></script>
 <script src="/js/annotator.js"></script>
 <script src="/js/editor.js"></script>

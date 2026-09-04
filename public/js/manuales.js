@@ -12,7 +12,7 @@ async function init() {
 
   document.getElementById('buscar').addEventListener('input', render);
   document.getElementById('filtroCategoria').addEventListener('change', render);
-  document.getElementById('btnSubir').addEventListener('click', () => toggleModal(true));
+  document.getElementById('btnSubir').addEventListener('click', () => adminGuard().then(() => toggleModal(true)));
   document.getElementById('fCancelar').addEventListener('click', () => toggleModal(false));
   document.getElementById('fSubir').addEventListener('click', subir);
 }

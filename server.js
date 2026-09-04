@@ -163,6 +163,10 @@ function listManuales() {
 }
 
 const app = express();
+// Detras de un proxy (Codespaces, nginx, etc.) req.ip solo refleja al
+// cliente real si confiamos en el X-Forwarded-For que agrega el proxy;
+// si no, todo el trafico se ve como si viniera de una sola IP.
+app.set('trust proxy', true);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(ROOT, 'public')));
 app.use('/tramites', express.static(TRAMITES_DIR));
@@ -185,7 +189,7 @@ app.get('/api/tramites/:slug', (req, res) => {
   }
 });
 
-app.post('/api/tramites', (req, res) => {
+app.post('/api/tramites', requireAdmin, (req, res) => {
   const { titulo, categoria, descripcion } = req.body || {};
   if (!titulo || !titulo.trim()) return res.status(400).json({ error: 'Titulo requerido' });
 
@@ -214,7 +218,7 @@ app.post('/api/tramites', (req, res) => {
   res.status(201).json(doc);
 });
 
-app.put('/api/tramites/:slug', (req, res) => {
+app.put('/api/tramites/:slug', requireAdmin, (req, res) => {
   try {
     const dir = tramitePath(req.params.slug);
     const file = path.join(dir, 'tramite.json');
@@ -235,7 +239,7 @@ app.put('/api/tramites/:slug', (req, res) => {
   }
 });
 
-app.delete('/api/tramites/:slug', (req, res) => {
+app.delete('/api/tramites/:slug', requireAdmin, (req, res) => {
   try {
     const dir = tramitePath(req.params.slug);
     if (!fs.existsSync(dir)) return res.status(404).json({ error: 'No encontrado' });
@@ -315,7 +319,7 @@ function comprimirEnSegundoPlano(slug, filename, filePath, tamanoOriginal) {
     });
 }
 
-app.post('/api/tramites/:slug/media', upload.single('archivo'), (req, res) => {
+app.post('/api/tramites/:slug/media', requireAdmin, upload.single('archivo'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Archivo requerido' });
 
   const filename = req.file.filename;
@@ -387,7 +391,7 @@ const manualUpload = multer({
   limits: { fileSize: 200 * 1024 * 1024 }
 });
 
-app.post('/api/manuales/upload', manualUpload.single('archivo'), (req, res) => {
+app.post('/api/manuales/upload', requireAdmin, manualUpload.single('archivo'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Archivo requerido' });
   const meta = readJSON(MANUALES_META_FILE, {});
   meta[req.file.filename] = {
@@ -400,7 +404,7 @@ app.post('/api/manuales/upload', manualUpload.single('archivo'), (req, res) => {
   res.status(201).json({ id: req.file.filename });
 });
 
-app.put('/api/manuales/:id', (req, res) => {
+app.put('/api/manuales/:id', requireAdmin, (req, res) => {
   const id = decodeURIComponent(req.params.id);
   const full = path.join(MANUALES_DIR, id);
   if (!full.startsWith(MANUALES_DIR) || !fs.existsSync(full)) {
@@ -420,11 +424,30 @@ app.put('/api/manuales/:id', (req, res) => {
 
 // ---------- Administracion ----------
 
+// Limite simple de intentos de login por IP: sin esto, con el servidor
+// expuesto publicamente cualquiera podria probar contrasenas sin freno.
+const LOGIN_MAX_INTENTOS = 8;
+const LOGIN_VENTANA_MS = 10 * 60 * 1000;
+const loginIntentos = new Map(); // ip -> { count, desde }
+
 app.post('/api/admin/login', (req, res) => {
+  const ip = req.ip;
+  const ahora = Date.now();
+  const estado = loginIntentos.get(ip);
+  if (estado && ahora - estado.desde < LOGIN_VENTANA_MS && estado.count >= LOGIN_MAX_INTENTOS) {
+    return res.status(429).json({ error: 'Demasiados intentos. Espera unos minutos e intenta de nuevo.' });
+  }
+
   const { password } = req.body || {};
   if (password !== ADMIN_PASSWORD) {
+    if (!estado || ahora - estado.desde >= LOGIN_VENTANA_MS) {
+      loginIntentos.set(ip, { count: 1, desde: ahora });
+    } else {
+      estado.count++;
+    }
     return res.status(401).json({ error: 'Contrasena incorrecta' });
   }
+  loginIntentos.delete(ip);
   const token = uuidv4();
   adminTokens.add(token);
   res.json({ token });
