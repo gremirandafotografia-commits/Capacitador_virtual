@@ -34,11 +34,34 @@ function compressVideo(inputPath, outputPath) {
 }
 
 const ROOT = __dirname;
-const TRAMITES_DIR = path.join(ROOT, 'tramites');
-const MANUALES_DIR = path.join(ROOT, 'manuales');
-const DATA_DIR = path.join(ROOT, 'data');
-const EVALUACIONES_DIR = path.join(ROOT, 'evaluaciones');
+// En un host con disco persistente separado del codigo (Render, etc.) hay
+// que apuntar los datos ahi -si no, cada deploy nuevo borra todos los
+// tramites/videos/manuales subidos, porque el codigo se reemplaza pero el
+// disco de la instancia anterior no viaja con el.
+const DATA_ROOT = process.env.DATA_ROOT || ROOT;
+const TRAMITES_DIR = path.join(DATA_ROOT, 'tramites');
+const MANUALES_DIR = path.join(DATA_ROOT, 'manuales');
+const DATA_DIR = path.join(DATA_ROOT, 'data');
+const EVALUACIONES_DIR = path.join(DATA_ROOT, 'evaluaciones');
 const MANUALES_META_FILE = path.join(DATA_DIR, 'manuales-meta.json');
+
+// Primera vez que arranca contra un DATA_ROOT vacio (disco persistente
+// recien creado): siembra con el contenido ya versionado en el repo
+// (tramites y manuales de ejemplo) para no arrancar en blanco. Despues de
+// esto el disco manda solo -nunca se vuelve a copiar, para no pisar
+// contenido nuevo agregado desde la app.
+function seedSiVacio(dirName) {
+  if (DATA_ROOT === ROOT) return;
+  const origen = path.join(ROOT, dirName);
+  const destino = path.join(DATA_ROOT, dirName);
+  if (!fs.existsSync(origen)) return;
+  if (fs.existsSync(destino) && fs.readdirSync(destino).length > 0) return;
+  fs.cpSync(origen, destino, { recursive: true });
+  console.log(`Semilla inicial de "${dirName}" copiada a ${destino}`);
+}
+for (const dirName of ['tramites', 'manuales', 'data', 'evaluaciones']) {
+  seedSiVacio(dirName);
+}
 
 for (const dir of [TRAMITES_DIR, MANUALES_DIR, DATA_DIR, EVALUACIONES_DIR]) {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
