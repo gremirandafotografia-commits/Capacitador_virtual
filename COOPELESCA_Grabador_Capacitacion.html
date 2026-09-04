@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grabador de Capacitación — COOPELESCA</title>
+<style>
+  :root{
+    --azul:#0b3d67;
+    --azul-claro:#1573c4;
+    --verde:#2e9e5b;
+    --gris-100:#f4f6f8;
+    --gris-200:#e5e9ed;
+    --gris-500:#6b7684;
+    --gris-800:#232a33;
+    --rojo:#c0392b;
+    --radio:10px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Segoe UI', Calibri, Arial, sans-serif;
+    background:var(--gris-100);
+    color:var(--gris-800);
+  }
+  header{
+    background:#fff;
+    padding:18px 32px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:4px solid var(--azul-claro);
+  }
+  header .titulo h1{margin:0;font-size:19px;font-weight:700;color:var(--azul);}
+  header .titulo p{margin:4px 0 0;font-size:12.5px;color:var(--gris-500);}
+  header .marca{text-align:right;display:flex;align-items:center;gap:10px;}
+  header .marca img{height:52px;}
+  header .marca .lema{font-size:11.5px;font-style:italic;color:var(--azul-claro);font-weight:600;}
+  footer{
+    background:linear-gradient(90deg,var(--azul),var(--azul-claro));
+    color:#fff;
+    text-align:center;
+    font-size:12px;
+    padding:12px;
+    margin-top:30px;
+  }
+  #app{
+    max-width:920px;
+    margin:24px auto;
+    padding:0 16px 60px;
+  }
+  .card{
+    background:#fff;
+    border:1px solid var(--gris-200);
+    border-radius:var(--radio);
+    padding:22px;
+    margin-bottom:20px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);
+  }
+  .card h2{
+    margin:0 0 14px;
+    font-size:15px;
+    color:var(--azul);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .badge{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    padding:2px 8px;
+    border-radius:20px;
+    background:var(--gris-200);
+    color:var(--gris-500);
+  }
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  button{
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    padding:10px 18px;
+    border-radius:8px;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:.15s;
+  }
+  button:disabled{opacity:.4;cursor:not-allowed;}
+  .btn-primary{background:var(--azul-claro);color:#fff;}
+  .btn-primary:hover:not(:disabled){background:var(--azul);}
+  .btn-danger{background:var(--rojo);color:#fff;}
+  .btn-danger:hover:not(:disabled){background:#a5291c;}
+  .btn-secondary{background:#fff;color:var(--azul);border-color:var(--azul-claro);}
+  .btn-secondary:hover:not(:disabled){background:var(--gris-100);}
+  .btn-ghost{background:transparent;color:var(--gris-500);border-color:var(--gris-200);}
+  .btn-ghost:hover:not(:disabled){background:var(--gris-100);}
+  #timer{
+    font-variant-numeric:tabular-nums;
+    font-size:22px;
+    font-weight:700;
+    color:var(--azul);
+    min-width:80px;
+  }
+  #recDot{
+    width:11px;height:11px;border-radius:50%;
+    background:var(--rojo);
+    display:none;
+    animation:pulse 1s infinite;
+  }
+  #recDot.live{display:inline-block;}
+  @keyframes pulse{0%{opacity:1;}50%{opacity:.25;}100%{opacity:1;}}
+  video{
+    width:100%;
+    border-radius:8px;
+    background:#000;
+    display:block;
+  }
+  .step-item{
+    display:flex;
+    gap:14px;
+    padding:14px;
+    border:1px solid var(--gris-200);
+    border-radius:8px;
+    margin-bottom:10px;
+    align-items:flex-start;
+  }
+  .step-item img{
+    width:130px;
+    border-radius:6px;
+    border:1px solid var(--gris-200);
+    flex-shrink:0;
+    cursor:pointer;
+  }
+  .step-body{flex:1;}
+  .step-meta{
+    font-size:12px;
+    color:var(--gris-500);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .step-body textarea{
+    width:100%;
+    min-height:56px;
+    font-family:inherit;
+    font-size:13.5px;
+    padding:8px 10px;
+    border:1px solid var(--gris-200);
+    border-radius:6px;
+    resize:vertical;
+  }
+  .step-actions{display:flex;flex-direction:column;gap:6px;}
+  .step-actions button{padding:6px 10px;font-size:12px;}
+  #stepsEmpty{color:var(--gris-500);font-size:13.5px;font-style:italic;}
+  .hint{
+    background:#eef6fb;
+    border:1px solid #cfe6f5;
+    color:#0b3d67;
+    font-size:13px;
+    padding:12px 14px;
+    border-radius:8px;
+    margin-bottom:16px;
+    line-height:1.5;
+  }
+  .hidden{display:none !important;}
+  #canvasHidden{display:none;}
+  .status{font-size:13px;color:var(--gris-500);margin-top:8px;}
+  .status.error{color:var(--rojo);font-weight:600;}
+  select{
+    font-family:inherit;font-size:13px;padding:8px 10px;
+    border-radius:6px;border:1px solid var(--gris-200);
+  }
+  label.small{font-size:12.5px;color:var(--gris-500);font-weight:600;}
+
+  /* --- Recorte de video --- */
+  .cut-chip{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--gris-100);border:1px solid var(--gris-200);
+    border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:600;
+  }
+  .cut-chip button{
+    background:none;border:none;color:var(--rojo);font-weight:800;
+    cursor:pointer;padding:0;font-size:14px;
+  }
+  progress{width:100%;height:10px;border-radius:6px;overflow:hidden;}
+
+  /* --- Modal de anotaciones --- */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(11,61,103,.65);
+    display:flex;align-items:center;justify-content:center;
+    z-index:999;padding:20px;
+  }
+  .modal-box{
+    background:#fff;border-radius:12px;padding:18px;
+    max-width:94vw;max-height:94vh;overflow:auto;
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .modal-box h3{margin:0;color:var(--azul);font-size:15px;}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .tool-btn{
+    padding:8px 12px;font-size:13px;border-radius:8px;
+    border:1px solid var(--gris-200);background:#fff;cursor:pointer;font-weight:600;
+  }
+  .tool-btn.active{background:var(--azul-claro);color:#fff;border-color:var(--azul-claro);}
+  .swatch{
+    width:24px;height:24px;border-radius:50%;cursor:pointer;
+    border:2px solid #fff;box-shadow:0 0 0 1px var(--gris-200);
+  }
+  .swatch.active{box-shadow:0 0 0 2px var(--azul-claro);}
+  #annotateCanvas{
+    max-width:100%;border:1px solid var(--gris-200);border-radius:6px;
+    cursor:crosshair;background:#000;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titulo">
+    <h1>Grabador de Capacitación</h1>
+    <p>Graba pantalla + audio y arma el paso a paso para cada módulo del Capacitador de Trámites</p>
+  </div>
+  <div class="marca">
+    <div>
+      <div style="font-weight:800;color:var(--azul);font-size:15px;">COOPELESCA R.L.</div>
+      <div class="lema">Sirviendo con el corazón</div>
+    </div>
+    <!-- LOGO_PLACEHOLDER: reemplazar src por el logo institucional en base64 -->
+    <img src="" alt="" id="logoCoope" style="display:none;">
+  </div>
+</header>
+
+<div id="app">
+
+  <div class="card" id="stepStart">
+    <h2>1. Grabar <span class="badge">pantalla + micrófono</span></h2>
+    <div class="hint">
+      Al presionar <b>Iniciar grabación</b> el navegador te pedirá elegir qué compartir y luego permiso de micrófono. <b>Elige "Toda la pantalla"</b> (no una ventana ni una pestaña) si tu proceso va a pasar por varias aplicaciones o vas a minimizar/cambiar de ventana — de lo contrario el video puede quedar en negro cuando la ventana compartida deje de estar visible. Recomendado: Chrome o Edge. Abre este archivo directamente con doble clic (no dentro de un visor embebido).
+    </div>
+    <div class="row">
+      <button class="btn-primary" id="btnStart">● Iniciar grabación</button>
+      <button class="btn-ghost" id="btnPause" disabled>⏸ Pausar</button>
+      <button class="btn-danger" id="btnStop" disabled>■ Detener</button>
+      <span id="recDot"></span>
+      <span id="timer">00:00</span>
+    </div>
+    <div class="status" id="startStatus"></div>
+  </div>
+
+  <div class="card hidden" id="stepTrim">
+    <h2>2. Recortar video <span class="badge">opcional</span></h2>
+    <div class="hint">Reproduce el video, marca el inicio y el fin de cada parte que quieras <b>eliminar</b>, y luego genera el video recortado. El proceso reproduce el video en tiempo real mientras recorta, así que tarda lo mismo que la duración final.</div>
+    <div class="row">
+      <button class="btn-secondary" id="btnMarkCutStart">Marcar inicio de corte</button>
+      <button class="btn-secondary" id="btnMarkCutEnd">Marcar fin de corte</button>
+      <span class="status" id="cutMarkStatus"></span>
+    </div>
+    <div class="row" id="cutsContainer" style="margin-top:10px;"></div>
+    <div class="row" style="margin-top:14px;">
+      <button class="btn-primary" id="btnRenderCuts">✂ Generar video recortado</button>
+    </div>
+    <progress id="cutProgress" value="0" max="100" class="hidden" style="margin-top:10px;"></progress>
+    <div class="status" id="cutStatus"></div>
+  </div>
+
+  <div class="card hidden" id="stepReview">
+    <h2>3. Revisar grabación y marcar pasos</h2>
+    <video id="preview" controls></video>
+    <div class="row" style="margin-top:12px;">
+      <button class="btn-primary" id="btnAddStep">📸 Agregar paso en este momento</button>
+      <label class="small">Descripción del paso siguiente:</label>
+    </div>
+    <textarea id="stepDraft" placeholder="Escribe aquí la descripción del paso antes de capturarlo (opcional, se puede editar después)..." style="width:100%;margin-top:8px;min-height:44px;font-family:inherit;font-size:13.5px;padding:8px 10px;border:1px solid var(--gris-200);border-radius:6px;"></textarea>
+  </div>
+
+  <div class="card hidden" id="stepList">
+    <h2>4. Pasos capturados <span class="badge" id="stepCount">0</span></h2>
+    <div id="stepsEmpty">Aún no has agregado ningún paso. Reproduce el video arriba, pausa donde quieras y presiona "Agregar paso en este momento".</div>
+    <div id="stepsContainer"></div>
+  </div>
+
+  <div class="card hidden" id="stepExport">
+    <h2>5. Descargar</h2>
+    <div class="row">
+      <button class="btn-primary" id="btnExportVideo">⬇ Descargar video (.webm)</button>
+      <button class="btn-secondary" id="btnExportDoc">⬇ Descargar paso a paso (.html)</button>
+      <button class="btn-ghost" id="btnReset">↺ Nueva grabación</button>
+    </div>
+    <div class="status">El documento de paso a paso incluye las capturas y descripciones en el orden en que aparecen en el video.</div>
+  </div>
+
+</div>
+
+<canvas id="canvasHidden"></canvas>
+
+<div class="modal-overlay hidden" id="annotateModal">
+  <div class="modal-box">
+    <h3>Anotar captura del paso</h3>
+    <div class="toolbar">
+      <button class="tool-btn" data-tool="arrow">↗ Flecha</button>
+      <button class="tool-btn" data-tool="rect">▭ Recuadro</button>
+      <button class="tool-btn" data-tool="bubble">💬 Nube de mensaje</button>
+      <button class="tool-btn" data-tool="text">T Texto</button>
+      <span style="width:1px;height:22px;background:var(--gris-200);"></span>
+      <span class="swatch" data-color="#c0392b" style="background:#c0392b;"></span>
+      <span class="swatch" data-color="#e8a51a" style="background:#e8a51a;"></span>
+      <span class="swatch" data-color="#1573c4" style="background:#1573c4;"></span>
+      <span class="swatch" data-color="#2e9e5b" style="background:#2e9e5b;"></span>
+      <span class="swatch" data-color="#111111" style="background:#111111;"></span>
+      <span style="width:1px;height:22px;background:var(--gris-200);"></span>
+      <button class="btn-ghost" id="btnUndoAnnot">↺ Deshacer</button>
+      <button class="btn-ghost" id="btnClearAnnot">Limpiar todo</button>
+    </div>
+    <canvas id="annotateCanvas"></canvas>
+    <div class="row">
+      <button class="btn-primary" id="btnSaveAnnot">Guardar cambios</button>
+      <button class="btn-ghost" id="btnCancelAnnot">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<footer>www.coopelesca.com &nbsp;|&nbsp; 2401-2828 &nbsp;|&nbsp; San Carlos</footer>
+
+
+<script>
+let mediaRecorder, recordedChunks = [];
+let displayStream, micStream, audioCtx, combinedStream;
+let steps = [];
+let stepIdSeq = 1;
+let videoBlob, videoBlobUrl;
+let timerInterval, seconds = 0, isPaused = false;
+let totalBytes = 0;
+
+const $ = id => document.getElementById(id);
+
+function fmtTime(s){
+  const m = Math.floor(s/60).toString().padStart(2,'0');
+  const ss = Math.floor(s%60).toString().padStart(2,'0');
+  return m+':'+ss;
+}
+
+function setStatus(el, msg, isError){
+  el.textContent = msg;
+  el.className = 'status' + (isError ? ' error' : '');
+}
+
+async function startRecording(){
+  setStatus($('startStatus'), '', false);
+  try{
+    displayStream = await navigator.mediaDevices.getDisplayMedia({
+      video: { frameRate: 30 },
+      audio: true
+    });
+  }catch(err){
+    setStatus($('startStatus'), 'No se pudo iniciar la captura de pantalla: ' + err.message, true);
+    return;
+  }
+
+  try{
+    micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  }catch(err){
+    micStream = null;
+    setStatus($('startStatus'), 'Grabando sin micrófono (permiso no concedido o no disponible).', false);
+  }
+
+  const videoTrack = displayStream.getVideoTracks()[0];
+  const vSettings = videoTrack.getSettings ? videoTrack.getSettings() : {};
+  const surface = vSettings.displaySurface || 'desconocido';
+  if (surface && surface !== 'monitor'){
+    setStatus($('startStatus'), '⚠ Estás compartiendo "' + (surface === 'window' ? 'una ventana' : surface === 'browser' ? 'una pestaña' : surface) + '". Si cambias a otra aplicación o minimizas esta ventana durante la grabación, el video quedará en negro. Para grabar procesos que cruzan varias aplicaciones, vuelve a iniciar y elige "Toda la pantalla".', true);
+  } else {
+    setStatus($('startStatus'), 'Compartiendo pantalla completa (' + (vSettings.width||'?') + 'x' + (vSettings.height||'?') + ').', false);
+  }
+
+  const tracks = [videoTrack];
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const dest = audioCtx.createMediaStreamDestination();
+  let hasAudio = false;
+
+  if (displayStream.getAudioTracks().length){
+    const src1 = audioCtx.createMediaStreamSource(new MediaStream([displayStream.getAudioTracks()[0]]));
+    src1.connect(dest);
+    hasAudio = true;
+  }
+  if (micStream && micStream.getAudioTracks().length){
+    const src2 = audioCtx.createMediaStreamSource(micStream);
+    src2.connect(dest);
+    hasAudio = true;
+  }
+  if (hasAudio) tracks.push(dest.stream.getAudioTracks()[0]);
+
+  combinedStream = new MediaStream(tracks);
+
+  let mimeType = 'video/webm;codecs=vp9,opus';
+  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8,opus';
+  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+  recordedChunks = [];
+  totalBytes = 0;
+  try{
+    mediaRecorder = new MediaRecorder(combinedStream, { mimeType });
+  }catch(err){
+    setStatus($('startStatus'), 'No se pudo crear el grabador (' + mimeType + '): ' + err.message, true);
+    displayStream.getTracks().forEach(t => t.stop());
+    if (micStream) micStream.getTracks().forEach(t => t.stop());
+    return;
+  }
+  mediaRecorder.ondataavailable = e => {
+    if (e.data && e.data.size > 0){
+      recordedChunks.push(e.data);
+      totalBytes += e.data.size;
+      setStatus($('startStatus'), 'Grabando… ' + recordedChunks.length + ' fragmentos capturados (' + (totalBytes/1024/1024).toFixed(1) + ' MB)', false);
+    }
+  };
+  mediaRecorder.onerror = e => {
+    setStatus($('startStatus'), 'Error del grabador: ' + (e.error ? e.error.message : 'desconocido'), true);
+  };
+  mediaRecorder.onstop = onRecordingStop;
+  mediaRecorder.start(1000);
+
+  displayStream.getVideoTracks()[0].addEventListener('ended', () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') stopRecording();
+  });
+
+  seconds = 0;
+  isPaused = false;
+  $('timer').textContent = '00:00';
+  timerInterval = setInterval(() => {
+    if (!isPaused){ seconds++; $('timer').textContent = fmtTime(seconds); }
+  }, 1000);
+
+  $('recDot').classList.add('live');
+  $('btnStart').disabled = true;
+  $('btnPause').disabled = false;
+  $('btnStop').disabled = false;
+}
+
+function togglePause(){
+  if (!mediaRecorder) return;
+  if (mediaRecorder.state === 'recording'){
+    mediaRecorder.pause();
+    isPaused = true;
+    $('btnPause').textContent = '▶ Reanudar';
+  } else if (mediaRecorder.state === 'paused'){
+    mediaRecorder.resume();
+    isPaused = false;
+    $('btnPause').textContent = '⏸ Pausar';
+  }
+}
+
+function stopRecording(){
+  if (mediaRecorder && mediaRecorder.state !== 'inactive'){
+    mediaRecorder.stop();
+  }
+  clearInterval(timerInterval);
+  $('recDot').classList.remove('live');
+  if (displayStream) displayStream.getTracks().forEach(t => t.stop());
+  if (micStream) micStream.getTracks().forEach(t => t.stop());
+  $('btnStart').disabled = false;
+  $('btnPause').disabled = true;
+  $('btnStop').disabled = true;
+  $('btnPause').textContent = '⏸ Pausar';
+}
+
+function onRecordingStop(){
+  if (!recordedChunks.length){
+    setStatus($('startStatus'), 'No se capturó ningún dato de video. Verifica que elegiste una pantalla/ventana para compartir y que la grabación duró al menos 1-2 segundos. Intenta de nuevo.', true);
+    return;
+  }
+  try{
+    const type = (mediaRecorder && mediaRecorder.mimeType) ? mediaRecorder.mimeType : 'video/webm';
+    videoBlob = new Blob(recordedChunks, { type: type });
+    if (videoBlob.size === 0){
+      setStatus($('startStatus'), 'La grabación resultó en un archivo vacío (0 bytes). Prueba de nuevo; si persiste, prueba con otra pestaña/ventana en vez de "pantalla completa".', true);
+      return;
+    }
+    videoBlobUrl = URL.createObjectURL(videoBlob);
+    const preview = $('preview');
+    preview.src = videoBlobUrl;
+    preview.load();
+    setStatus($('startStatus'), 'Grabación lista: ' + (videoBlob.size/1024/1024).toFixed(1) + ' MB. Ya puedes revisarla abajo y luego descargarla.', false);
+    $('stepTrim').classList.remove('hidden');
+    $('stepReview').classList.remove('hidden');
+    $('stepList').classList.remove('hidden');
+    $('stepExport').classList.remove('hidden');
+    renderSteps();
+  }catch(err){
+    setStatus($('startStatus'), 'Error al armar el video final: ' + err.message, true);
+  }
+}
+
+/* ================= RECORTE DE VIDEO ================= */
+let cuts = [];
+let pendingCutStart = null;
+
+function markCutStart(){
+  const video = $('preview');
+  pendingCutStart = video.currentTime;
+  $('cutMarkStatus').textContent = 'Inicio marcado en ' + fmtTime(pendingCutStart) + '. Reproduce hasta el final del tramo a eliminar y presiona "Marcar fin de corte".';
+}
+
+function markCutEnd(){
+  const video = $('preview');
+  if (pendingCutStart === null){
+    $('cutMarkStatus').textContent = 'Primero presiona "Marcar inicio de corte".';
+    return;
+  }
+  const end = video.currentTime;
+  if (end <= pendingCutStart){
+    $('cutMarkStatus').textContent = 'El fin del corte debe ser posterior al inicio.';
+    return;
+  }
+  cuts.push({ start: pendingCutStart, end: end });
+  cuts.sort((a,b) => a.start - b.start);
+  pendingCutStart = null;
+  $('cutMarkStatus').textContent = '';
+  renderCuts();
+}
+
+function renderCuts(){
+  const c = $('cutsContainer');
+  c.innerHTML = '';
+  if (!cuts.length){
+    c.innerHTML = '<span class="status">No hay tramos marcados para eliminar.</span>';
+    return;
+  }
+  cuts.forEach((cut, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'cut-chip';
+    chip.innerHTML = `Eliminar ${fmtTime(cut.start)} – ${fmtTime(cut.end)} <button data-i="${i}">✕</button>`;
+    c.appendChild(chip);
+  });
+  c.querySelectorAll('button[data-i]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      cuts.splice(parseInt(e.target.dataset.i), 1);
+      renderCuts();
+    });
+  });
+}
+
+function isInCut(t){
+  return cuts.find(c => t >= c.start && t < c.end);
+}
+
+async function renderTrimmedVideo(){
+  const video = $('preview');
+  if (!cuts.length){
+    setStatus($('cutStatus'), 'No hay tramos marcados para eliminar.', true);
+    return;
+  }
+  if (!video.captureStream && !video.mozCaptureStream){
+    setStatus($('cutStatus'), 'Este navegador no soporta recorte en vivo (captureStream). Usa Chrome o Edge.', true);
+    return;
+  }
+  $('btnRenderCuts').disabled = true;
+  $('cutProgress').classList.remove('hidden');
+  setStatus($('cutStatus'), 'Preparando recorte…', false);
+
+  const stream = video.captureStream ? video.captureStream() : video.mozCaptureStream();
+  let mimeType = 'video/webm;codecs=vp9,opus';
+  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm;codecs=vp8,opus';
+  if (!MediaRecorder.isTypeSupported(mimeType)) mimeType = 'video/webm';
+
+  const rec = new MediaRecorder(stream, { mimeType });
+  const chunks = [];
+  rec.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+
+  const finished = new Promise(resolve => { rec.onstop = resolve; });
+
+  video.currentTime = 0;
+  video.muted = false;
+  await new Promise(r => { video.onseeked = r; });
+
+  rec.start(500);
+  await video.play();
+
+  await new Promise(resolve => {
+    function loop(){
+      const t = video.currentTime;
+      const cut = isInCut(t);
+      if (cut){
+        if (rec.state === 'recording') rec.pause();
+        video.currentTime = cut.end + 0.05;
+      } else {
+        if (rec.state === 'paused') rec.resume();
+      }
+      $('cutProgress').value = video.duration ? Math.round((t/video.duration)*100) : 0;
+      if (video.ended || video.currentTime >= video.duration - 0.05){
+        resolve();
+        return;
+      }
+      requestAnimationFrame(loop);
+    }
+    video.addEventListener('ended', resolve, { once:true });
+    requestAnimationFrame(loop);
+  });
+
+  video.pause();
+  if (rec.state !== 'inactive') rec.stop();
+  await finished;
+
+  if (!chunks.length){
+    setStatus($('cutStatus'), 'No se pudo generar el video recortado (0 datos). Intenta de nuevo.', true);
+    $('btnRenderCuts').disabled = false;
+    $('cutProgress').classList.add('hidden');
+    return;
+  }
+
+  const newBlob = new Blob(chunks, { type: rec.mimeType || 'video/webm' });
+  if (videoBlobUrl) URL.revokeObjectURL(videoBlobUrl);
+  videoBlob = newBlob;
+  videoBlobUrl = URL.createObjectURL(newBlob);
+  video.src = videoBlobUrl;
+  video.load();
+
+  cuts = [];
+  renderCuts();
+  $('btnRenderCuts').disabled = false;
+  $('cutProgress').classList.add('hidden');
+  setStatus($('cutStatus'), '✅ Video recortado (' + (newBlob.size/1024/1024).toFixed(1) + ' MB). Nota: si ya habías capturado pasos, sus tiempos pueden haberse desfasado — revísalos antes de descargar el paso a paso.', false);
+}
+
+function addStepAtCurrentTime(){
+  const video = $('preview');
+  if (!video.src) return;
+  const canvas = $('canvasHidden');
+  canvas.width = video.videoWidth || 1280;
+  canvas.height = video.videoHeight || 720;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const thumb = canvas.toDataURL('image/jpeg', 0.62);
+  const text = $('stepDraft').value.trim();
+
+  steps.push({
+    id: stepIdSeq++,
+    time: video.currentTime,
+    thumb: thumb,
+    text: text || ''
+  });
+  steps.sort((a,b) => a.time - b.time);
+  $('stepDraft').value = '';
+  renderSteps();
+}
+
+function renderSteps(){
+  $('stepCount').textContent = steps.length;
+  $('stepsEmpty').classList.toggle('hidden', steps.length > 0);
+  const container = $('stepsContainer');
+  container.innerHTML = '';
+  steps.forEach((step, idx) => {
+    const div = document.createElement('div');
+    div.className = 'step-item';
+    div.style.flexDirection = 'column';
+    div.innerHTML = `
+      <div class="step-body" style="width:100%;">
+        <div class="step-meta">Paso ${idx+1} · ${fmtTime(step.time)}</div>
+        <textarea data-id="${step.id}" placeholder="Descripción de este paso...">${step.text}</textarea>
+      </div>
+      <img src="${step.thumb}" data-time="${step.time}" title="Clic: ir a este momento del video" style="width:100%;max-width:100%;border-radius:8px;cursor:pointer;">
+      <div class="step-actions" style="flex-direction:row;width:100%;justify-content:flex-end;">
+        <button class="btn-secondary" data-action="annot" data-id="${step.id}">✏ Anotar imagen</button>
+        <button class="btn-ghost" data-action="up" data-id="${step.id}">↑</button>
+        <button class="btn-ghost" data-action="down" data-id="${step.id}">↓</button>
+        <button class="btn-danger" data-action="del" data-id="${step.id}">✕</button>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  container.querySelectorAll('textarea').forEach(ta => {
+    ta.addEventListener('input', e => {
+      const id = parseInt(e.target.dataset.id);
+      const s = steps.find(s => s.id === id);
+      if (s) s.text = e.target.value;
+    });
+  });
+  container.querySelectorAll('img').forEach(img => {
+    img.addEventListener('click', e => {
+      $('preview').currentTime = parseFloat(e.target.dataset.time);
+    });
+  });
+  container.querySelectorAll('button[data-action]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const id = parseInt(e.target.dataset.id);
+      const action = e.target.dataset.action;
+      const i = steps.findIndex(s => s.id === id);
+      if (i === -1) return;
+      if (action === 'del'){
+        steps.splice(i,1);
+      } else if (action === 'annot'){
+        openAnnotator(id);
+        return;
+      } else if (action === 'up' && i > 0){
+        [steps[i-1], steps[i]] = [steps[i], steps[i-1]];
+      } else if (action === 'down' && i < steps.length-1){
+        [steps[i+1], steps[i]] = [steps[i], steps[i+1]];
+      }
+      renderSteps();
+    });
+  });
+}
+
+/* ================= EDITOR DE ANOTACIONES ================= */
+let annotStepId = null;
+let annotActions = [];
+let annotBaseImage = null;
+let annotTool = 'arrow';
+let annotColor = '#c0392b';
+let annotDrawing = false;
+let annotStart = null;
+let annotTemp = null;
+
+function openAnnotator(stepId){
+  const step = steps.find(s => s.id === stepId);
+  if (!step) return;
+  annotStepId = stepId;
+  annotActions = [];
+  annotBaseImage = new Image();
+  annotBaseImage.onload = () => {
+    const canvas = $('annotateCanvas');
+    canvas.width = annotBaseImage.naturalWidth;
+    canvas.height = annotBaseImage.naturalHeight;
+    redrawAnnotator();
+  };
+  annotBaseImage.src = step.thumb;
+  $('annotateModal').classList.remove('hidden');
+}
+
+function closeAnnotator(){
+  $('annotateModal').classList.add('hidden');
+  annotStepId = null;
+}
+
+function annotCanvasCoords(e){
+  const canvas = $('annotateCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+}
+
+function redrawAnnotator(){
+  const canvas = $('annotateCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if (annotBaseImage) ctx.drawImage(annotBaseImage, 0, 0, canvas.width, canvas.height);
+  annotActions.forEach(a => drawAnnotAction(ctx, a));
+}
+
+function drawAnnotAction(ctx, a){
+  ctx.strokeStyle = a.color;
+  ctx.fillStyle = a.color;
+  ctx.lineWidth = Math.max(3, canvasLineScale());
+  if (a.type === 'arrow') drawArrow(ctx, a.x1, a.y1, a.x2, a.y2);
+  else if (a.type === 'rect') drawRectAnnot(ctx, a.x1, a.y1, a.x2, a.y2);
+  else if (a.type === 'bubble') drawBubble(ctx, a.x, a.y, a.text, a.color);
+  else if (a.type === 'text') drawTextAnnot(ctx, a.x, a.y, a.text, a.color);
+}
+
+function canvasLineScale(){
+  const canvas = $('annotateCanvas');
+  return Math.max(3, Math.round(canvas.width / 260));
+}
+
+function drawArrow(ctx, x1, y1, x2, y2){
+  const headLen = Math.max(14, canvasLineScale() * 4);
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - headLen * Math.cos(angle - Math.PI/6), y2 - headLen * Math.sin(angle - Math.PI/6));
+  ctx.lineTo(x2 - headLen * Math.cos(angle + Math.PI/6), y2 - headLen * Math.sin(angle + Math.PI/6));
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawRectAnnot(ctx, x1, y1, x2, y2){
+  const x = Math.min(x1,x2), y = Math.min(y1,y2);
+  const w = Math.abs(x2-x1), h = Math.abs(y2-y1);
+  ctx.strokeRect(x, y, w, h);
+}
+
+function wrapText(ctx, text, maxWidth){
+  const words = text.split(' ');
+  const lines = [];
+  let line = '';
+  words.forEach(w => {
+    const test = line ? line + ' ' + w : w;
+    if (ctx.measureText(test).width > maxWidth && line){
+      lines.push(line);
+      line = w;
+    } else {
+      line = test;
+    }
+  });
+  if (line) lines.push(line);
+  return lines;
+}
+
+function drawBubble(ctx, x, y, text, color){
+  const fontSize = Math.max(16, Math.round($('annotateCanvas').width / 45));
+  ctx.font = 'bold ' + fontSize + 'px Segoe UI, Arial, sans-serif';
+  const maxWidth = 260;
+  const lines = wrapText(ctx, text, maxWidth);
+  const lineH = fontSize * 1.3;
+  const boxW = Math.min(maxWidth, Math.max(...lines.map(l => ctx.measureText(l).width))) + 28;
+  const boxH = lines.length * lineH + 22;
+
+  ctx.fillStyle = '#ffffff';
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  roundRect(ctx, x, y, boxW, boxH, 12);
+  ctx.fill();
+  ctx.stroke();
+
+  // cola de la nube
+  ctx.beginPath();
+  ctx.moveTo(x + 24, y + boxH);
+  ctx.lineTo(x + 10, y + boxH + 20);
+  ctx.lineTo(x + 42, y + boxH);
+  ctx.closePath();
+  ctx.fillStyle = '#ffffff';
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = color;
+  lines.forEach((l, i) => {
+    ctx.fillText(l, x + 14, y + 24 + i*lineH);
+  });
+}
+
+function drawTextAnnot(ctx, x, y, text, color){
+  const fontSize = Math.max(18, Math.round($('annotateCanvas').width / 40));
+  ctx.font = 'bold ' + fontSize + 'px Segoe UI, Arial, sans-serif';
+  ctx.fillStyle = color;
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 4;
+  ctx.strokeText(text, x, y);
+  ctx.fillText(text, x, y);
+}
+
+function roundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.arcTo(x+w, y, x+w, y+h, r);
+  ctx.arcTo(x+w, y+h, x, y+h, r);
+  ctx.arcTo(x, y+h, x, y, r);
+  ctx.arcTo(x, y, x+w, y, r);
+  ctx.closePath();
+}
+
+function setupAnnotatorEvents(){
+  const canvas = $('annotateCanvas');
+
+  document.querySelectorAll('.tool-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      annotTool = btn.dataset.tool;
+      document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      annotColor = sw.dataset.color;
+      document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+      sw.classList.add('active');
+    });
+  });
+
+  canvas.addEventListener('mousedown', e => {
+    const pos = annotCanvasCoords(e);
+    if (annotTool === 'bubble' || annotTool === 'text'){
+      const text = prompt(annotTool === 'bubble' ? 'Texto de la nube de mensaje:' : 'Texto a insertar:');
+      if (text && text.trim()){
+        annotActions.push({ type: annotTool, x: pos.x, y: pos.y, text: text.trim(), color: annotColor });
+        redrawAnnotator();
+      }
+      return;
+    }
+    annotDrawing = true;
+    annotStart = pos;
+    annotTemp = pos;
+  });
+  canvas.addEventListener('mousemove', e => {
+    if (!annotDrawing) return;
+    annotTemp = annotCanvasCoords(e);
+    redrawAnnotator();
+    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = annotColor;
+    ctx.fillStyle = annotColor;
+    ctx.lineWidth = canvasLineScale();
+    if (annotTool === 'arrow') drawArrow(ctx, annotStart.x, annotStart.y, annotTemp.x, annotTemp.y);
+    else if (annotTool === 'rect') drawRectAnnot(ctx, annotStart.x, annotStart.y, annotTemp.x, annotTemp.y);
+  });
+  canvas.addEventListener('mouseup', () => {
+    if (!annotDrawing) return;
+    annotDrawing = false;
+    if (annotStart && annotTemp && (Math.abs(annotTemp.x-annotStart.x) > 4 || Math.abs(annotTemp.y-annotStart.y) > 4)){
+      annotActions.push({ type: annotTool, x1: annotStart.x, y1: annotStart.y, x2: annotTemp.x, y2: annotTemp.y, color: annotColor });
+    }
+    redrawAnnotator();
+  });
+  canvas.addEventListener('mouseleave', () => { annotDrawing = false; redrawAnnotator(); });
+
+  $('btnUndoAnnot').addEventListener('click', () => { annotActions.pop(); redrawAnnotator(); });
+  $('btnClearAnnot').addEventListener('click', () => { annotActions = []; redrawAnnotator(); });
+  $('btnSaveAnnot').addEventListener('click', () => {
+    const canvas = $('annotateCanvas');
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+    const step = steps.find(s => s.id === annotStepId);
+    if (step) step.thumb = dataUrl;
+    closeAnnotator();
+    renderSteps();
+  });
+  $('btnCancelAnnot').addEventListener('click', closeAnnotator);
+
+  document.querySelector('.tool-btn[data-tool="arrow"]').classList.add('active');
+  document.querySelector('.swatch[data-color="#c0392b"]').classList.add('active');
+}
+
+function exportVideo(){
+  if (!videoBlobUrl){
+    alert('Todavía no hay un video grabado para descargar.');
+    return;
+  }
+  const a = document.createElement('a');
+  a.href = videoBlobUrl;
+  a.download = 'grabacion_' + new Date().toISOString().slice(0,19).replace(/[:T]/g,'-') + '.webm';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function exportDoc(){
+  const rows = steps.map((s, idx) => `
+    <div class="paso">
+      <div class="paso-encabezado">
+        <span class="paso-num">Paso ${idx+1}</span>
+        <span class="paso-time">⏱ ${fmtTime(s.time)}</span>
+      </div>
+      <p>${(s.text || '(sin descripción)').replace(/</g,'&lt;')}</p>
+      <img src="${s.thumb}">
+    </div>
+  `).join('\n');
+
+  const html = `<!DOCTYPE html>
+<html lang="es"><head><meta charset="UTF-8">
+<title>Paso a paso — Capacitación COOPELESCA</title>
+<style>
+  body{font-family:'Segoe UI',Calibri,Arial,sans-serif;background:#f4f6f8;color:#232a33;margin:0;padding:0 0 40px;}
+  .encabezado{background:linear-gradient(90deg,#0b3d67,#1573c4);color:#fff;padding:26px 36px;}
+  .encabezado h1{margin:0;font-size:22px;}
+  .encabezado p{margin:6px 0 0;font-size:13px;opacity:.85;}
+  .contenido{max-width:820px;margin:26px auto;padding:0 20px;}
+  .paso{background:#fff;border:1px solid #e5e9ed;border-radius:12px;padding:20px;margin-bottom:20px;}
+  .paso-encabezado{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .paso-num{font-weight:800;color:#1573c4;font-size:15px;}
+  .paso-time{font-size:12.5px;color:#6b7684;font-weight:700;}
+  .paso p{margin:0 0 14px;font-size:15px;line-height:1.55;}
+  .paso img{width:100%;max-width:100%;border-radius:8px;border:1px solid #e5e9ed;display:block;}
+  footer{background:linear-gradient(90deg,#0b3d67,#1573c4);color:#fff;text-align:center;font-size:12px;padding:12px;margin-top:20px;}
+</style></head>
+<body>
+  <div class="encabezado">
+    <h1>COOPELESCA R.L. — Paso a paso de Capacitación</h1>
+    <p>Generado el ${new Date().toLocaleString('es-CR')} · Sirviendo con el corazón</p>
+  </div>
+  <div class="contenido">
+    ${rows || '<p><i>No se agregaron pasos.</i></p>'}
+  </div>
+  <footer>www.coopelesca.com &nbsp;|&nbsp; 2401-2828 &nbsp;|&nbsp; San Carlos</footer>
+</body></html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'paso_a_paso_' + new Date().toISOString().slice(0,10) + '.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function resetAll(){
+  steps = [];
+  recordedChunks = [];
+  cuts = [];
+  pendingCutStart = null;
+  if (videoBlobUrl) URL.revokeObjectURL(videoBlobUrl);
+  videoBlobUrl = null;
+  $('preview').src = '';
+  $('stepTrim').classList.add('hidden');
+  $('stepReview').classList.add('hidden');
+  $('stepList').classList.add('hidden');
+  $('stepExport').classList.add('hidden');
+  $('timer').textContent = '00:00';
+  setStatus($('startStatus'), '', false);
+  renderSteps();
+}
+
+$('btnStart').addEventListener('click', startRecording);
+$('btnPause').addEventListener('click', togglePause);
+$('btnStop').addEventListener('click', stopRecording);
+$('btnAddStep').addEventListener('click', addStepAtCurrentTime);
+$('btnExportVideo').addEventListener('click', exportVideo);
+$('btnExportDoc').addEventListener('click', exportDoc);
+$('btnReset').addEventListener('click', resetAll);
+$('btnMarkCutStart').addEventListener('click', markCutStart);
+$('btnMarkCutEnd').addEventListener('click', markCutEnd);
+$('btnRenderCuts').addEventListener('click', renderTrimmedVideo);
+renderCuts();
+setupAnnotatorEvents();
+
+if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia){
+  setStatus($('startStatus'), 'Este navegador no soporta grabación de pantalla. Usa Chrome o Edge actualizado.', true);
+  $('btnStart').disabled = true;
+}
+</script>
+
+</body>
+</html>
