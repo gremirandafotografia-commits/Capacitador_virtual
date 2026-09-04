@@ -19,6 +19,18 @@ if (!fs.existsSync(MANUALES_META_FILE)) {
   fs.writeFileSync(MANUALES_META_FILE, JSON.stringify({}, null, 2));
 }
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'coopelesca2026';
+const adminTokens = new Set();
+
+function requireAdmin(req, res, next) {
+  const auth = req.headers.authorization || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  if (!token || !adminTokens.has(token)) {
+    return res.status(401).json({ error: 'Sesion de administracion invalida o expirada' });
+  }
+  next();
+}
+
 const SLUG_RE = /^[a-z0-9-]+$/;
 const CATEGORIAS = [
   'Sistema Open',
@@ -313,6 +325,18 @@ app.put('/api/manuales/:id', (req, res) => {
   res.json({ ok: true });
 });
 
+// ---------- Administracion ----------
+
+app.post('/api/admin/login', (req, res) => {
+  const { password } = req.body || {};
+  if (password !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Contrasena incorrecta' });
+  }
+  const token = uuidv4();
+  adminTokens.add(token);
+  res.json({ token });
+});
+
 // ---------- Evaluaciones ----------
 
 function evalPath(slug) {
@@ -366,7 +390,7 @@ app.get('/api/evaluaciones/:slug', (req, res) => {
   }
 });
 
-app.post('/api/evaluaciones', (req, res) => {
+app.post('/api/evaluaciones', requireAdmin, (req, res) => {
   const { titulo, tema, esFinal, tramiteId, descripcion } = req.body || {};
   if (!titulo || !titulo.trim()) return res.status(400).json({ error: 'Titulo requerido' });
 
@@ -395,7 +419,7 @@ app.post('/api/evaluaciones', (req, res) => {
   res.status(201).json(doc);
 });
 
-app.put('/api/evaluaciones/:slug', (req, res) => {
+app.put('/api/evaluaciones/:slug', requireAdmin, (req, res) => {
   try {
     const dir = evalPath(req.params.slug);
     const file = path.join(dir, 'evaluacion.json');
@@ -416,7 +440,7 @@ app.put('/api/evaluaciones/:slug', (req, res) => {
   }
 });
 
-app.delete('/api/evaluaciones/:slug', (req, res) => {
+app.delete('/api/evaluaciones/:slug', requireAdmin, (req, res) => {
   try {
     const dir = evalPath(req.params.slug);
     if (!fs.existsSync(dir)) return res.status(404).json({ error: 'No encontrada' });
@@ -476,7 +500,7 @@ app.post('/api/evaluaciones/:slug/intentos', (req, res) => {
   }
 });
 
-app.get('/api/evaluaciones/:slug/intentos', (req, res) => {
+app.get('/api/evaluaciones/:slug/intentos', requireAdmin, (req, res) => {
   const dir = evalIntentosDir(req.params.slug);
   if (!fs.existsSync(dir)) return res.json({ items: [] });
   const items = fs.readdirSync(dir)
@@ -487,7 +511,7 @@ app.get('/api/evaluaciones/:slug/intentos', (req, res) => {
   res.json({ items });
 });
 
-app.put('/api/evaluaciones/:slug/intentos/:intentoId', (req, res) => {
+app.put('/api/evaluaciones/:slug/intentos/:intentoId', requireAdmin, (req, res) => {
   try {
     const dir = evalIntentosDir(req.params.slug);
     const file = path.join(dir, `${req.params.intentoId}.json`);

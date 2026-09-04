@@ -20,6 +20,11 @@ async function init() {
   bindTabs();
   bindModalNueva();
   bindResultados();
+
+  document.getElementById('btnCerrarSesion').addEventListener('click', () => {
+    AdminAuth.clearToken();
+    window.location.href = '/index.html';
+  });
 }
 
 function bindTabs() {
@@ -258,4 +263,4 @@ function exportarCsv() {
   URL.revokeObjectURL(url);
 }
 
-init();
+adminGuard().then(init);

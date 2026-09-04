@@ -1,3 +1,16 @@
+function adminHeaders() {
+  const token = (typeof AdminAuth !== 'undefined') && AdminAuth.getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+async function checkAdminAuth(r) {
+  if (r.status === 401 && typeof AdminAuth !== 'undefined') {
+    AdminAuth.clearToken();
+    throw new Error('Tu sesion de administracion expiro. Recarga la pagina para volver a ingresar la contrasena.');
+  }
+  return r;
+}
+
 const Api = {
   async listTramites() {
     const r = await fetch('/api/tramites');
@@ -79,23 +92,26 @@ const Api = {
   async createEvaluacion(data) {
     const r = await fetch('/api/evaluaciones', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
       body: JSON.stringify(data)
     });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error((await r.json()).error || 'Error al crear');
     return r.json();
   },
   async saveEvaluacion(id, data) {
     const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
       body: JSON.stringify(data)
     });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error((await r.json()).error || 'Error al guardar');
     return r.json();
   },
   async deleteEvaluacion(id) {
-    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}`, { method: 'DELETE', headers: adminHeaders() });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error('Error al eliminar');
     return r.json();
   },
@@ -109,15 +125,17 @@ const Api = {
     return r.json();
   },
   async listIntentos(id) {
-    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}/intentos`);
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}/intentos`, { headers: adminHeaders() });
+    await checkAdminAuth(r);
     return r.json();
   },
   async calificarIntento(id, intentoId, calificaciones) {
     const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}/intentos/${encodeURIComponent(intentoId)}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
       body: JSON.stringify({ calificaciones })
     });
+    await checkAdminAuth(r);
     if (!r.ok) throw new Error((await r.json()).error || 'Error al calificar');
     return r.json();
   }

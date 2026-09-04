@@ -170,4 +170,4 @@ async function guardar() {
   }
 }
 
-init();
+adminGuard().then(init);

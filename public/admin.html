@@ -34,7 +34,10 @@
       <h1>Administración de evaluaciones</h1>
       <p>Creá evaluaciones por tema o finales, y revisá los resultados para reforzar conceptos con el equipo.</p>
     </div>
-    <button class="btn primary" id="btnNuevaEval"><span class="msym">add_circle</span> Nueva evaluación</button>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="btnCerrarSesion"><span class="msym" style="font-size:15px">close</span> Cerrar sesión</button>
+      <button class="btn primary" id="btnNuevaEval"><span class="msym">add_circle</span> Nueva evaluación</button>
+    </div>
   </div>
 
   <div class="tabs">
@@ -89,6 +92,7 @@
 </div>
 
 <script src="/js/api.js"></script>
+<script src="/js/admin-auth.js"></script>
 <script src="/js/admin.js"></script>
 </body>
 </html>
