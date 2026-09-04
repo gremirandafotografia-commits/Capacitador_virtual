@@ -342,18 +342,22 @@ function comprimirEnSegundoPlano(slug, filename, filePath, tamanoOriginal) {
     });
 }
 
+function iniciarCompresionSiAplica(slug, filename, filePath, tamanoOriginal, tipo) {
+  const comprimiendo = FFMPEG_AVAILABLE && tipo.startsWith('video/');
+  if (comprimiendo) {
+    compressionJobs.set(filename, { done: false });
+    comprimirEnSegundoPlano(slug, filename, filePath, tamanoOriginal);
+  }
+  return comprimiendo;
+}
+
 app.post('/api/tramites/:slug/media', requireAdmin, upload.single('archivo'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Archivo requerido' });
 
   const filename = req.file.filename;
   const tipo = req.file.mimetype;
   const tamanoOriginal = req.file.size;
-  const comprimiendo = FFMPEG_AVAILABLE && tipo.startsWith('video/');
-
-  if (comprimiendo) {
-    compressionJobs.set(filename, { done: false });
-    comprimirEnSegundoPlano(req.params.slug, filename, req.file.path, tamanoOriginal);
-  }
+  const comprimiendo = iniciarCompresionSiAplica(req.params.slug, filename, req.file.path, tamanoOriginal, tipo);
 
   const rel = `/tramites/${req.params.slug}/media/${filename}`;
   res.status(201).json({
@@ -365,6 +369,59 @@ app.post('/api/tramites/:slug/media', requireAdmin, upload.single('archivo'), (r
     tamanoFinal: tamanoOriginal,
     comprimiendo
   });
+});
+
+// Subida en partes: algunos proxys intermedios (el tunel publico de
+// Codespaces, por ejemplo) rechazan de entrada cualquier archivo de mas
+// de ~16MB con un 413, antes de que llegue a este servidor. Como un
+// video de capacitacion facilmente supera eso, el cliente puede partirlo
+// en pedazos chicos y mandarlos uno por uno; este endpoint los va
+// concatenando y arma el archivo final con el ultimo pedazo.
+const chunkUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 9 * 1024 * 1024 } });
+const UPLOAD_ID_RE = /^[a-zA-Z0-9-]{1,80}$/;
+
+app.post('/api/tramites/:slug/media/chunk', requireAdmin, chunkUpload.single('chunk'), (req, res) => {
+  try {
+    const { uploadId, filename, mimetype } = req.body || {};
+    const idx = parseInt(req.body && req.body.index, 10);
+    const total = parseInt(req.body && req.body.total, 10);
+    if (!req.file || !uploadId || !UPLOAD_ID_RE.test(uploadId) || Number.isNaN(idx) || Number.isNaN(total) || total < 1) {
+      return res.status(400).json({ error: 'Solicitud de subida por partes invalida' });
+    }
+
+    const mediaDir = path.join(tramitePath(req.params.slug), 'media');
+    const chunksDir = path.join(mediaDir, '.chunks');
+    fs.mkdirSync(chunksDir, { recursive: true });
+    const tempPath = path.join(chunksDir, uploadId);
+
+    // Los pedazos llegan en orden -el cliente espera la respuesta de uno
+    // antes de mandar el siguiente- asi que alcanza con ir concatenando.
+    if (idx === 0) fs.writeFileSync(tempPath, req.file.buffer);
+    else fs.appendFileSync(tempPath, req.file.buffer);
+
+    if (idx < total - 1) return res.json({ done: false });
+
+    const ext = path.extname(filename || '') || guessExt(mimetype || '');
+    const finalName = `${Date.now()}-${uuidv4().slice(0, 8)}${ext}`;
+    const finalPath = path.join(mediaDir, finalName);
+    fs.renameSync(tempPath, finalPath);
+
+    const tamanoOriginal = fs.statSync(finalPath).size;
+    const tipo = mimetype || 'application/octet-stream';
+    const comprimiendo = iniciarCompresionSiAplica(req.params.slug, finalName, finalPath, tamanoOriginal, tipo);
+
+    res.status(201).json({
+      src: `/tramites/${req.params.slug}/media/${finalName}`,
+      nombre: finalName,
+      tipo,
+      comprimido: false,
+      tamanoOriginal,
+      tamanoFinal: tamanoOriginal,
+      comprimiendo
+    });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
 });
 
 app.get('/api/tramites/:slug/media/:nombre/estado', (req, res) => {

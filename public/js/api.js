@@ -47,7 +47,17 @@ const Api = {
     if (!r.ok) throw new Error('Error al eliminar');
     return r.json();
   },
+  // Algunos proxys intermedios (el tunel publico de Codespaces, por
+  // ejemplo) rechazan de entrada cualquier subida de mas de ~16MB con un
+  // 413, antes de que llegue al servidor. Por debajo de este tamano se
+  // manda todo en una sola peticion (mas simple y mas rapido); por
+  // encima se parte en pedazos de 8MB.
+  UMBRAL_SUBIDA_POR_PARTES: 8 * 1024 * 1024,
+
   async uploadMedia(slug, blob, filename) {
+    if (blob.size > Api.UMBRAL_SUBIDA_POR_PARTES) {
+      return Api.uploadMediaPorPartes(slug, blob, filename);
+    }
     const fd = new FormData();
     fd.append('archivo', blob, filename || 'captura');
     let r;
@@ -63,6 +73,38 @@ const Api = {
       throw new Error(msg);
     }
     const data = await r.json();
+    if (!data.comprimiendo) return data;
+    return Api.esperarCompresion(slug, data);
+  },
+
+  async uploadMediaPorPartes(slug, blob, filename) {
+    const CHUNK = Api.UMBRAL_SUBIDA_POR_PARTES;
+    const uploadId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const total = Math.ceil(blob.size / CHUNK);
+    let data = null;
+    for (let i = 0; i < total; i++) {
+      const parte = blob.slice(i * CHUNK, Math.min((i + 1) * CHUNK, blob.size));
+      const fd = new FormData();
+      fd.append('chunk', parte, filename || 'archivo');
+      fd.append('uploadId', uploadId);
+      fd.append('index', String(i));
+      fd.append('total', String(total));
+      fd.append('filename', filename || '');
+      fd.append('mimetype', blob.type || '');
+      let r;
+      try {
+        r = await fetch(`/api/tramites/${encodeURIComponent(slug)}/media/chunk`, { method: 'POST', headers: adminHeaders(), body: fd });
+      } catch (e) {
+        throw new Error('No se pudo conectar con el servidor para subir el archivo.');
+      }
+      await checkAdminAuth(r);
+      if (!r.ok) {
+        let msg = 'Error al subir archivo';
+        try { msg = (await r.json()).error || msg; } catch (e) { /* respuesta no era JSON */ }
+        throw new Error(msg);
+      }
+      data = await r.json();
+    }
     if (!data.comprimiendo) return data;
     return Api.esperarCompresion(slug, data);
   },
