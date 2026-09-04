@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/img/favicon-180.png">
+<title>Evaluaciones · CATA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=description,menu_book,quiz,admin_panel_settings,add_circle,save,edit,visibility,delete,arrow_back,search,check_circle,fact_check,folder_open">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="barra">
+  <div class="marca">
+    <img class="logo-img" src="/img/coopelesca-blanco.png" alt="Coopelesca">
+    <div class="sep"></div>
+    <div class="marca-texto"><b>CATA</b><span>Capacitador de Atención de Trámites de Asociados</span></div>
+  </div>
+</header>
+<nav class="pestanas">
+  <a href="/index.html"><span class="msym">description</span> Trámites</a>
+  <a href="/manuales.html"><span class="msym">menu_book</span> Manuales</a>
+  <a class="act" href="/evaluaciones.html"><span class="msym">quiz</span> Evaluaciones</a>
+  <a href="/admin.html"><span class="msym">admin_panel_settings</span> Administración</a>
+</nav>
+
+<main class="container">
+  <div class="page-header">
+    <div>
+      <h1>Evaluaciones</h1>
+      <p>Elegí un tema para evaluar lo aprendido. Se identifica solo con tu nombre y apellido.</p>
+    </div>
+  </div>
+
+  <div id="grid"></div>
+</main>
+
+<script src="/js/api.js"></script>
+<script src="/js/evaluaciones.js"></script>
+</body>
+</html>

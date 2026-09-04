@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/img/favicon-180.png">
+<title>Evaluación · CATA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=description,menu_book,quiz,admin_panel_settings,check_circle,fact_check,arrow_back,send">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="barra">
+  <div class="marca">
+    <img class="logo-img" src="/img/coopelesca-blanco.png" alt="Coopelesca">
+    <div class="sep"></div>
+    <div class="marca-texto"><b>CATA</b><span>Capacitador de Atención de Trámites de Asociados</span></div>
+  </div>
+</header>
+<nav class="pestanas">
+  <a href="/index.html"><span class="msym">description</span> Trámites</a>
+  <a href="/manuales.html"><span class="msym">menu_book</span> Manuales</a>
+  <a class="act" href="/evaluaciones.html"><span class="msym">quiz</span> Evaluaciones</a>
+  <a href="/admin.html"><span class="msym">admin_panel_settings</span> Administración</a>
+</nav>
+
+<main class="container narrow" id="app" hidden>
+  <a href="/evaluaciones.html" class="btn small ghost" style="margin-bottom:10px"><span class="msym" style="font-size:16px">arrow_back</span> Volver a evaluaciones</a>
+  <div class="viewer-header">
+    <span class="pill" id="eTema"></span>
+    <h1 id="eTitulo"></h1>
+    <p id="eDescripcion" style="color:var(--text-dim)"></p>
+  </div>
+
+  <section class="card" id="identidadCard">
+    <h3 style="margin-top:0">Antes de empezar</h3>
+    <div class="field-row">
+      <div class="field"><label>Nombre</label><input type="text" id="eNombre" placeholder="Nombre"></div>
+      <div class="field"><label>Apellido</label><input type="text" id="eApellido" placeholder="Apellido"></div>
+    </div>
+  </section>
+
+  <form id="preguntasForm"></form>
+
+  <div style="margin:18px 0">
+    <button class="btn primary" id="btnEnviar"><span class="msym">send</span> Enviar evaluación</button>
+  </div>
+
+  <section class="card" id="resultadoCard" hidden>
+    <h3 style="margin-top:0" id="resultadoTitulo"></h3>
+    <p id="resultadoDetalle" style="color:var(--text-dim)"></p>
+  </section>
+</main>
+
+<main class="container narrow" id="notFound" hidden>
+  <div class="empty">No se encontró esta evaluación. <a href="/evaluaciones.html">Volver al listado</a>.</div>
+</main>
+
+<script src="/js/api.js"></script>
+<script src="/js/evaluar.js"></script>
+</body>
+</html>

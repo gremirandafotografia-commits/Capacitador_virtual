@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/img/favicon-180.png">
+<title>Editar evaluación · CATA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=description,menu_book,quiz,admin_panel_settings,add_circle,save,edit,visibility,delete,arrow_back,arrow_upward,arrow_downward,check_circle,close,open_in_new">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="barra">
+  <div class="marca">
+    <img class="logo-img" src="/img/coopelesca-blanco.png" alt="Coopelesca">
+    <div class="sep"></div>
+    <div class="marca-texto"><b>CATA</b><span id="tituloTopbar">Editor de evaluación</span></div>
+  </div>
+  <div class="acciones">
+    <a class="btn-onbar" id="linkVer" href="#" target="_blank"><span class="msym">open_in_new</span> Ver evaluación</a>
+    <button class="btn-onbar solido" id="btnGuardar"><span class="msym">save</span> Guardar cambios</button>
+  </div>
+</header>
+<nav class="pestanas">
+  <a href="/index.html"><span class="msym">description</span> Trámites</a>
+  <a href="/manuales.html"><span class="msym">menu_book</span> Manuales</a>
+  <a href="/evaluaciones.html"><span class="msym">quiz</span> Evaluaciones</a>
+  <a class="act" href="/admin.html"><span class="msym">admin_panel_settings</span> Administración</a>
+</nav>
+
+<main class="container editor-shell" id="app" hidden>
+
+  <a href="/admin.html" class="btn small ghost"><span class="msym" style="font-size:16px">arrow_back</span> Volver a administración</a>
+
+  <section class="card">
+    <div class="field">
+      <label>Título de la evaluación</label>
+      <input type="text" id="mTitulo">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label><input type="checkbox" id="mEsFinal"> Es una evaluación final (abarca todos los temas)</label>
+      </div>
+    </div>
+    <div class="field" id="campoTema">
+      <label>Tema / Sistema</label>
+      <select id="mTema"></select>
+    </div>
+    <div class="field">
+      <label>Vincular a un trámite (opcional)</label>
+      <select id="mTramite"><option value="">(ninguno)</option></select>
+    </div>
+    <div class="field">
+      <label>Descripción</label>
+      <textarea id="mDescripcion"></textarea>
+    </div>
+  </section>
+
+  <section>
+    <div class="page-header" style="margin-bottom:10px">
+      <h1 style="font-size:19px;margin:0">Preguntas</h1>
+      <button class="btn primary small" id="btnAgregarPregunta"><span class="msym" style="font-size:16px">add_circle</span> Agregar pregunta</button>
+    </div>
+    <div class="step-list" id="preguntaList"></div>
+    <div class="empty" id="preguntasEmpty" hidden>Aún no hay preguntas. Agregá la primera.</div>
+  </section>
+
+</main>
+
+<template id="tplPregunta">
+  <div class="step-card" data-pregunta>
+    <div class="step-head">
+      <span class="step-num"></span>
+      <input type="text" class="pregunta-texto" placeholder="Escribe la pregunta...">
+      <select class="pregunta-tipo">
+        <option value="opcion">Opción múltiple</option>
+        <option value="vf">Verdadero / Falso</option>
+        <option value="abierta">Respuesta abierta</option>
+      </select>
+      <button class="btn small" data-mover="-1" title="Subir"><span class="msym" style="font-size:16px">arrow_upward</span></button>
+      <button class="btn small" data-mover="1" title="Bajar"><span class="msym" style="font-size:16px">arrow_downward</span></button>
+      <button class="btn small danger" data-eliminar-pregunta title="Eliminar pregunta"><span class="msym" style="font-size:16px">delete</span></button>
+    </div>
+    <div class="step-body">
+      <div class="opciones-list" data-opciones-list></div>
+      <button class="btn small" data-agregar-opcion type="button"><span class="msym" style="font-size:16px">add_circle</span> Agregar opción</button>
+      <p class="helper" data-abierta-helper hidden>Esta pregunta se responde en texto libre y queda pendiente de revisión manual en "Resultados".</p>
+    </div>
+  </div>
+</template>
+
+<template id="tplOpcion">
+  <div class="opcion-row" data-opcion-row>
+    <input type="radio" data-opcion-correcta title="Marcar como correcta">
+    <input type="text" class="opcion-texto" placeholder="Texto de la opción">
+    <button class="btn small danger" data-eliminar-opcion type="button"><span class="msym" style="font-size:15px">close</span></button>
+  </div>
+</template>
+
+<script src="/js/api.js"></script>
+<script src="/js/admin-evaluacion.js"></script>
+</body>
+</html>

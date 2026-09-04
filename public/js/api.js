@@ -66,6 +66,60 @@ const Api = {
     });
     if (!r.ok) throw new Error('Error al guardar manual');
     return r.json();
+  },
+  async listEvaluaciones() {
+    const r = await fetch('/api/evaluaciones');
+    return r.json();
+  },
+  async getEvaluacion(id) {
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}`);
+    if (!r.ok) throw new Error('No se encontro la evaluacion');
+    return r.json();
+  },
+  async createEvaluacion(data) {
+    const r = await fetch('/api/evaluaciones', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error((await r.json()).error || 'Error al crear');
+    return r.json();
+  },
+  async saveEvaluacion(id, data) {
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error((await r.json()).error || 'Error al guardar');
+    return r.json();
+  },
+  async deleteEvaluacion(id) {
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    if (!r.ok) throw new Error('Error al eliminar');
+    return r.json();
+  },
+  async enviarIntento(id, data) {
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}/intentos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error((await r.json()).error || 'Error al enviar la evaluacion');
+    return r.json();
+  },
+  async listIntentos(id) {
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}/intentos`);
+    return r.json();
+  },
+  async calificarIntento(id, intentoId, calificaciones) {
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}/intentos/${encodeURIComponent(intentoId)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ calificaciones })
+    });
+    if (!r.ok) throw new Error((await r.json()).error || 'Error al calificar');
+    return r.json();
   }
 };
 
