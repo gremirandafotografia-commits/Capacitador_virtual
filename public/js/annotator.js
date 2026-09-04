@@ -24,7 +24,10 @@ class Annotator {
 
     this.layer = document.createElement('div');
     this.layer.className = 'anno-layer';
-    if (!this.editable) this.layer.style.pointerEvents = 'none';
+    // La capa no intercepta clics por defecto: así el video/imagen de abajo
+    // recibe los clics (play, controles) tanto en el editor como en el visor.
+    // Solo captura clics mientras hay una herramienta de anotación activa (ver setTool).
+    this.layer.style.pointerEvents = 'none';
     this.stage.appendChild(this.layer);
 
     if (this.editable) {
@@ -45,6 +48,7 @@ class Annotator {
   setTool(tool) {
     this.pendingTool = tool;
     this.stage.style.cursor = tool ? 'crosshair' : '';
+    this.layer.style.pointerEvents = tool ? 'auto' : 'none';
   }
 
   deleteSelected() {
@@ -203,6 +207,7 @@ class Annotator {
     }
 
     if (this.editable) {
+      wrap.style.pointerEvents = 'auto';
       wrap.addEventListener('mousedown', (e) => this._startDrag(e, wrap, a));
       wrap.addEventListener('click', (e) => { e.stopPropagation(); this._select(a.id); });
     }
