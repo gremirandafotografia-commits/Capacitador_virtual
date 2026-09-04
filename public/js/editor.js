@@ -114,7 +114,7 @@ function bindGlobal() {
     if (!file) return;
     toast('Subiendo video externo...');
     try {
-      const res = await Api.uploadMedia(DOC.id, file, file.name);
+      const res = await Api.uploadMedia(DOC.id, file, file.name, (msg) => toast(msg));
       DOC.videoExterno = { src: res.src, nombre: file.name };
       videoEl.src = res.src;
       videoEl.hidden = false;
@@ -393,7 +393,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
     if (!blob || !blob.size) return;
     toast('Subiendo grabación...');
     try {
-      const res = await Api.uploadMedia(DOC.id, blob, `paso-${Date.now()}.webm`);
+      const res = await Api.uploadMedia(DOC.id, blob, `paso-${Date.now()}.webm`, (msg) => toast(msg));
       paso.media = { tipo: 'video', src: res.src };
       renderStageMedia(stage, paso);
       toast(mensajeSubida('Grabación guardada en el paso', res));
@@ -417,8 +417,9 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
 
   async function subirVideoPaso(file) {
     if (!file) return;
+    toast('Subiendo video...');
     try {
-      const res = await Api.uploadMedia(DOC.id, file, file.name);
+      const res = await Api.uploadMedia(DOC.id, file, file.name, (msg) => toast(msg));
       paso.media = { tipo: 'video', src: res.src };
       renderStageMedia(stage, paso);
       toast(mensajeSubida('Video agregado al paso', res));
