@@ -4,7 +4,12 @@
   "categoria": "MBA Case",
   "descripcion": "Proceso de requisa para envio de equipos a Bodega Central hace la requisa para alistar los equipos para entregar de internet y/o Tv Cable",
   "creado": "2026-09-03T23:05:37.442Z",
-  "actualizado": "2026-09-03T23:05:37.442Z",
+  "actualizado": "2026-09-04T17:52:34.938Z",
   "pasos": [],
-  "vinculos": []
+  "vinculos": [],
+  "etiquetas": [],
+  "videoExterno": {
+    "src": "/tramites/proceso-de-requisa-para-envio-de-equipos-a-bodega-central/media/1788543907541-8e636e4d-comp.mp4",
+    "nombre": "Requisa de Equpos a Bodega.webm"
+  }
 }
