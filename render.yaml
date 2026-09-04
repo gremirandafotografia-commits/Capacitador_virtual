@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: cata-capacitador
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: DATA_ROOT
+        value: /data
+    disk:
+      name: cata-data
+      mountPath: /data
+      sizeGB: 5
