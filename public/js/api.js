@@ -58,7 +58,31 @@ const Api = {
       try { msg = (await r.json()).error || msg; } catch (e) { /* respuesta no era JSON */ }
       throw new Error(msg);
     }
-    return r.json();
+    const data = await r.json();
+    if (!data.comprimiendo) return data;
+    return Api.esperarCompresion(slug, data);
+  },
+  // La subida responde apenas el archivo esta guardado; si el servidor
+  // esta comprimiendolo (puede tardar varios minutos en un video largo),
+  // se consulta el estado cada pocos segundos en vez de dejar una sola
+  // conexion abierta todo ese tiempo (eso es lo que cortaban los proxys).
+  async esperarCompresion(slug, data) {
+    const maxIntentos = 200; // ~10 minutos a 3s cada uno
+    for (let i = 0; i < maxIntentos; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      let r;
+      try {
+        r = await fetch(`/api/tramites/${encodeURIComponent(slug)}/media/${encodeURIComponent(data.nombre)}/estado`);
+      } catch (e) { continue; }
+      if (!r.ok) continue;
+      const job = await r.json();
+      if (!job.done) continue;
+      if (job.comprimido) {
+        return { ...data, src: job.src, nombre: job.nombre, tipo: job.tipo, comprimido: true, tamanoFinal: job.tamanoFinal };
+      }
+      return data;
+    }
+    return data; // se agoto la espera: se sigue usando el original sin comprimir
   },
   async listManuales() {
     const r = await fetch('/api/manuales');

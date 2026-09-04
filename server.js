@@ -276,39 +276,75 @@ function guessExt(mime) {
   return map[mime] || '';
 }
 
-app.post('/api/tramites/:slug/media', upload.single('archivo'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'Archivo requerido' });
+// Estado de compresion en segundo plano por nombre de archivo subido. La
+// compresion de un video de varios minutos puede tardar mas de lo que
+// aguanta cualquier proxy/tunel intermedio (Codespaces, nginx, etc.) sin
+// datos fluyendo; si se hace de forma sincrona dentro del POST, esas
+// conexiones se cortan antes de que el servidor responda y el navegador ve
+// un error generico de "no se pudo subir" aunque el archivo si se guardo.
+// Por eso el POST responde apenas el archivo esta en disco, y la
+// compresion (si aplica) corre aparte; el cliente consulta este mapa.
+const compressionJobs = new Map();
 
-  let filename = req.file.filename;
-  let tipo = req.file.mimetype;
-  const tamanoOriginal = req.file.size;
-  let tamanoFinal = req.file.size;
-  let comprimido = false;
-
-  if (FFMPEG_AVAILABLE && tipo.startsWith('video/')) {
-    const dir = path.dirname(req.file.path);
-    const outName = path.basename(filename, path.extname(filename)) + '-comp.mp4';
-    const outPath = path.join(dir, outName);
-    try {
-      await compressVideo(req.file.path, outPath);
+function comprimirEnSegundoPlano(slug, filename, filePath, tamanoOriginal) {
+  const dir = path.dirname(filePath);
+  const outName = path.basename(filename, path.extname(filename)) + '-comp.mp4';
+  const outPath = path.join(dir, outName);
+  compressVideo(filePath, outPath)
+    .then(() => {
       const outSize = fs.statSync(outPath).size;
       if (outSize > 0 && outSize < tamanoOriginal) {
-        fs.unlinkSync(req.file.path);
-        filename = outName;
-        tipo = 'video/mp4';
-        tamanoFinal = outSize;
-        comprimido = true;
+        fs.unlinkSync(filePath);
+        compressionJobs.set(filename, {
+          done: true,
+          comprimido: true,
+          src: `/tramites/${slug}/media/${outName}`,
+          nombre: outName,
+          tipo: 'video/mp4',
+          tamanoFinal: outSize
+        });
       } else {
         fs.unlinkSync(outPath);
+        compressionJobs.set(filename, { done: true, comprimido: false });
       }
-    } catch (e) {
+    })
+    .catch((e) => {
       console.warn('No se pudo comprimir el video, se guarda el original:', e.message);
       try { fs.unlinkSync(outPath); } catch (_) { /* no se llego a crear */ }
-    }
+      compressionJobs.set(filename, { done: true, comprimido: false });
+    });
+}
+
+app.post('/api/tramites/:slug/media', upload.single('archivo'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'Archivo requerido' });
+
+  const filename = req.file.filename;
+  const tipo = req.file.mimetype;
+  const tamanoOriginal = req.file.size;
+  const comprimiendo = FFMPEG_AVAILABLE && tipo.startsWith('video/');
+
+  if (comprimiendo) {
+    compressionJobs.set(filename, { done: false });
+    comprimirEnSegundoPlano(req.params.slug, filename, req.file.path, tamanoOriginal);
   }
 
   const rel = `/tramites/${req.params.slug}/media/${filename}`;
-  res.status(201).json({ src: rel, nombre: filename, tipo, comprimido, tamanoOriginal, tamanoFinal });
+  res.status(201).json({
+    src: rel,
+    nombre: filename,
+    tipo,
+    comprimido: false,
+    tamanoOriginal,
+    tamanoFinal: tamanoOriginal,
+    comprimiendo
+  });
+});
+
+app.get('/api/tramites/:slug/media/:nombre/estado', (req, res) => {
+  const job = compressionJobs.get(req.params.nombre);
+  if (!job) return res.json({ done: true, comprimido: false });
+  if (job.done) compressionJobs.delete(req.params.nombre);
+  res.json(job);
 });
 
 // ---------- Manuales ----------
