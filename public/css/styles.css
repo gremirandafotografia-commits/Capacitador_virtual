@@ -314,6 +314,18 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 .stage.dragover, #videoExternoZona.dragover {
   outline: 2px dashed var(--brand); outline-offset: -2px; background: rgba(0, 114, 188, 0.08);
 }
+/* Transcripcion de audio */
+.transcripcion-box { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px; }
+.transcripcion-lista { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.transcripcion-seg {
+  display: flex; gap: 10px; align-items: baseline; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 13px;
+}
+.transcripcion-seg:hover { background: var(--surface-alt); }
+.transcripcion-seg.activo { background: var(--brand-light); }
+.transcripcion-seg .ts { color: var(--text-dim); font-variant-numeric: tabular-nums; font-size: 12px; flex-shrink: 0; }
+.transcripcion-seg .txt { flex: 1; }
+.transcripcion-seg .btn-usar { flex-shrink: 0; }
+
 .anno-layer { position: absolute; inset: 0; }
 .anno-el { position: absolute; cursor: move; user-select: none; }
 .anno-el.selected { outline: 2px dashed #fff; outline-offset: 2px; }

@@ -4,13 +4,15 @@
   "description": "CATA - Capacitador de Atencion de Tramites de Asociados",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "bash scripts/setup-whisper.sh || echo 'Aviso: no se pudo preparar whisper.cpp -la transcripcion de audio no estara disponible'"
   },
   "license": "UNLICENSED",
   "dependencies": {
     "express": "^4.19.2",
     "multer": "^2.0.1",
     "marked": "^12.0.2",
+    "nodejs-whisper": "^0.3.1",
     "uuid": "^9.0.1"
   }
 }
