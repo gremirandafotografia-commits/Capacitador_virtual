@@ -47,8 +47,17 @@ const Api = {
   async uploadMedia(slug, blob, filename) {
     const fd = new FormData();
     fd.append('archivo', blob, filename || 'captura');
-    const r = await fetch(`/api/tramites/${encodeURIComponent(slug)}/media`, { method: 'POST', body: fd });
-    if (!r.ok) throw new Error('Error al subir archivo');
+    let r;
+    try {
+      r = await fetch(`/api/tramites/${encodeURIComponent(slug)}/media`, { method: 'POST', body: fd });
+    } catch (e) {
+      throw new Error('No se pudo conectar con el servidor para subir el archivo.');
+    }
+    if (!r.ok) {
+      let msg = 'Error al subir archivo';
+      try { msg = (await r.json()).error || msg; } catch (e) { /* respuesta no era JSON */ }
+      throw new Error(msg);
+    }
     return r.json();
   },
   async listManuales() {

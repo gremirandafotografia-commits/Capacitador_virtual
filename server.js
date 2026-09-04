@@ -234,7 +234,7 @@ const upload = multer({
       cb(null, `${Date.now()}-${uuidv4().slice(0, 8)}${ext}`);
     }
   }),
-  limits: { fileSize: 500 * 1024 * 1024 }
+  limits: { fileSize: 2 * 1024 * 1024 * 1024 }
 });
 
 function guessExt(mime) {
@@ -548,6 +548,24 @@ app.put('/api/evaluaciones/:slug/intentos/:intentoId', requireAdmin, (req, res) 
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) return next();
   res.sendFile(path.join(ROOT, 'public', 'index.html'));
+});
+
+// Manejo de errores de subida de archivos (multer): sin esto, un archivo
+// demasiado grande o una conexion cortada terminan en una pagina de error
+// HTML generica en vez de un mensaje claro para quien esta usando la app.
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ error: 'El archivo supera el tamano maximo permitido para subir.' });
+    }
+    return res.status(400).json({ error: 'No se pudo subir el archivo: ' + err.message });
+  }
+  if (err && err.message === 'Request aborted') {
+    if (!res.headersSent) res.status(400).json({ error: 'Se interrumpio la subida del archivo. Intenta de nuevo.' });
+    return;
+  }
+  console.error(err);
+  if (!res.headersSent) res.status(500).json({ error: 'Error interno del servidor' });
 });
 
 const PORT = process.env.PORT || 4173;
