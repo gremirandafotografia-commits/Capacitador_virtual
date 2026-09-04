@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/img/favicon-180.png">
+<title>Editor · CATA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=description,menu_book,add_circle,save,edit,visibility,delete,arrow_back,search,videocam,photo_camera,screenshot_monitor,movie,upload_file,stop_circle,crop_square,circle,arrow_outward,text_fields,image,lightbulb,warning,error,info,link,cloud_upload,download,close,arrow_upward,arrow_downward,check_circle,folder_open,format_bold,format_italic,format_clear,mic,open_in_new">
+<link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<header class="barra">
+  <div class="marca">
+    <img class="logo-img" src="/img/coopelesca-blanco.png" alt="Coopelesca">
+    <div class="sep"></div>
+    <div class="marca-texto"><b>CATA</b><span id="tituloTopbar">Editor de trámite</span></div>
+  </div>
+  <div class="acciones">
+    <a class="btn-onbar" id="linkVer" href="#" target="_blank"><span class="msym">open_in_new</span> Ver documento</a>
+    <button class="btn-onbar solido" id="btnGuardar"><span class="msym">save</span> Guardar cambios</button>
+  </div>
+</header>
+<nav class="pestanas">
+  <a class="act" href="/index.html"><span class="msym">description</span> Trámites</a>
+  <a href="/manuales.html"><span class="msym">menu_book</span> Manuales</a>
+</nav>
+
+<main class="container editor-shell" id="app" hidden>
+
+  <section class="card">
+    <div class="field">
+      <label>Título del trámite</label>
+      <input type="text" id="mTitulo">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Categoría / Sistema</label>
+        <select id="mCategoria"></select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Descripción</label>
+      <textarea id="mDescripcion"></textarea>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3 style="margin-top:0">Video externo de referencia (opcional)</h3>
+    <p class="helper">Carga un video ya grabado (Zoom, Teams, celular, etc.). Reprodúcelo y captura fotogramas para convertirlos en pasos con pantallazo listo para anotar.</p>
+    <div class="capture-row">
+      <label class="btn small"><span class="msym" style="font-size:16px">upload_file</span> Subir video externo<input type="file" id="inputVideoExterno" accept="video/*" hidden></label>
+      <button class="btn small" id="btnCapturarFotograma" disabled><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma como nuevo paso</button>
+    </div>
+    <video id="videoExterno" controls style="width:100%;max-height:360px;border-radius:8px;margin-top:10px;background:#000" hidden></video>
+  </section>
+
+  <section>
+    <div class="page-header" style="margin-bottom:10px">
+      <h1 style="font-size:19px;margin:0">Pasos del trámite</h1>
+      <button class="btn primary small" id="btnAgregarPaso"><span class="msym" style="font-size:16px">add_circle</span> Agregar paso</button>
+    </div>
+    <div class="step-list" id="stepList"></div>
+    <div class="empty" id="stepsEmpty" hidden>Aún no hay pasos. Agrega el primero, graba pantalla, cámara o sube una imagen/video.</div>
+  </section>
+
+  <section class="card">
+    <h3 style="margin-top:0">Documentos relacionados (vínculos)</h3>
+    <p class="helper">Enlaza este trámite con otros trámites o manuales. En el visor aparecerán como accesos directos que el usuario elige ver, usando las mismas herramientas.</p>
+    <div class="link-list" id="linkList"></div>
+    <button class="btn small" id="btnAgregarVinculo" style="margin-top:10px"><span class="msym" style="font-size:16px">link</span> Agregar vínculo</button>
+  </section>
+
+</main>
+
+<template id="tplStep">
+  <div class="step-card" data-step>
+    <div class="step-head">
+      <span class="step-num"></span>
+      <input type="text" class="step-titulo" placeholder="Título del paso">
+      <button class="btn small" data-mover="-1" title="Subir"><span class="msym" style="font-size:16px">arrow_upward</span></button>
+      <button class="btn small" data-mover="1" title="Bajar"><span class="msym" style="font-size:16px">arrow_downward</span></button>
+      <button class="btn small danger" data-eliminar-paso title="Eliminar paso"><span class="msym" style="font-size:16px">delete</span></button>
+    </div>
+    <div class="step-body">
+      <div>
+        <div class="rte-toolbar">
+          <button type="button" data-cmd="bold" title="Negrita"><span class="msym" style="font-size:15px">format_bold</span></button>
+          <button type="button" data-cmd="italic" title="Cursiva"><span class="msym" style="font-size:15px">format_italic</span></button>
+          <input type="color" data-cmd="foreColor" value="#1c2430" title="Color de texto">
+          <button type="button" data-cmd="removeFormat" title="Quitar formato"><span class="msym" style="font-size:15px">format_clear</span></button>
+        </div>
+        <div class="rte" contenteditable="true" data-texto placeholder="Describe este paso..."></div>
+      </div>
+
+      <div class="capture-row">
+        <button class="btn small" data-accion="pantalla"><span class="msym" style="font-size:16px">videocam</span> Grabar pantalla + audio</button>
+        <button class="btn small" data-accion="camara"><span class="msym" style="font-size:16px">photo_camera</span> Grabar cámara</button>
+        <button class="btn small" data-accion="pantallazo"><span class="msym" style="font-size:16px">screenshot_monitor</span> Tomar pantallazo</button>
+        <label class="btn small"><span class="msym" style="font-size:16px">movie</span> Subir video<input type="file" accept="video/*" hidden data-subir="video"></label>
+        <label class="btn small"><span class="msym" style="font-size:16px">image</span> Subir imagen<input type="file" accept="image/*" hidden data-subir="imagen"></label>
+        <button class="btn small danger" data-accion="detener" hidden><span class="msym" style="font-size:16px">stop_circle</span> Detener grabación</button>
+        <span class="rec-indicator" data-indicador><span class="dot"></span> Grabando...</span>
+      </div>
+
+      <div class="stage-wrap">
+        <div class="stage" data-stage>
+          <div class="empty-stage">Sin imagen ni video todavía.<br>Graba, toma un pantallazo o sube un archivo.</div>
+        </div>
+        <div class="anno-toolbar" data-anno-toolbar style="margin-top:8px">
+          <button class="btn small" data-tool="rect" title="Rectángulo"><span class="msym">crop_square</span></button>
+          <button class="btn small" data-tool="ellipse" title="Óvalo"><span class="msym">circle</span></button>
+          <button class="btn small" data-tool="arrow" title="Flecha"><span class="msym">arrow_outward</span></button>
+          <button class="btn small" data-tool="texto" title="Texto de color"><span class="msym">text_fields</span></button>
+          <label class="btn small" title="Insertar imagen/ícono"><span class="msym">image</span><input type="file" accept="image/*" hidden data-tool-imagen></label>
+          <span class="sep"></span>
+          <button class="btn small" data-tool="callout:tip"><span class="msym" style="font-size:16px">lightbulb</span> Tip</button>
+          <button class="btn small" data-tool="callout:aviso"><span class="msym" style="font-size:16px">warning</span> Aviso</button>
+          <button class="btn small" data-tool="callout:importante"><span class="msym" style="font-size:16px">error</span> Importante</button>
+          <button class="btn small" data-tool="callout:info"><span class="msym" style="font-size:16px">info</span> Info</button>
+          <span class="sep"></span>
+          <button class="btn small danger" data-borrar-anno><span class="msym" style="font-size:16px">delete</span> Eliminar seleccionado</button>
+        </div>
+        <div class="anno-props" data-anno-props hidden></div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<template id="tplLinkRow">
+  <div class="link-row" data-link-row>
+    <select data-link-tipo>
+      <option value="tramite">Trámite</option>
+      <option value="manual">Manual</option>
+    </select>
+    <select data-link-destino></select>
+    <input type="text" class="label" data-link-etiqueta placeholder="Texto del vínculo (ej: Ver también...)">
+    <button class="btn small danger" data-link-eliminar><span class="msym" style="font-size:15px">close</span></button>
+  </div>
+</template>
+
+<script src="/js/api.js"></script>
+<script src="/js/recorder.js"></script>
+<script src="/js/annotator.js"></script>
+<script src="/js/editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "id": "apertura-de-caja-open-smartflex",
+  "titulo": "Apertura de Caja Open Smartflex",
+  "categoria": "Sistema Open",
+  "descripcion": "Proceso para la apertura de caja del sistema  Open Smartflex - CAGCA.",
+  "creado": "2026-09-03T23:26:19.629Z",
+  "actualizado": "2026-09-03T23:36:50.682Z",
+  "pasos": [
+    {
+      "id": "s0k0jqvf",
+      "titulo": "Paso 1",
+      "texto": "<b>Apertura de Gestión de Cajas:</b> Se realiza en la opción de sistema OPEN Smartflex en la pantalla <b>CAGCA</b>.",
+      "media": {
+        "tipo": "video",
+        "src": "/tramites/apertura-de-caja-open-smartflex/media/1788478407421-5c9bcc54.webm"
+      },
+      "anotaciones": []
+    }
+  ],
+  "vinculos": []
+}
