@@ -44,7 +44,9 @@ class MediaCapture {
     opts = opts || {};
     if (kind === 'pantalla') {
       const displayStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
+        // Una grabación de pantalla es mayormente interfaz estática: no hace
+        // falta más de ~15fps para que se lea perfecto y pesa mucho menos.
+        video: { frameRate: { ideal: 15, max: 20 } },
         audio: opts.audioSistema !== false
       });
       let stream = displayStream;
@@ -64,14 +66,18 @@ class MediaCapture {
       }
       this.stream = stream;
     } else if (kind === 'camara') {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.stream = await navigator.mediaDevices.getUserMedia({ video: { frameRate: { ideal: 24 } }, audio: true });
     } else {
       throw new Error('Tipo de captura desconocido');
     }
 
     this.chunks = [];
     const mime = pickMime();
-    this.recorder = new MediaRecorder(this.stream, mime ? { mimeType: mime } : undefined);
+    // Sin este límite, Chrome graba a la máxima calidad posible (varios Mbps),
+    // muy por encima de lo que necesita un video de capacitación con texto e
+    // interfaz. Bajarlo reduce el tamaño del archivo sin que se note al ver el video.
+    const videoBitsPerSecond = kind === 'pantalla' ? 2_000_000 : 1_500_000;
+    this.recorder = new MediaRecorder(this.stream, { videoBitsPerSecond, ...(mime ? { mimeType: mime } : {}) });
     this.recorder.ondataavailable = (e) => { if (e.data && e.data.size) this.chunks.push(e.data); };
     this.recorder.start(500);
 
