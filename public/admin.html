@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=description,menu_book,quiz,admin_panel_settings,add_circle,save,edit,visibility,delete,search,check_circle,fact_check,download,close,folder_open">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=description,menu_book,quiz,admin_panel_settings,add_circle,save,edit,visibility,delete,search,check_circle,fact_check,download,close,folder_open,mail,person_add,fitness_center">
 <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -43,6 +43,7 @@
   <div class="tabs">
     <button class="active" data-tab="evaluaciones">Evaluaciones</button>
     <button data-tab="resultados">Resultados</button>
+    <button data-tab="empleados">Empleados</button>
   </div>
 
   <section id="tabEvaluaciones" style="margin-top:16px">
@@ -50,11 +51,39 @@
   </section>
 
   <section id="tabResultados" style="margin-top:16px" hidden>
-    <div class="filters">
-      <select id="filtroEvalResultados"><option value="">Elegí una evaluación...</option></select>
-      <button class="btn small" id="btnExportarCsv"><span class="msym" style="font-size:15px">download</span> Exportar CSV</button>
+    <div class="tabs" style="margin-bottom:14px">
+      <button class="active" data-subtab="evaluacion">Por evaluación</button>
+      <button data-subtab="empleado">Por empleado</button>
     </div>
-    <div id="resultadosBox"></div>
+
+    <div id="subtabEvaluacion">
+      <div class="filters">
+        <select id="filtroEvalResultados"><option value="">Todas las evaluaciones</option></select>
+        <select id="filtroEmpleadoResultados"><option value="">Todos los empleados</option></select>
+        <input type="date" id="filtroFechaDesde" title="Desde">
+        <input type="date" id="filtroFechaHasta" title="Hasta">
+        <button class="btn small" id="btnExportarCsv"><span class="msym" style="font-size:15px">download</span> Exportar CSV</button>
+      </div>
+      <div id="resultadosBox"></div>
+    </div>
+
+    <div id="subtabEmpleado" hidden>
+      <p class="helper" style="margin-bottom:12px">Temas en verde: aprobados (nota ≥ 70). Temas en rojo: pendientes de reforzar.</p>
+      <div id="resumenEmpleadosBox" class="grid"></div>
+    </div>
+  </section>
+
+  <section id="tabEmpleados" style="margin-top:16px" hidden>
+    <div class="page-header" style="margin-bottom:14px">
+      <div><p class="helper" style="margin:0">Personas habilitadas para hacer evaluaciones y recibir invitaciones por correo.</p></div>
+      <button class="btn primary" id="btnNuevoEmpleado"><span class="msym">person_add</span> Agregar empleado</button>
+    </div>
+    <div class="tabla-wrap">
+      <table class="tabla-resultados">
+        <thead><tr><th>Nombre</th><th>Email</th><th>Puesto</th><th>Estado</th><th></th></tr></thead>
+        <tbody id="tablaEmpleados"></tbody>
+      </table>
+    </div>
   </section>
 </main>
 
@@ -75,6 +104,36 @@
     <div class="modal-actions">
       <button class="btn" id="nCancelar">Cancelar</button>
       <button class="btn primary" id="nCrear"><span class="msym">add_circle</span> Crear y editar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modalEmpleado" hidden>
+  <div class="modal">
+    <h2 id="empleadoModalTitulo">Agregar empleado</h2>
+    <div class="field-row">
+      <div class="field"><label>Nombre</label><input type="text" id="empNombre"></div>
+      <div class="field"><label>Apellido</label><input type="text" id="empApellido"></div>
+    </div>
+    <div class="field"><label>Email</label><input type="email" id="empEmail" placeholder="nombre@coopelesca.com"></div>
+    <div class="field"><label>Puesto (opcional)</label><input type="text" id="empPuesto"></div>
+    <div class="field"><label><input type="checkbox" id="empActivo" checked> Activo</label></div>
+    <div class="modal-actions">
+      <button class="btn" id="empCancelar">Cancelar</button>
+      <button class="btn primary" id="empGuardar"><span class="msym">save</span> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modalInvitar" hidden>
+  <div class="modal">
+    <h2>Enviar invitaciones por correo</h2>
+    <p class="helper" id="invitarEvalTitulo"></p>
+    <p class="helper" id="invitarVacio" hidden>No hay empleados con email registrado. Agregalos en la pestaña "Empleados".</p>
+    <div id="invitarLista" style="max-height:320px;overflow:auto;display:flex;flex-direction:column;gap:8px;margin:10px 0"></div>
+    <div class="modal-actions">
+      <button class="btn" id="invitarCancelar">Cancelar</button>
+      <button class="btn primary" id="invitarEnviar"><span class="msym">mail</span> Enviar invitaciones</button>
     </div>
   </div>
 </div>

@@ -43,6 +43,24 @@ ADMIN_PASSWORD="tu-contraseña-propia" npm start
 
 La vista de trámites/manuales/evaluaciones queda pública para cualquiera con el link; solo la edición pide esa contraseña.
 
+### Empleados, invitaciones por correo y prácticas de refuerzo
+
+Desde Administración → Empleados se registra manualmente a cada persona (nombre, apellido, email). Al hacer una evaluación, quien responde elige su nombre de esa lista en vez de escribirlo libremente, lo que permite:
+
+- **Resultados por empleado, tema y fecha** en Administración → Resultados → "Por empleado" (filtros por empleado y rango de fechas en "Por evaluación").
+- **Prácticas de refuerzo automáticas**: el botón "Generar práctica" arma una evaluación a medida con las preguntas de todo lo que esa persona todavía no aprueba (nota ≥ 70).
+- **Invitaciones por correo**: el botón "Invitar" en cada evaluación envía por email un enlace directo y personalizado (la persona no tiene que elegir su nombre, ya llega identificada).
+
+El envío de correos requiere configurar un servidor SMTP propio (Gmail con contraseña de aplicación, SendGrid, etc.) mediante variables de entorno — sin esto, "Invitar" muestra un error explicándolo en vez de fallar en silencio:
+
+```bash
+SMTP_HOST="smtp.tudominio.com"
+SMTP_PORT="587"                 # opcional, 587 por defecto (465 = conexión implícita TLS)
+SMTP_USER="usuario@tudominio.com"
+SMTP_PASS="contraseña-o-token-de-aplicación"
+SMTP_FROM="Capacitación CATA <usuario@tudominio.com>"   # opcional, usa SMTP_USER si no se define
+```
+
 ## Estructura del proyecto
 
 ```
@@ -56,6 +74,8 @@ public/               Front-end (HTML/CSS/JS, sin build)
 tramites/<id>/tramite.json  Un documento por trámite + su carpeta media/ con video/imágenes
 manuales/               Manuales cargados en el repositorio (versionados con git)
 data/manuales-meta.json   Metadatos editables de cada manual (título, categoría, descripción)
+data/empleados.json        Padrón de empleados habilitados para evaluaciones (nombre, apellido, email)
+evaluaciones/<id>/evaluacion.json + intentos/  Preguntas de cada evaluación y cada respuesta registrada
 ```
 
 ## Flujo de trabajo

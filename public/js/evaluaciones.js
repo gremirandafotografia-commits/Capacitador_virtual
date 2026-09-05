@@ -1,7 +1,9 @@
 async function init() {
   const data = await Api.listEvaluaciones();
   const grid = document.getElementById('grid');
-  const items = data.items || [];
+  // Las practicas de refuerzo son personales (generadas para un empleado
+  // puntual) y se comparten por enlace directo, no se listan para todos.
+  const items = (data.items || []).filter(e => !e.esPractica);
 
   if (!items.length) {
     grid.innerHTML = `<div class="empty">Todavía no hay evaluaciones cargadas. Se crean desde "Administración".</div>`;

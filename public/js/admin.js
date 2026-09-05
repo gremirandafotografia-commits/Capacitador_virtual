@@ -1,25 +1,36 @@
+const NOTA_APROBATORIA = 70;
+
 let EVALUACIONES = [];
 let CATEGORIAS_EVAL = [];
 let INTENTOS_POR_EVAL = new Map(); // evaluacionId -> items[]
+let EMPLEADOS = [];
 
 async function init() {
   const data = await Api.listEvaluaciones();
   EVALUACIONES = data.items || [];
   CATEGORIAS_EVAL = data.categorias || [];
 
+  const empData = await Api.listEmpleados();
+  EMPLEADOS = empData.items || [];
+
   const selNueva = document.getElementById('nTema');
   CATEGORIAS_EVAL.forEach(c => selNueva.appendChild(new Option(c, c)));
 
   const selFiltro = document.getElementById('filtroEvalResultados');
   EVALUACIONES.forEach(e => selFiltro.appendChild(new Option(`${e.tema} · ${e.titulo}`, e.id)));
+  const selFiltroEmp = document.getElementById('filtroEmpleadoResultados');
+  EMPLEADOS.forEach(e => selFiltroEmp.appendChild(new Option(`${e.apellido}, ${e.nombre}`, e.id)));
 
   renderEvaluaciones();
+  renderEmpleados();
   await cargarTodosLosIntentos();
   renderResultados();
 
   bindTabs();
   bindModalNueva();
   bindResultados();
+  bindEmpleados();
+  bindInvitar();
 
   document.getElementById('btnCerrarSesion').addEventListener('click', () => {
     AdminAuth.clearToken();
@@ -34,6 +45,16 @@ function bindTabs() {
       btn.classList.add('active');
       document.getElementById('tabEvaluaciones').hidden = btn.dataset.tab !== 'evaluaciones';
       document.getElementById('tabResultados').hidden = btn.dataset.tab !== 'resultados';
+      document.getElementById('tabEmpleados').hidden = btn.dataset.tab !== 'empleados';
+    });
+  });
+  document.querySelectorAll('#tabResultados .tabs [data-subtab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#tabResultados .tabs [data-subtab]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('subtabEvaluacion').hidden = btn.dataset.subtab !== 'evaluacion';
+      document.getElementById('subtabEmpleado').hidden = btn.dataset.subtab !== 'empleado';
+      if (btn.dataset.subtab === 'empleado') renderResultadosPorEmpleado();
     });
   });
 }
@@ -47,11 +68,13 @@ function renderEvaluaciones() {
     return;
   }
   const porTema = CATEGORIAS_EVAL
-    .map(c => ({ tema: c, items: EVALUACIONES.filter(e => !e.esFinal && e.tema === c) }))
+    .map(c => ({ tema: c, items: EVALUACIONES.filter(e => !e.esFinal && !e.esPractica && e.tema === c) }))
     .filter(s => s.items.length);
   const finales = EVALUACIONES.filter(e => e.esFinal);
+  const practicas = EVALUACIONES.filter(e => e.esPractica);
   const secciones = [...porTema];
   if (finales.length) secciones.push({ tema: 'Final', items: finales });
+  if (practicas.length) secciones.push({ tema: 'Prácticas de refuerzo', items: practicas });
 
   grid.innerHTML = secciones.map(sec => `
     <section class="cat-section">
@@ -59,23 +82,7 @@ function renderEvaluaciones() {
         <span class="dot"></span><h2>${escapeHtml(sec.tema)}</h2><span class="count">${sec.items.length}</span>
       </div>
       <div class="grid">
-        ${sec.items.map(e => `
-          <div class="card">
-            <span class="pill" data-cat="${escapeHtml(e.tema)}">${escapeHtml(e.tema)}</span>
-            <h3>${escapeHtml(e.titulo)}</h3>
-            <p>${escapeHtml(e.descripcion || 'Sin descripción')}</p>
-            <div class="meta">
-              <span>${e.preguntas} pregunta${e.preguntas === 1 ? '' : 's'}</span>
-              <span>·</span>
-              <span>${e.intentos} respuesta${e.intentos === 1 ? '' : 's'}</span>
-            </div>
-            <div class="actions">
-              <a class="btn small primary" href="/admin-evaluacion.html?id=${encodeURIComponent(e.id)}"><span class="msym" style="font-size:15px">edit</span> Editar</a>
-              <a class="btn small" href="/evaluar.html?id=${encodeURIComponent(e.id)}" target="_blank"><span class="msym" style="font-size:15px">visibility</span> Ver</a>
-              <button class="btn small danger" data-del-eval="${encodeURIComponent(e.id)}"><span class="msym" style="font-size:15px">delete</span></button>
-            </div>
-          </div>
-        `).join('')}
+        ${sec.items.map(cardEvaluacionHtml).join('')}
       </div>
     </section>
   `).join('');
@@ -92,6 +99,33 @@ function renderEvaluaciones() {
       } catch (e) { toast(e.message, true); }
     });
   });
+
+  grid.querySelectorAll('[data-invitar]').forEach(btn => {
+    btn.addEventListener('click', () => abrirInvitar(btn.dataset.invitar));
+  });
+}
+
+function cardEvaluacionHtml(e) {
+  const dueno = e.esPractica ? EMPLEADOS.find(emp => emp.id === e.empleadoId) : null;
+  return `
+    <div class="card">
+      <span class="pill" data-cat="${escapeHtml(e.tema)}">${escapeHtml(e.tema)}</span>
+      <h3>${escapeHtml(e.titulo)}</h3>
+      <p>${escapeHtml(e.descripcion || 'Sin descripción')}</p>
+      ${dueno ? `<p class="helper" style="margin:0">Para: ${escapeHtml(dueno.nombre)} ${escapeHtml(dueno.apellido)}</p>` : ''}
+      <div class="meta">
+        <span>${e.preguntas} pregunta${e.preguntas === 1 ? '' : 's'}</span>
+        <span>·</span>
+        <span>${e.intentos} respuesta${e.intentos === 1 ? '' : 's'}</span>
+      </div>
+      <div class="actions">
+        <a class="btn small primary" href="/admin-evaluacion.html?id=${encodeURIComponent(e.id)}"><span class="msym" style="font-size:15px">edit</span> Editar</a>
+        <a class="btn small" href="/evaluar.html?id=${encodeURIComponent(e.id)}" target="_blank"><span class="msym" style="font-size:15px">visibility</span> Ver</a>
+        <button class="btn small" data-invitar="${e.id}"><span class="msym" style="font-size:15px">mail</span> Invitar</button>
+        <button class="btn small danger" data-del-eval="${encodeURIComponent(e.id)}"><span class="msym" style="font-size:15px">delete</span></button>
+      </div>
+    </div>
+  `;
 }
 
 function bindModalNueva() {
@@ -115,6 +149,94 @@ function bindModalNueva() {
   });
 }
 
+/* ---------- Tab: Empleados ---------- */
+
+function renderEmpleados() {
+  const tbody = document.getElementById('tablaEmpleados');
+  if (!EMPLEADOS.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="empty" style="border:none">Todavía no hay empleados registrados. Agregá el primero con "+ Agregar empleado".</td></tr>';
+    return;
+  }
+  tbody.innerHTML = EMPLEADOS.map(e => `
+    <tr>
+      <td>${escapeHtml(e.nombre)} ${escapeHtml(e.apellido)}</td>
+      <td>${escapeHtml(e.email)}</td>
+      <td>${escapeHtml(e.puesto || '—')}</td>
+      <td>${e.activo === false ? '<span class="badge badge-pendiente">Inactivo</span>' : '<span class="badge badge-ok">Activo</span>'}</td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn small" data-editar-emp="${e.id}"><span class="msym" style="font-size:14px">edit</span></button>
+          <button class="btn small danger" data-eliminar-emp="${e.id}"><span class="msym" style="font-size:14px">delete</span></button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  tbody.querySelectorAll('[data-editar-emp]').forEach(btn => {
+    btn.addEventListener('click', () => abrirEmpleadoModal(btn.dataset.editarEmp));
+  });
+  tbody.querySelectorAll('[data-eliminar-emp]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const ok = await confirmDialog('¿Eliminar este empleado? Sus resultados anteriores se conservan, pero ya no va a poder recibir invitaciones.', { titulo: 'Eliminar empleado' });
+      if (!ok) return;
+      try {
+        await Api.eliminarEmpleado(btn.dataset.eliminarEmp);
+        EMPLEADOS = EMPLEADOS.filter(e => e.id !== btn.dataset.eliminarEmp);
+        renderEmpleados();
+        toast('Empleado eliminado');
+      } catch (e) { toast(e.message, true); }
+    });
+  });
+}
+
+let editandoEmpleadoId = null;
+
+function bindEmpleados() {
+  document.getElementById('btnNuevoEmpleado').addEventListener('click', () => abrirEmpleadoModal(null));
+  document.getElementById('empCancelar').addEventListener('click', () => { document.getElementById('modalEmpleado').hidden = true; });
+  document.getElementById('empGuardar').addEventListener('click', guardarEmpleado);
+}
+
+function abrirEmpleadoModal(id) {
+  editandoEmpleadoId = id || null;
+  const emp = id ? EMPLEADOS.find(e => e.id === id) : null;
+  document.getElementById('empleadoModalTitulo').textContent = emp ? 'Editar empleado' : 'Agregar empleado';
+  document.getElementById('empNombre').value = emp ? emp.nombre : '';
+  document.getElementById('empApellido').value = emp ? emp.apellido : '';
+  document.getElementById('empEmail').value = emp ? emp.email : '';
+  document.getElementById('empPuesto').value = emp ? (emp.puesto || '') : '';
+  document.getElementById('empActivo').checked = emp ? emp.activo !== false : true;
+  document.getElementById('modalEmpleado').hidden = false;
+  document.getElementById('empNombre').focus();
+}
+
+async function guardarEmpleado() {
+  const data = {
+    nombre: document.getElementById('empNombre').value.trim(),
+    apellido: document.getElementById('empApellido').value.trim(),
+    email: document.getElementById('empEmail').value.trim(),
+    puesto: document.getElementById('empPuesto').value.trim(),
+    activo: document.getElementById('empActivo').checked
+  };
+  if (!data.nombre || !data.apellido) { toast('Nombre y apellido son obligatorios', true); return; }
+  if (!data.email) { toast('El email es obligatorio', true); return; }
+  try {
+    if (editandoEmpleadoId) {
+      const actualizado = await Api.guardarEmpleado(editandoEmpleadoId, data);
+      const idx = EMPLEADOS.findIndex(e => e.id === editandoEmpleadoId);
+      if (idx >= 0) EMPLEADOS[idx] = actualizado;
+      toast('Empleado actualizado');
+    } else {
+      const creado = await Api.crearEmpleado(data);
+      EMPLEADOS.push(creado);
+      document.getElementById('filtroEmpleadoResultados').appendChild(new Option(`${creado.apellido}, ${creado.nombre}`, creado.id));
+      toast('Empleado agregado');
+    }
+    document.getElementById('modalEmpleado').hidden = true;
+    renderEmpleados();
+  } catch (e) { toast(e.message, true); }
+}
+
 /* ---------- Tab: Resultados ---------- */
 
 async function cargarTodosLosIntentos() {
@@ -127,17 +249,28 @@ async function cargarTodosLosIntentos() {
 
 function bindResultados() {
   document.getElementById('filtroEvalResultados').addEventListener('change', renderResultados);
+  document.getElementById('filtroEmpleadoResultados').addEventListener('change', renderResultados);
+  document.getElementById('filtroFechaDesde').addEventListener('change', renderResultados);
+  document.getElementById('filtroFechaHasta').addEventListener('change', renderResultados);
   document.getElementById('btnExportarCsv').addEventListener('click', exportarCsv);
   document.getElementById('revisarCancelar').addEventListener('click', () => { document.getElementById('modalRevisar').hidden = true; });
 }
 
 function filasVisibles() {
   const filtroId = document.getElementById('filtroEvalResultados').value;
+  const filtroEmp = document.getElementById('filtroEmpleadoResultados').value;
+  const desde = document.getElementById('filtroFechaDesde').value;
+  const hasta = document.getElementById('filtroFechaHasta').value;
   const evals = filtroId ? EVALUACIONES.filter(e => e.id === filtroId) : EVALUACIONES;
   const filas = [];
   for (const ev of evals) {
     const intentos = INTENTOS_POR_EVAL.get(ev.id) || [];
-    for (const it of intentos) filas.push({ ev, it });
+    for (const it of intentos) {
+      if (filtroEmp && it.empleadoId !== filtroEmp) continue;
+      if (desde && it.fecha < desde) continue;
+      if (hasta && it.fecha > `${hasta}T23:59:59`) continue;
+      filas.push({ ev, it });
+    }
   }
   return filas;
 }
@@ -146,7 +279,7 @@ function renderResultados() {
   const box = document.getElementById('resultadosBox');
   const filas = filasVisibles();
   if (!filas.length) {
-    box.innerHTML = '<div class="empty">Todavía no hay respuestas registradas.</div>';
+    box.innerHTML = '<div class="empty">No hay respuestas registradas que coincidan con los filtros.</div>';
     return;
   }
   const porTema = {};
@@ -191,6 +324,155 @@ function filaHtml({ ev, it }) {
     <td>${accion}</td>
   </tr>`;
 }
+
+/* ---------- Resultados por empleado + práctica de refuerzo ---------- */
+
+// Espeja progresoEmpleado()/resumenPorTema() de server.js, pero a partir
+// de los datos ya cargados en memoria (evita pedir el progreso persona
+// por persona al servidor). Un tema solo cuenta como aprobado cuando
+// TODAS sus evaluaciones lo estan -son tramites distintos, no versiones
+// alternativas de la misma pregunta.
+function progresoDeEmpleado(empleadoId) {
+  return EVALUACIONES.filter(ev => !ev.esFinal && !ev.esPractica).map(ev => {
+    const intentos = (INTENTOS_POR_EVAL.get(ev.id) || []).filter(it => it.empleadoId === empleadoId);
+    let aprobada = false, mejorNota = null, ultimaFecha = null;
+    intentos.forEach(it => {
+      if (it.calificacionFinal !== null && it.calificacionFinal !== undefined) {
+        if (mejorNota === null || it.calificacionFinal > mejorNota) mejorNota = it.calificacionFinal;
+        if (it.calificacionFinal >= NOTA_APROBATORIA) aprobada = true;
+      }
+      if (!ultimaFecha || it.fecha > ultimaFecha) ultimaFecha = it.fecha;
+    });
+    return { evaluacionId: ev.id, titulo: ev.titulo, tema: ev.tema, aprobada, mejorNota, ultimaFecha };
+  });
+}
+
+function resumenPorTemaCliente(evaluacionesEmpleado) {
+  const porTema = new Map();
+  evaluacionesEmpleado.forEach(e => {
+    if (!porTema.has(e.tema)) porTema.set(e.tema, { tema: e.tema, total: 0, aprobadas: 0 });
+    const t = porTema.get(e.tema);
+    t.total++;
+    if (e.aprobada) t.aprobadas++;
+  });
+  return Array.from(porTema.values());
+}
+
+function renderResultadosPorEmpleado() {
+  const box = document.getElementById('resumenEmpleadosBox');
+  if (!EMPLEADOS.length) {
+    box.innerHTML = '<div class="empty" style="grid-column:1/-1">Todavía no hay empleados registrados. Agregalos en la pestaña "Empleados".</div>';
+    return;
+  }
+  box.innerHTML = EMPLEADOS.map(empleadoResumenHtml).join('');
+  box.querySelectorAll('[data-generar-practica]').forEach(btn => {
+    btn.addEventListener('click', () => generarPractica(btn.dataset.generarPractica));
+  });
+}
+
+function empleadoResumenHtml(emp) {
+  const evals = progresoDeEmpleado(emp.id);
+  const temas = resumenPorTemaCliente(evals).filter(t => t.total > 0);
+  const temasAprobados = temas.filter(t => t.aprobadas === t.total);
+  const temasPendientes = temas.filter(t => t.aprobadas < t.total);
+  const evalsPendientes = evals.filter(e => !e.aprobada);
+  const notas = evals.map(e => e.mejorNota).filter(n => n !== null && n !== undefined);
+  const promedio = notas.length ? Math.round(notas.reduce((a, b) => a + b, 0) / notas.length) : null;
+  const fechas = evals.map(e => e.ultimaFecha).filter(Boolean).sort();
+  const ultima = fechas.length ? fechas[fechas.length - 1] : null;
+
+  return `
+    <div class="card">
+      <h3 style="margin:0 0 2px">${escapeHtml(emp.nombre)} ${escapeHtml(emp.apellido)}</h3>
+      <p style="margin:0 0 8px;color:var(--text-dim);font-size:12.5px">${escapeHtml(emp.email)}</p>
+      <div class="tag-row">
+        ${temasAprobados.map(t => `<span class="tag-pill" style="--tc:#6C9E2C">${escapeHtml(t.tema)}</span>`).join('')}
+        ${temasPendientes.map(t => `<span class="tag-pill" style="--tc:#D9534F">${escapeHtml(t.tema)} (${t.aprobadas}/${t.total})</span>`).join('')}
+        ${!temas.length ? '<span class="helper">Sin evaluaciones disponibles todavía</span>' : ''}
+      </div>
+      <div class="meta" style="margin-top:8px">
+        <span>Promedio: ${promedio === null ? '—' : promedio + '/100'}</span>
+        <span>·</span>
+        <span>Última actividad: ${ultima ? fmtDate(ultima) : 'Sin actividad'}</span>
+      </div>
+      <div class="actions" style="margin-top:10px">
+        <button class="btn small primary" data-generar-practica="${emp.id}" ${evalsPendientes.length ? '' : 'disabled'}>
+          <span class="msym" style="font-size:15px">fitness_center</span> Generar práctica${evalsPendientes.length ? ` (${evalsPendientes.length} pendiente${evalsPendientes.length === 1 ? '' : 's'})` : ''}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+async function generarPractica(empleadoId) {
+  try {
+    const doc = await Api.generarPractica(empleadoId);
+    EVALUACIONES.push({
+      id: doc.id, titulo: doc.titulo, tema: doc.tema, esFinal: false, esPractica: true,
+      empleadoId: doc.empleadoId, tramiteId: '', descripcion: doc.descripcion,
+      actualizado: doc.actualizado, preguntas: doc.preguntas.length, intentos: 0
+    });
+    INTENTOS_POR_EVAL.set(doc.id, []);
+    renderEvaluaciones();
+    toast('Práctica de refuerzo creada. Enviala desde la lista de Evaluaciones (sección "Prácticas de refuerzo").');
+  } catch (e) { toast(e.message, true); }
+}
+
+/* ---------- Invitaciones por correo ---------- */
+
+let invitarEvalId = null;
+
+function bindInvitar() {
+  document.getElementById('invitarCancelar').addEventListener('click', () => { document.getElementById('modalInvitar').hidden = true; });
+  document.getElementById('invitarEnviar').addEventListener('click', enviarInvitaciones);
+}
+
+function abrirInvitar(evalId) {
+  const ev = EVALUACIONES.find(e => e.id === evalId);
+  if (!ev) return;
+  invitarEvalId = evalId;
+  document.getElementById('invitarEvalTitulo').textContent = ev.titulo;
+
+  const conEmail = EMPLEADOS.filter(e => e.email && e.activo !== false);
+  document.getElementById('invitarVacio').hidden = conEmail.length > 0;
+
+  const yaCompletaron = new Set(
+    (INTENTOS_POR_EVAL.get(evalId) || [])
+      .filter(it => it.calificacionFinal !== null)
+      .map(it => it.empleadoId)
+  );
+
+  document.getElementById('invitarLista').innerHTML = conEmail.map(emp => {
+    const marcado = ev.esPractica ? emp.id === ev.empleadoId : !yaCompletaron.has(emp.id);
+    return `
+      <label style="display:flex;align-items:center;gap:8px">
+        <input type="checkbox" value="${emp.id}" ${marcado ? 'checked' : ''}>
+        <span>${escapeHtml(emp.nombre)} ${escapeHtml(emp.apellido)}</span>
+        <span style="margin-left:auto;color:var(--text-dim);font-size:12px">${escapeHtml(emp.email)}</span>
+      </label>
+    `;
+  }).join('');
+
+  document.getElementById('modalInvitar').hidden = false;
+}
+
+async function enviarInvitaciones() {
+  const ids = Array.from(document.querySelectorAll('#invitarLista input:checked')).map(i => i.value);
+  if (!ids.length) { toast('Selecciona al menos un empleado', true); return; }
+  const btn = document.getElementById('invitarEnviar');
+  btn.disabled = true;
+  try {
+    const r = await Api.enviarInvitaciones(invitarEvalId, ids);
+    toast(`Invitaciones enviadas: ${r.enviados}/${r.total}${r.fallidos ? ` (${r.fallidos} fallaron)` : ''}`);
+    document.getElementById('modalInvitar').hidden = true;
+  } catch (e) {
+    toast(e.message, true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ---------- Revisión de respuestas abiertas ---------- */
 
 let revisando = null;
 

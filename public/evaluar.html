@@ -38,10 +38,20 @@
 
   <section class="card" id="identidadCard">
     <h3 style="margin-top:0">Antes de empezar</h3>
-    <div class="field-row">
-      <div class="field"><label>Nombre</label><input type="text" id="eNombre" placeholder="Nombre"></div>
-      <div class="field"><label>Apellido</label><input type="text" id="eApellido" placeholder="Apellido"></div>
+    <div id="identidadBloqueada" hidden>
+      <p>Vas a responder como <b id="eNombreBloqueado"></b>.</p>
     </div>
+    <div id="identidadAbierta">
+      <div class="field">
+        <label>Buscá tu nombre</label>
+        <input type="text" id="eBuscar" placeholder="Escribí tu nombre o apellido...">
+      </div>
+      <div class="field">
+        <label>Seleccioná tu nombre de la lista</label>
+        <select id="eEmpleado" size="6"></select>
+      </div>
+    </div>
+    <p class="helper" id="eSinEmpleados" hidden>Todavía no hay personas registradas para evaluar. Pedile al administrador que las agregue en Administración → Empleados.</p>
   </section>
 
   <form id="preguntasForm"></form>

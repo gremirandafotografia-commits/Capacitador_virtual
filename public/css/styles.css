@@ -175,7 +175,7 @@ button { font-family: inherit; }
 .tabs button.active { background: var(--surface); color: var(--brand-dark); box-shadow: var(--shadow); }
 
 .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
-.filters select, .filters input[type="search"] {
+.filters select, .filters input[type="search"], .filters input[type="date"] {
   padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: 13.5px;
 }
 
