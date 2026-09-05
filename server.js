@@ -86,9 +86,12 @@ const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'coopelesca2026';
 const adminTokens = new Set();
 
 function requireAdmin(req, res, next) {
-  // TEMPORAL: auth de admin desactivada a pedido del usuario para configurar el sitio.
-  // Reactivar antes de desplegar a producción.
-  return next();
+  const auth = req.headers.authorization || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+  if (!token || !adminTokens.has(token)) {
+    return res.status(401).json({ error: 'Sesion de administracion invalida o expirada' });
+  }
+  next();
 }
 
 const SLUG_RE = /^[a-z0-9-]+$/;
