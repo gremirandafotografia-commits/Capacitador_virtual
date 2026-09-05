@@ -249,6 +249,63 @@ const Api = {
     await checkAdminAuth(r);
     if (!r.ok) throw new Error((await r.json()).error || 'Error al calificar');
     return r.json();
+  },
+  async enviarInvitaciones(id, empleadoIds) {
+    const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}/invitaciones`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
+      body: JSON.stringify({ empleadoIds })
+    });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error((await r.json()).error || 'Error al enviar invitaciones');
+    return r.json();
+  },
+  async listEmpleadosPublico() {
+    const r = await fetch('/api/empleados/publico');
+    return r.json();
+  },
+  async listEmpleados() {
+    const r = await fetch('/api/empleados', { headers: adminHeaders() });
+    await checkAdminAuth(r);
+    return r.json();
+  },
+  async crearEmpleado(data) {
+    const r = await fetch('/api/empleados', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
+      body: JSON.stringify(data)
+    });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error((await r.json()).error || 'Error al crear empleado');
+    return r.json();
+  },
+  async guardarEmpleado(id, data) {
+    const r = await fetch(`/api/empleados/${encodeURIComponent(id)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
+      body: JSON.stringify(data)
+    });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error((await r.json()).error || 'Error al guardar empleado');
+    return r.json();
+  },
+  async eliminarEmpleado(id) {
+    const r = await fetch(`/api/empleados/${encodeURIComponent(id)}`, { method: 'DELETE', headers: adminHeaders() });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error('Error al eliminar empleado');
+    return r.json();
+  },
+  async progresoEmpleado(id) {
+    const r = await fetch(`/api/empleados/${encodeURIComponent(id)}/progreso`, { headers: adminHeaders() });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error('Error al consultar el progreso');
+    return r.json();
+  },
+  async generarPractica(id) {
+    const r = await fetch(`/api/empleados/${encodeURIComponent(id)}/practica`, { method: 'POST', headers: adminHeaders() });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error((await r.json()).error || 'Error al generar la practica');
+    return r.json();
   }
 };
 

@@ -6,6 +6,7 @@ const multer = require('multer');
 const { marked } = require('marked');
 const { v4: uuidv4 } = require('uuid');
 const { nodewhisper } = require('nodejs-whisper');
+const nodemailer = require('nodemailer');
 
 let FFMPEG_AVAILABLE = false;
 try {
@@ -56,6 +57,11 @@ const MANUALES_DIR = path.join(DATA_ROOT, 'manuales');
 const DATA_DIR = path.join(DATA_ROOT, 'data');
 const EVALUACIONES_DIR = path.join(DATA_ROOT, 'evaluaciones');
 const MANUALES_META_FILE = path.join(DATA_DIR, 'manuales-meta.json');
+const EMPLEADOS_FILE = path.join(DATA_DIR, 'empleados.json');
+// Nota final minima para considerar un tema "aprobado" por un empleado -
+// por debajo de esto (o sin ningun intento calificado) el tema cuenta
+// como pendiente para efectos de invitaciones y practicas de refuerzo.
+const NOTA_APROBATORIA = 70;
 
 // Primera vez que arranca contra un DATA_ROOT vacio (disco persistente
 // recien creado): siembra con el contenido ya versionado en el repo
@@ -80,6 +86,9 @@ for (const dir of [TRAMITES_DIR, MANUALES_DIR, DATA_DIR, EVALUACIONES_DIR]) {
 }
 if (!fs.existsSync(MANUALES_META_FILE)) {
   fs.writeFileSync(MANUALES_META_FILE, JSON.stringify({}, null, 2));
+}
+if (!fs.existsSync(EMPLEADOS_FILE)) {
+  fs.writeFileSync(EMPLEADOS_FILE, JSON.stringify([], null, 2));
 }
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'coopelesca2026';
@@ -195,6 +204,79 @@ function listManuales() {
       tags: m.tags || []
     };
   }).sort((a, b) => a.titulo.localeCompare(b.titulo));
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function listEmpleados() {
+  return readJSON(EMPLEADOS_FILE, []);
+}
+
+function saveEmpleados(list) {
+  writeJSON(EMPLEADOS_FILE, list);
+}
+
+function escapeHtmlMail(s) {
+  return (s || '').toString().replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Recorre todas las evaluaciones (sin incluir finales ni practicas) y
+// calcula, para un empleado puntual, si aprobo cada una por separado -un
+// tema como "Sistema Open" agrupa muchas evaluaciones distintas (una por
+// tramite), asi que aprobar una sola no alcanza para dar por dominado
+// todo el tema.
+function progresoEmpleado(empleadoId) {
+  const evaluaciones = [];
+  if (!fs.existsSync(EVALUACIONES_DIR)) return evaluaciones;
+  for (const d of fs.readdirSync(EVALUACIONES_DIR, { withFileTypes: true })) {
+    if (!d.isDirectory()) continue;
+    const doc = readJSON(path.join(EVALUACIONES_DIR, d.name, 'evaluacion.json'), null);
+    if (!doc || doc.esFinal || doc.esPractica) continue;
+    const entry = { evaluacionId: doc.id, titulo: doc.titulo, tema: doc.tema, aprobada: false, mejorNota: null, ultimaFecha: null };
+
+    const intentosDir = path.join(EVALUACIONES_DIR, d.name, 'intentos');
+    if (fs.existsSync(intentosDir)) {
+      for (const f of fs.readdirSync(intentosDir)) {
+        if (!f.endsWith('.json')) continue;
+        const it = readJSON(path.join(intentosDir, f), null);
+        if (!it || it.empleadoId !== empleadoId) continue;
+        if (it.calificacionFinal !== null && it.calificacionFinal !== undefined) {
+          if (entry.mejorNota === null || it.calificacionFinal > entry.mejorNota) entry.mejorNota = it.calificacionFinal;
+          if (it.calificacionFinal >= NOTA_APROBATORIA) entry.aprobada = true;
+        }
+        if (!entry.ultimaFecha || it.fecha > entry.ultimaFecha) entry.ultimaFecha = it.fecha;
+      }
+    }
+    evaluaciones.push(entry);
+  }
+  return evaluaciones;
+}
+
+// Agrupa el detalle evaluacion-por-evaluacion en un resumen por tema: un
+// tema cuenta como aprobado solo cuando TODAS sus evaluaciones lo estan.
+function resumenPorTema(evaluacionesEmpleado) {
+  const porTema = new Map();
+  for (const e of evaluacionesEmpleado) {
+    if (!porTema.has(e.tema)) porTema.set(e.tema, { tema: e.tema, total: 0, aprobadas: 0, pendientes: [], ultimaFecha: null });
+    const t = porTema.get(e.tema);
+    t.total++;
+    if (e.aprobada) t.aprobadas++;
+    else t.pendientes.push(e.titulo);
+    if (e.ultimaFecha && (!t.ultimaFecha || e.ultimaFecha > t.ultimaFecha)) t.ultimaFecha = e.ultimaFecha;
+  }
+  return Array.from(porTema.values());
+}
+
+function getMailTransport() {
+  const { SMTP_HOST, SMTP_USER, SMTP_PASS } = process.env;
+  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) return null;
+  const port = Number(process.env.SMTP_PORT) || 587;
+  return nodemailer.createTransport({
+    host: SMTP_HOST,
+    port,
+    secure: port === 465,
+    auth: { user: SMTP_USER, pass: SMTP_PASS }
+  });
 }
 
 const app = express();
@@ -607,6 +689,137 @@ app.post('/api/admin/login', (req, res) => {
   res.json({ token });
 });
 
+// ---------- Empleados ----------
+
+app.get('/api/empleados', requireAdmin, (req, res) => {
+  res.json({ items: listEmpleados() });
+});
+
+// Lista liviana y publica (sin email) para que quien va a responder una
+// evaluacion se identifique eligiendo su nombre de una lista controlada,
+// en vez de escribirlo libremente.
+app.get('/api/empleados/publico', (req, res) => {
+  const items = listEmpleados()
+    .filter(e => e.activo !== false)
+    .map(e => ({ id: e.id, nombre: e.nombre, apellido: e.apellido }))
+    .sort((a, b) => `${a.apellido}${a.nombre}`.localeCompare(`${b.apellido}${b.nombre}`));
+  res.json({ items });
+});
+
+app.post('/api/empleados', requireAdmin, (req, res) => {
+  const { nombre, apellido, email, puesto } = req.body || {};
+  if (!nombre || !nombre.trim() || !apellido || !apellido.trim()) {
+    return res.status(400).json({ error: 'Nombre y apellido requeridos' });
+  }
+  if (!email || !EMAIL_RE.test(email.trim())) {
+    return res.status(400).json({ error: 'Email invalido' });
+  }
+  const list = listEmpleados();
+  const empleado = {
+    id: uuidv4().slice(0, 8),
+    nombre: nombre.trim(),
+    apellido: apellido.trim(),
+    email: email.trim().toLowerCase(),
+    puesto: (puesto || '').trim(),
+    activo: true,
+    creado: new Date().toISOString()
+  };
+  list.push(empleado);
+  saveEmpleados(list);
+  res.status(201).json(empleado);
+});
+
+app.put('/api/empleados/:id', requireAdmin, (req, res) => {
+  const list = listEmpleados();
+  const idx = list.findIndex(e => e.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'No encontrado' });
+  const { nombre, apellido, email, puesto, activo } = req.body || {};
+  if (nombre !== undefined) {
+    if (!nombre.trim()) return res.status(400).json({ error: 'Nombre requerido' });
+    list[idx].nombre = nombre.trim();
+  }
+  if (apellido !== undefined) {
+    if (!apellido.trim()) return res.status(400).json({ error: 'Apellido requerido' });
+    list[idx].apellido = apellido.trim();
+  }
+  if (email !== undefined) {
+    if (!EMAIL_RE.test(email.trim())) return res.status(400).json({ error: 'Email invalido' });
+    list[idx].email = email.trim().toLowerCase();
+  }
+  if (puesto !== undefined) list[idx].puesto = puesto.trim();
+  if (activo !== undefined) list[idx].activo = !!activo;
+  saveEmpleados(list);
+  res.json(list[idx]);
+});
+
+app.delete('/api/empleados/:id', requireAdmin, (req, res) => {
+  const list = listEmpleados();
+  const next = list.filter(e => e.id !== req.params.id);
+  if (next.length === list.length) return res.status(404).json({ error: 'No encontrado' });
+  saveEmpleados(next);
+  res.json({ ok: true });
+});
+
+app.get('/api/empleados/:id/progreso', requireAdmin, (req, res) => {
+  const empleado = listEmpleados().find(e => e.id === req.params.id);
+  if (!empleado) return res.status(404).json({ error: 'No encontrado' });
+  const evaluaciones = progresoEmpleado(req.params.id);
+  res.json({ empleado, notaAprobatoria: NOTA_APROBATORIA, evaluaciones, temas: resumenPorTema(evaluaciones) });
+});
+
+// Genera una evaluacion "practica" a medida con las preguntas de todas
+// las evaluaciones puntuales que ese empleado todavia no aprueba, para
+// reforzarlas antes de re-intentarlas.
+app.post('/api/empleados/:id/practica', requireAdmin, (req, res) => {
+  try {
+    const empleado = listEmpleados().find(e => e.id === req.params.id);
+    if (!empleado) return res.status(404).json({ error: 'No encontrado' });
+
+    const pendientes = progresoEmpleado(req.params.id).filter(e => !e.aprobada);
+    if (!pendientes.length) return res.status(400).json({ error: 'Este empleado ya aprobó todas las evaluaciones disponibles' });
+    const idsPendientes = new Set(pendientes.map(e => e.evaluacionId));
+    const temasPendientes = new Set(pendientes.map(e => e.tema));
+
+    let preguntas = [];
+    for (const d of fs.readdirSync(EVALUACIONES_DIR, { withFileTypes: true })) {
+      if (!d.isDirectory() || !idsPendientes.has(d.name)) continue;
+      const doc = readJSON(path.join(EVALUACIONES_DIR, d.name, 'evaluacion.json'), null);
+      if (!doc) continue;
+      for (const p of (doc.preguntas || [])) {
+        preguntas.push({ ...p, id: uuidv4().slice(0, 8), origenTema: doc.tema, origenTitulo: doc.titulo });
+      }
+    }
+    if (!preguntas.length) return res.status(400).json({ error: 'Las evaluaciones pendientes todavia no tienen preguntas cargadas' });
+
+    let base = slugify(`practica ${empleado.nombre} ${empleado.apellido}`);
+    let slug = base, n = 2;
+    while (fs.existsSync(evalPath(slug))) slug = `${base}-${n++}`;
+    const dir = evalPath(slug);
+    fs.mkdirSync(path.join(dir, 'intentos'), { recursive: true });
+
+    const now = new Date().toISOString();
+    const doc = {
+      id: slug,
+      titulo: `Práctica de refuerzo · ${empleado.nombre} ${empleado.apellido}`,
+      tema: 'Refuerzo',
+      esFinal: false,
+      esPractica: true,
+      empleadoId: empleado.id,
+      temasIncluidos: Array.from(temasPendientes),
+      evaluacionesIncluidas: pendientes.map(e => e.titulo),
+      tramiteId: '',
+      descripcion: `Práctica generada para reforzar: ${pendientes.map(e => e.titulo).join(', ')}.`,
+      creado: now,
+      actualizado: now,
+      preguntas
+    };
+    writeJSON(path.join(dir, 'evaluacion.json'), doc);
+    res.status(201).json(doc);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
 // ---------- Evaluaciones ----------
 
 function evalPath(slug) {
@@ -634,6 +847,8 @@ function listEvaluaciones() {
         titulo: doc.titulo,
         tema: doc.tema,
         esFinal: !!doc.esFinal,
+        esPractica: !!doc.esPractica,
+        empleadoId: doc.empleadoId || '',
         tramiteId: doc.tramiteId || '',
         descripcion: doc.descripcion || '',
         actualizado: doc.actualizado,
@@ -728,10 +943,10 @@ app.post('/api/evaluaciones/:slug/intentos', (req, res) => {
     const doc = readJSON(file, null);
     if (!doc) return res.status(404).json({ error: 'No encontrada' });
 
-    const { nombre, apellido, respuestas } = req.body || {};
-    if (!nombre || !nombre.trim() || !apellido || !apellido.trim()) {
-      return res.status(400).json({ error: 'Nombre y apellido requeridos' });
-    }
+    const { empleadoId, respuestas } = req.body || {};
+    if (!empleadoId) return res.status(400).json({ error: 'Falta identificar quien responde' });
+    const empleado = listEmpleados().find(e => e.id === empleadoId);
+    if (!empleado) return res.status(400).json({ error: 'No se encontro a la persona seleccionada' });
     const respuestasPorPregunta = new Map((respuestas || []).map(r => [r.preguntaId, r]));
 
     let totalAuto = 0, puntajeAuto = 0, pendienteRevision = false;
@@ -752,8 +967,10 @@ app.post('/api/evaluaciones/:slug/intentos', (req, res) => {
     const intento = {
       id: uuidv4().slice(0, 8),
       evaluacionId: doc.id,
-      nombre: nombre.trim(),
-      apellido: apellido.trim(),
+      empleadoId: empleado.id,
+      nombre: empleado.nombre,
+      apellido: empleado.apellido,
+      email: empleado.email,
       fecha: new Date().toISOString(),
       respuestas: respuestasFinal,
       puntajeAuto,
@@ -810,6 +1027,54 @@ app.put('/api/evaluaciones/:slug/intentos/:intentoId', requireAdmin, (req, res) 
 
     writeJSON(file, intento);
     res.json(intento);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+// Envia por correo, a cada empleado seleccionado, un enlace directo y
+// personalizado a esta evaluacion (queda con su identidad ya resuelta,
+// sin que tenga que elegirse de una lista al llegar).
+app.post('/api/evaluaciones/:slug/invitaciones', requireAdmin, async (req, res) => {
+  try {
+    const doc = readJSON(path.join(evalPath(req.params.slug), 'evaluacion.json'), null);
+    if (!doc) return res.status(404).json({ error: 'No encontrada' });
+
+    const transport = getMailTransport();
+    if (!transport) {
+      return res.status(400).json({
+        error: 'El envio de correos no esta configurado. Definí las variables de entorno SMTP_HOST, SMTP_USER y SMTP_PASS (y opcionalmente SMTP_PORT y SMTP_FROM) para habilitarlo.'
+      });
+    }
+
+    const { empleadoIds } = req.body || {};
+    if (!Array.isArray(empleadoIds) || !empleadoIds.length) {
+      return res.status(400).json({ error: 'Selecciona al menos un empleado' });
+    }
+    const empleados = listEmpleados().filter(e => empleadoIds.includes(e.id) && e.email);
+    if (!empleados.length) return res.status(400).json({ error: 'Ninguno de los empleados seleccionados tiene un email registrado' });
+
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const from = process.env.SMTP_FROM || process.env.SMTP_USER;
+
+    const resultados = await Promise.allSettled(empleados.map(emp => {
+      const link = `${baseUrl}/evaluar.html?id=${encodeURIComponent(doc.id)}&empleado=${encodeURIComponent(emp.id)}`;
+      return transport.sendMail({
+        from,
+        to: emp.email,
+        subject: `CATA · Evaluación pendiente: ${doc.titulo}`,
+        html: `
+          <p>Hola ${escapeHtmlMail(emp.nombre)},</p>
+          <p>Tenés pendiente la evaluación <b>${escapeHtmlMail(doc.titulo)}</b> en CATA (Capacitador de Atención de Trámites de Asociados).</p>
+          <p><a href="${link}">Hacé clic acá para realizarla</a></p>
+          <p style="color:#6b7c8c;font-size:13px">Si el enlace no funciona, copiá y pegá esta dirección en tu navegador:<br>${link}</p>
+        `
+      });
+    }));
+
+    const enviados = resultados.filter(r => r.status === 'fulfilled').length;
+    const fallidos = resultados.length - enviados;
+    res.json({ enviados, fallidos, total: empleados.length });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }

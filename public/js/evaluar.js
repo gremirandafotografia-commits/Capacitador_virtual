@@ -1,6 +1,8 @@
 function qs(name) { return new URLSearchParams(location.search).get(name); }
 
 let EVAL = null;
+let EMPLEADOS = [];
+let empleadoBloqueadoId = null;
 
 async function init() {
   const id = qs('id');
@@ -18,6 +20,8 @@ async function init() {
   pill.dataset.cat = EVAL.tema;
   document.getElementById('eTitulo').textContent = EVAL.titulo;
   document.getElementById('eDescripcion').textContent = EVAL.descripcion || '';
+
+  await initIdentidad();
 
   const form = document.getElementById('preguntasForm');
   if (!EVAL.preguntas || !EVAL.preguntas.length) {
@@ -44,10 +48,45 @@ async function init() {
   document.getElementById('btnEnviar').addEventListener('click', enviar);
 }
 
+async function initIdentidad() {
+  const empleadoParam = qs('empleado');
+  const data = await Api.listEmpleadosPublico();
+  EMPLEADOS = data.items || [];
+
+  if (empleadoParam && EMPLEADOS.some(e => e.id === empleadoParam)) {
+    empleadoBloqueadoId = empleadoParam;
+    const emp = EMPLEADOS.find(e => e.id === empleadoParam);
+    document.getElementById('eNombreBloqueado').textContent = `${emp.nombre} ${emp.apellido}`;
+    document.getElementById('identidadBloqueada').hidden = false;
+    document.getElementById('identidadAbierta').hidden = true;
+    return;
+  }
+
+  if (!EMPLEADOS.length) {
+    document.getElementById('identidadAbierta').hidden = true;
+    document.getElementById('eSinEmpleados').hidden = false;
+    document.getElementById('btnEnviar').disabled = true;
+    return;
+  }
+
+  renderOpcionesEmpleado(EMPLEADOS);
+  document.getElementById('eBuscar').addEventListener('input', () => {
+    const q = document.getElementById('eBuscar').value.trim().toLowerCase();
+    const filtrados = EMPLEADOS.filter(e => `${e.nombre} ${e.apellido}`.toLowerCase().includes(q));
+    renderOpcionesEmpleado(filtrados);
+  });
+}
+
+function renderOpcionesEmpleado(list) {
+  const sel = document.getElementById('eEmpleado');
+  sel.innerHTML = list.length
+    ? list.map(e => `<option value="${e.id}">${escapeHtml(e.apellido)}, ${escapeHtml(e.nombre)}</option>`).join('')
+    : '<option value="" disabled>Sin coincidencias</option>';
+}
+
 async function enviar() {
-  const nombre = document.getElementById('eNombre').value.trim();
-  const apellido = document.getElementById('eApellido').value.trim();
-  if (!nombre || !apellido) { toast('Escribe tu nombre y apellido', true); return; }
+  const empleadoId = empleadoBloqueadoId || document.getElementById('eEmpleado').value;
+  if (!empleadoId) { toast('Seleccioná tu nombre de la lista', true); return; }
 
   const respuestas = EVAL.preguntas.map(p => {
     const box = document.querySelector(`[data-pregunta="${p.id}"]`);
@@ -61,7 +100,7 @@ async function enviar() {
   const btn = document.getElementById('btnEnviar');
   btn.disabled = true;
   try {
-    const intento = await Api.enviarIntento(EVAL.id, { nombre, apellido, respuestas });
+    const intento = await Api.enviarIntento(EVAL.id, { empleadoId, respuestas });
     mostrarResultado(intento);
   } catch (e) {
     toast(e.message, true);
