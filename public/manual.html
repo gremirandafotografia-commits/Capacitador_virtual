@@ -21,6 +21,8 @@
     <div class="marca-texto"><b>CATA</b><span>Capacitador de Atención de Trámites de Asociados</span></div>
   </div>
   <div class="acciones">
+    <a class="btn-onbar" href="/manuales.html"><span class="msym">arrow_back</span> Salir</a>
+    <a class="btn-onbar solido" id="mDescarga" href="#" target="_blank" download hidden><span class="msym">download</span> Descargar</a>
     <button class="btn-onbar" id="btnEditarMeta"><span class="msym">edit</span> Editar datos</button>
   </div>
 </header>
@@ -31,12 +33,11 @@
   <a href="/admin.html"><span class="msym">admin_panel_settings</span> Administración</a>
 </nav>
 
-<main class="container narrow" id="app" hidden>
-  <div class="viewer-header">
+<main class="container manual-page" id="app" hidden>
+  <div class="viewer-header manual-header">
     <span class="pill" id="mCategoria"></span>
     <h1 id="mTitulo"></h1>
     <p id="mDescripcion" style="color:var(--text-dim)"></p>
-    <a class="btn small" id="mDescarga" href="#" target="_blank" download><span class="msym" style="font-size:15px">download</span> Descargar original</a>
   </div>
 
   <div id="mBody"></div>
