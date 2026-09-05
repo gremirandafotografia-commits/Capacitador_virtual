@@ -61,6 +61,25 @@ SMTP_PASS="contraseña-o-token-de-aplicación"
 SMTP_FROM="Capacitación CATA <usuario@tudominio.com>"   # opcional, usa SMTP_USER si no se define
 ```
 
+## Despliegue
+
+La app corre en un contenedor Docker (`Dockerfile`) con `node server.js`. Sin importar el host, siempre hay que definir `ADMIN_PASSWORD` (y `SMTP_*` si se quiere invitar por correo) como variables de entorno — nunca dejar la contraseña por defecto en un despliegue público.
+
+### Railway
+
+`railway.json` ya le indica a Railway que construya con el `Dockerfile` del repo. Falta un paso que no se puede declarar en ese archivo: el disco persistente. Sin él, cada nuevo deploy reemplaza el contenedor y se pierden los trámites/manuales/evaluaciones subidos desde la app (el código vuelve a su estado del repo, pero los datos vivían solo en el contenedor anterior).
+
+1. En el servicio de Railway, pestaña **Volumes** → **New Volume**, con *mount path* `/data`.
+2. En **Variables**, definir:
+   - `DATA_ROOT=/data`
+   - `ADMIN_PASSWORD=<tu-contraseña>`
+   - Opcional: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` (invitaciones por correo).
+3. Deploy. En el primer arranque contra el volumen vacío, el servidor copia automáticamente los trámites/manuales de ejemplo del repo a `/data` (ver `seedSiVacio` en `server.js`); después de eso el volumen manda y ya no se vuelve a pisar con el contenido del repo.
+
+### Render
+
+`render.yaml` ya declara el disco persistente (`/data`) y las variables (`ADMIN_PASSWORD` se pide al crear el servicio, `DATA_ROOT` viene fijo en `/data`). Basta con conectar el repo desde el dashboard de Render y crear el servicio a partir del blueprint.
+
 ## Estructura del proyecto
 
 ```
