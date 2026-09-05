@@ -191,6 +191,12 @@ const Api = {
     if (!r.ok) throw new Error('Error al guardar manual');
     return r.json();
   },
+  async deleteManual(id) {
+    const r = await fetch(`/api/manuales/${encodeURIComponent(id)}`, { method: 'DELETE', headers: adminHeaders() });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error('Error al eliminar manual');
+    return r.json();
+  },
   async listEvaluaciones() {
     const r = await fetch('/api/evaluaciones');
     return r.json();

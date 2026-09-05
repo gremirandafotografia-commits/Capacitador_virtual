@@ -33,6 +33,19 @@ async function init() {
   }));
   document.getElementById('eCancelar').addEventListener('click', () => { document.getElementById('modalMeta').hidden = true; });
   document.getElementById('eGuardar').addEventListener('click', guardarMeta);
+  document.getElementById('btnEliminar').addEventListener('click', () => adminGuard().then(eliminar));
+}
+
+async function eliminar() {
+  const ok = await confirmDialog(`¿Eliminar "${MANUAL.titulo}"? Esta acción no se puede deshacer.`, { titulo: 'Eliminar manual' });
+  if (!ok) return;
+  try {
+    await Api.deleteManual(MANUAL.id);
+    toast('Manual eliminado');
+    location.href = '/manuales.html';
+  } catch (e) {
+    toast(e.message, true);
+  }
 }
 
 function fillHeader() {

@@ -335,6 +335,35 @@ app.post('/api/tramites', requireAdmin, (req, res) => {
   res.status(201).json(doc);
 });
 
+// Junta los "src" de video/imagen que un tramite tiene en uso (pasos y el
+// video externo), para poder comparar una version del documento contra
+// otra y detectar cuales quedaron sin referencia.
+function collectMediaSrcs(doc) {
+  const srcs = new Set();
+  if (doc.videoExterno && doc.videoExterno.src) srcs.add(doc.videoExterno.src);
+  for (const paso of (doc.pasos || [])) {
+    if (paso.media && paso.media.src) srcs.add(paso.media.src);
+  }
+  return srcs;
+}
+
+// Cuando se reemplaza el video/imagen de un paso (o el video externo), el
+// editor sube el archivo nuevo y solo cambia el puntero "src" en el
+// documento; el archivo viejo se queda huerfano en disco si nadie lo
+// borra. Al guardar es el momento en que sabemos con certeza que una
+// referencia vieja fue realmente descartada (no solo subida de paso y
+// cancelada), asi que aqui es donde se limpia.
+function limpiarMediaHuerfana(dir, slug, srcsAntes, srcsDespues) {
+  const mediaDir = path.join(dir, 'media');
+  const prefix = `/tramites/${slug}/media/`;
+  for (const src of srcsAntes) {
+    if (srcsDespues.has(src) || !src.startsWith(prefix)) continue;
+    const filePath = path.join(mediaDir, src.slice(prefix.length));
+    if (!filePath.startsWith(mediaDir)) continue;
+    try { fs.unlinkSync(filePath); } catch (_) { /* ya no existe */ }
+  }
+}
+
 app.put('/api/tramites/:slug', requireAdmin, (req, res) => {
   try {
     const dir = tramitePath(req.params.slug);
@@ -349,6 +378,7 @@ app.put('/api/tramites/:slug', requireAdmin, (req, res) => {
       creado: existing.creado,
       actualizado: new Date().toISOString()
     };
+    limpiarMediaHuerfana(dir, req.params.slug, collectMediaSrcs(existing), collectMediaSrcs(doc));
     writeJSON(file, doc);
     res.json(doc);
   } catch (e) {
@@ -654,6 +684,19 @@ app.put('/api/manuales/:id', requireAdmin, (req, res) => {
     descripcion: req.body.descripcion,
     tags: req.body.tags
   };
+  writeJSON(MANUALES_META_FILE, meta);
+  res.json({ ok: true });
+});
+
+app.delete('/api/manuales/:id', requireAdmin, (req, res) => {
+  const id = decodeURIComponent(req.params.id);
+  const full = path.join(MANUALES_DIR, id);
+  if (!full.startsWith(MANUALES_DIR) || !fs.existsSync(full)) {
+    return res.status(404).json({ error: 'No encontrado' });
+  }
+  fs.unlinkSync(full);
+  const meta = readJSON(MANUALES_META_FILE, {});
+  delete meta[id];
   writeJSON(MANUALES_META_FILE, meta);
   res.json({ ok: true });
 });

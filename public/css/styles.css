@@ -106,6 +106,8 @@ button { font-family: inherit; }
 .barra .btn-onbar:hover { background: rgba(255,255,255,.28); text-decoration: none; color: #fff; }
 .barra .btn-onbar.solido { background: #fff; color: var(--azul-osc); border-color: #fff; }
 .barra .btn-onbar.solido:hover { background: #eaf4fc; color: var(--azul-osc); }
+.barra .btn-onbar.danger { background: rgba(214,69,55,.35); border-color: rgba(214,69,55,.6); }
+.barra .btn-onbar.danger:hover { background: rgba(214,69,55,.55); }
 
 .pestanas {
   display: flex; gap: 2px; background: var(--panel); border-bottom: 1px solid var(--borde);
