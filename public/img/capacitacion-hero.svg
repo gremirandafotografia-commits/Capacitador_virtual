@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 360" role="img" aria-label="Personas en proceso de capacitación de trámites en una computadora">
+  <ellipse cx="230" cy="184" rx="215" ry="168" fill="#EAF4FC"/>
+
+  <circle cx="60" cy="80" r="20" fill="#FFFFFF" stroke="#0072BC" stroke-width="3"/>
+  <g transform="translate(50,70)">
+    <rect x="0" y="0" width="20" height="24" rx="2" fill="#0072BC"/>
+    <rect x="3" y="4" width="14" height="2.4" rx="1.2" fill="#FFFFFF"/>
+    <rect x="3" y="9" width="14" height="2.4" rx="1.2" fill="#FFFFFF"/>
+    <rect x="3" y="14" width="9" height="2.4" rx="1.2" fill="#FFFFFF"/>
+  </g>
+
+  <circle cx="404" cy="262" r="19" fill="#F0A02C"/>
+  <path d="M404 252v6m0 8v6m-10-20l4 4m12 12l4 4m-20 0l4-4m12-12l4-4" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="404" cy="262" r="6.5" fill="#FFFFFF"/>
+
+  <circle cx="392" cy="96" r="10" fill="#8CC63F"/>
+  <path d="M387 96l3.4 3.6 6.6-7.2" stroke="#FFFFFF" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <ellipse cx="228" cy="322" rx="150" ry="13" fill="#00196E" opacity=".08"/>
+
+  <rect x="74" y="248" width="8" height="58" rx="3" fill="#B9C6D6"/>
+  <rect x="366" y="248" width="8" height="58" rx="3" fill="#B9C6D6"/>
+  <rect x="70" y="240" width="312" height="16" rx="7" fill="#C9D5E3"/>
+
+  <rect x="216" y="214" width="16" height="28" fill="#8FA3B8"/>
+  <ellipse cx="224" cy="243" rx="32" ry="6" fill="#8FA3B8"/>
+  <rect x="146" y="92" width="156" height="112" rx="12" fill="#0B1E33"/>
+  <rect x="156" y="102" width="136" height="86" rx="5" fill="#FFFFFF"/>
+
+  <rect x="167" y="113" width="72" height="8" rx="4" fill="#0072BC"/>
+  <rect x="167" y="127" width="90" height="6" rx="3" fill="#DCE8F5"/>
+  <g fill="none" stroke="#8CC63F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M169 145l3.2 3.4 6-6.6"/>
+  </g>
+  <rect x="182" y="143" width="82" height="6" rx="3" fill="#DCE8F5"/>
+  <g fill="none" stroke="#8CC63F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M169 160l3.2 3.4 6-6.6"/>
+  </g>
+  <rect x="182" y="158" width="60" height="6" rx="3" fill="#DCE8F5"/>
+  <g fill="none" stroke="#D6DFE8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M169 175l3.2 3.4 6-6.6"/>
+  </g>
+  <rect x="182" y="173" width="70" height="6" rx="3" fill="#EDF1F5"/>
+
+  <g>
+    <rect x="94" y="180" width="66" height="88" rx="24" fill="#0072BC"/>
+    <rect x="112" y="180" width="30" height="16" rx="8" fill="#4FA8DE"/>
+    <rect x="70" y="205" width="40" height="16" rx="8" fill="#0072BC" transform="rotate(-18 70 205)"/>
+    <rect x="140" y="205" width="46" height="15" rx="7.5" fill="#0072BC" transform="rotate(24 140 205)"/>
+    <circle cx="127" cy="163" r="24" fill="#E8B892"/>
+    <path d="M103 158a24 24 0 0 1 48 -3c-6 -4 -14 -3 -20 -8c-4 6 -16 8 -28 11z" fill="#3B2A20"/>
+  </g>
+
+  <g>
+    <rect x="318" y="150" width="58" height="92" rx="22" fill="#00568F"/>
+    <rect x="332" y="150" width="26" height="14" rx="7" fill="#4FA8DE"/>
+    <rect x="314" y="120" width="16" height="46" rx="8" fill="#00568F" transform="rotate(-32 322 165)"/>
+    <rect x="296" y="185" width="34" height="14" rx="7" fill="#00568F" transform="rotate(-8 296 185)"/>
+    <circle cx="345" cy="134" r="21" fill="#C88855"/>
+    <path d="M324 130a21 21 0 0 1 42 0c-8 -6 -30 -6 -42 0z" fill="#241713"/>
+  </g>
+</svg>

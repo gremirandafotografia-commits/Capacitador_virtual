@@ -37,14 +37,22 @@
       <h1>Trámites de asociados</h1>
       <p>Documentos digitales paso a paso: video, pantallazos, anotaciones y vínculos entre trámites y manuales.</p>
     </div>
+    <img class="page-header-art" src="/img/capacitacion-hero.svg" alt="Personas en proceso de capacitación de trámites frente a una computadora">
   </div>
 
-  <div class="filters">
-    <input type="search" id="buscar" placeholder="Buscar trámite...">
-    <select id="filtroCategoria"><option value="">Todas las categorías</option></select>
+  <div class="tramites-layout">
+    <aside class="tema-sidebar">
+      <div class="tema-sidebar-search">
+        <span class="msym">search</span>
+        <input type="search" id="buscar" placeholder="Buscar trámite...">
+      </div>
+      <div class="tema-sidebar-title">Temas</div>
+      <ul class="tema-list" id="temaList"></ul>
+    </aside>
+    <section class="tema-content">
+      <div id="grid"></div>
+    </section>
   </div>
-
-  <div id="grid"></div>
 </main>
 
 <div class="modal-backdrop" id="modalNuevo" hidden>
