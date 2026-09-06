@@ -63,6 +63,7 @@ function bindTabs() {
 /* ---------- Tab: Evaluaciones ---------- */
 
 let temaActivoEval = '';
+let seccionesAbiertasEval = new Set();
 
 function renderTemasEval() {
   const list = document.getElementById('temaListEval');
@@ -121,16 +122,29 @@ function renderEvaluaciones() {
     if (finales.length) secciones.push({ tema: 'Final', items: finales });
     if (practicas.length) secciones.push({ tema: 'Prácticas de refuerzo', items: practicas });
 
-    grid.innerHTML = secciones.map(sec => `
-      <section class="cat-section">
-        <div class="cat-section-head" data-cat="${escapeHtml(sec.tema)}">
-          <span class="dot"></span><h2>${escapeHtml(sec.tema)}</h2><span class="count">${sec.items.length}</span>
-        </div>
-        <div class="grid">
-          ${sec.items.map(cardEvaluacionHtml).join('')}
-        </div>
-      </section>
-    `).join('');
+    grid.innerHTML = secciones.map(sec => {
+      const abierta = seccionesAbiertasEval.has(sec.tema);
+      return `
+        <section class="cat-section${abierta ? '' : ' colapsada'}">
+          <div class="cat-section-head" data-cat="${escapeHtml(sec.tema)}">
+            <span class="dot"></span><h2>${escapeHtml(sec.tema)}</h2><span class="count">${sec.items.length}</span>
+            <span class="msym cat-section-chevron">expand_more</span>
+          </div>
+          <div class="grid"${abierta ? '' : ' hidden'}>
+            ${sec.items.map(cardEvaluacionHtml).join('')}
+          </div>
+        </section>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('.cat-section-head').forEach(head => {
+      head.addEventListener('click', () => {
+        const cat = head.dataset.cat;
+        if (seccionesAbiertasEval.has(cat)) seccionesAbiertasEval.delete(cat);
+        else seccionesAbiertasEval.add(cat);
+        renderEvaluaciones();
+      });
+    });
   } else {
     grid.innerHTML = `
       <div class="tema-content-head">

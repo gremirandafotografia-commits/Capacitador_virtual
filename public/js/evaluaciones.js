@@ -1,6 +1,7 @@
 let EVALUACIONES = [];
 let CATEGORIAS = [];
 let temaActivo = '';
+let seccionesAbiertas = new Set();
 
 async function init() {
   const data = await Api.listEvaluaciones();
@@ -51,14 +52,27 @@ function render() {
     const finales = EVALUACIONES.filter(e => e.esFinal);
     if (finales.length) secciones.push({ cat: 'Final', items: finales });
 
-    grid.innerHTML = secciones.map(sec => `
-      <section class="cat-section">
-        <div class="cat-section-head" data-cat="${escapeHtml(sec.cat)}">
-          <span class="dot"></span><h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
-        </div>
-        <div class="grid">${sec.items.map(cardHtml).join('')}</div>
-      </section>
-    `).join('');
+    grid.innerHTML = secciones.map(sec => {
+      const abierta = seccionesAbiertas.has(sec.cat);
+      return `
+        <section class="cat-section${abierta ? '' : ' colapsada'}">
+          <div class="cat-section-head" data-cat="${escapeHtml(sec.cat)}">
+            <span class="dot"></span><h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
+            <span class="msym cat-section-chevron">expand_more</span>
+          </div>
+          <div class="grid"${abierta ? '' : ' hidden'}>${sec.items.map(cardHtml).join('')}</div>
+        </section>
+      `;
+    }).join('');
+
+    grid.querySelectorAll('.cat-section-head').forEach(head => {
+      head.addEventListener('click', () => {
+        const cat = head.dataset.cat;
+        if (seccionesAbiertas.has(cat)) seccionesAbiertas.delete(cat);
+        else seccionesAbiertas.add(cat);
+        render();
+      });
+    });
     return;
   }
 
