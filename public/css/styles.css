@@ -589,6 +589,7 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
   transform: translateY(-4px) scale(1.05);
   box-shadow: 0 10px 18px rgba(0,25,110,.18);
   color: #fff; border-color: transparent;
+  background: linear-gradient(135deg, var(--azul), var(--azul-osc));
 }
 .capture-row .btn[data-accion="pantalla"]:hover { background: linear-gradient(135deg, var(--azul), var(--azul-osc)); }
 .capture-row .btn[data-accion="camara"]:hover { background: linear-gradient(135deg, #1E77A8, #124b6b); }

@@ -67,9 +67,9 @@
     <h3 style="margin-top:0">Video externo de referencia (opcional)</h3>
     <p class="helper">Carga un video ya grabado (Zoom, Teams, celular, etc.). Reprodúcelo y captura fotogramas para convertirlos en pasos con pantallazo listo para anotar. También podés arrastrar el archivo y soltarlo en esta sección.</p>
     <div class="capture-row">
-      <label class="btn small"><span class="msym" style="font-size:16px">upload_file</span> Subir video externo<input type="file" id="inputVideoExterno" accept="video/*" hidden></label>
-      <button class="btn small" id="btnCapturarFotograma" disabled><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma como nuevo paso</button>
-      <button class="btn small" id="btnTranscribir" disabled><span class="msym" style="font-size:16px">subtitles</span> Transcribir audio</button>
+      <label class="btn small" data-accion="subir-video"><span class="msym" style="font-size:16px">upload_file</span> Subir video externo<input type="file" id="inputVideoExterno" accept="video/*" hidden></label>
+      <button class="btn small" id="btnCapturarFotograma" data-accion="frame-video" disabled><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma como nuevo paso</button>
+      <button class="btn small" id="btnTranscribir" data-accion="transcribir" disabled><span class="msym" style="font-size:16px">subtitles</span> Transcribir audio</button>
     </div>
     <video id="videoExterno" controls style="width:100%;max-height:360px;border-radius:8px;margin-top:10px;background:#000" hidden></video>
     <div id="transcripcionBox" class="transcripcion-box" hidden>
