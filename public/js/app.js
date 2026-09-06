@@ -23,10 +23,11 @@ async function init() {
 }
 
 function salir() {
+  // window.close() solo funciona si esta pestaña la abrió un script; si el
+  // navegador lo bloquea (pestaña abierta a mano o por el usuario), la
+  // sacamos de la app igual navegando a una pagina en blanco.
   window.close();
-  setTimeout(() => {
-    toast('Para salir, cerrá esta pestaña del navegador', true);
-  }, 300);
+  setTimeout(() => { location.href = 'about:blank'; }, 300);
 }
 
 function toggleModal(show) {
