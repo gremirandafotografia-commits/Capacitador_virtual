@@ -73,7 +73,10 @@
     </div>
     <video id="videoExterno" controls style="width:100%;max-height:360px;border-radius:8px;margin-top:10px;background:#000" hidden></video>
     <div id="transcripcionBox" class="transcripcion-box" hidden>
-      <p class="helper">Hacé clic en un fragmento para ir a ese momento del video. "Usar" deja ese texto listo para el próximo paso que crees con "Capturar fotograma".</p>
+      <div class="transcripcion-head">
+        <p class="helper">Hacé clic en un fragmento para ir a ese momento del video. "Usar" deja ese texto listo para el próximo paso que crees con "Capturar fotograma". También podés descargar el texto completo y pegar en cada paso lo que necesites.</p>
+        <button class="btn small ghost" id="btnDescargarTranscripcion" type="button" hidden><span class="msym" style="font-size:15px">download</span> Descargar transcripción (.txt)</button>
+      </div>
       <div id="transcripcionEstado" class="helper"></div>
       <div id="transcripcionLista"></div>
     </div>
@@ -129,12 +132,17 @@
         <label class="btn small" data-accion="subir-imagen"><span class="msym" style="font-size:16px">image</span> Subir imagen<input type="file" accept="image/*" hidden data-subir="imagen"></label>
         <button class="btn small" data-accion="frame-video" title="Toma una foto del fotograma actual del video de este paso y la agrega como nuevo paso"><span class="msym" style="font-size:16px">screenshot_monitor</span> Capturar fotograma del video</button>
         <button class="btn small" data-accion="transcribir" disabled title="Transcribe el audio del video de este paso"><span class="msym" style="font-size:16px">subtitles</span> Transcribir audio</button>
+        <button class="btn small" data-accion="dictar" title="Dictá y el texto se agrega a la descripción de este paso"><span class="msym" style="font-size:16px">mic</span> Dictar notas por voz</button>
         <button class="btn small" data-accion="pausar" hidden><span class="msym" style="font-size:16px">pause_circle</span> Pausar</button>
         <button class="btn small danger" data-accion="detener" hidden><span class="msym" style="font-size:16px">stop_circle</span> Detener grabación</button>
         <span class="rec-indicator" data-indicador><span class="dot"></span> <span data-indicador-texto>Grabando...</span></span>
+        <span class="rec-indicator voz" data-dictado-indicador><span class="dot"></span> Escuchando... hablá con claridad</span>
       </div>
       <div class="transcripcion-box" data-transcripcion-box hidden>
-        <p class="helper">Hacé clic en un fragmento para ir a ese momento del video. "Usar" agrega ese texto a la descripción de este paso.</p>
+        <div class="transcripcion-head">
+          <p class="helper">Hacé clic en un fragmento para ir a ese momento del video. "Usar" agrega ese texto a la descripción de este paso.</p>
+          <button class="btn small ghost" data-transcripcion-descargar type="button" hidden><span class="msym" style="font-size:15px">download</span> Descargar transcripción (.txt)</button>
+        </div>
         <div class="helper" data-transcripcion-estado></div>
         <div data-transcripcion-lista></div>
       </div>
