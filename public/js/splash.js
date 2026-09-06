@@ -1,4 +1,8 @@
 (function () {
+  var yaMostrada = false;
+  try { yaMostrada = sessionStorage.getItem('cataSplashShown') === '1'; } catch (e) {}
+  if (yaMostrada) return;
+
   var html =
     '<div id="appSplash">' +
       '<img class="splash-logo" src="/img/coopelesca-blanco.png" alt="Coopelesca">' +
@@ -21,5 +25,6 @@
     if (!el) return;
     el.classList.add('splash-hide');
     setTimeout(function () { el.remove(); }, 550);
+    try { sessionStorage.setItem('cataSplashShown', '1'); } catch (e) {}
   });
 })();

@@ -39,6 +39,21 @@ async function crear() {
   }
 }
 
+const TEMA_ICONS = {
+  '': 'apps', 'Sistema Open': 'dns', 'Salesforce': 'cloud', 'Qupos': 'point_of_sale',
+  'MBA Case': 'work', 'Agentes de Ayuda': 'support_agent', 'General': 'folder_open', 'Otros': 'folder_open'
+};
+const TEMA_GRAD = {
+  '': ['#00196E', '#0072BC', '#4FA8DE'],
+  'Sistema Open': ['#00568F', '#0072BC', '#4FA8DE'],
+  'Salesforce': ['#124b6b', '#1E77A8', '#5AA9CE'],
+  'Qupos': ['#8a5600', '#C97600', '#F0A02C'],
+  'MBA Case': ['#4a3480', '#6C4FBC', '#9f7fe0'],
+  'Agentes de Ayuda': ['#8a2b28', '#C13F3B', '#e2726e'],
+  'General': ['#384049', '#56636F', '#8593a1'],
+  'Otros': ['#384049', '#56636F', '#8593a1']
+};
+
 function renderTemas() {
   const conocidas = new Set(CATEGORIAS);
   const hayOtros = TRAMITES.some(t => !conocidas.has(t.categoria));
@@ -46,13 +61,23 @@ function renderTemas() {
   if (hayOtros) temas.push('Otros');
 
   const list = document.getElementById('temaList');
-  const itemHtml = (cat, label, count) => `
-    <li class="tema-item${temaActivo === cat ? ' act' : ''}" data-cat="${escapeHtml(cat)}">
-      <span class="dot"></span>
-      <span class="nombre">${escapeHtml(label)}</span>
-      <span class="count">${count}</span>
-    </li>
-  `;
+  const itemHtml = (cat, label, count) => {
+    const [c1, c2, c3] = TEMA_GRAD[cat] || TEMA_GRAD['General'];
+    return `
+      <li class="tw-main${temaActivo === cat ? ' act' : ''}" data-cat="${escapeHtml(cat)}" style="--tw-c1:${c1};--tw-c2:${c2};--tw-c3:${c3}">
+        <div class="tw-card"></div>
+        <div class="tw-card_back">
+          <div class="tw-data">
+            <div class="tw-img"><span class="msym">${TEMA_ICONS[cat] || 'folder_open'}</span></div>
+            <div class="tw-text">
+              <div class="tw-text_m">${escapeHtml(label)}</div>
+              <div class="tw-text_s">${count} trámite${count === 1 ? '' : 's'}</div>
+            </div>
+          </div>
+        </div>
+      </li>
+    `;
+  };
 
   list.innerHTML =
     itemHtml('', 'Todos los trámites', TRAMITES.length) +
@@ -63,7 +88,7 @@ function renderTemas() {
       return itemHtml(cat, cat, count);
     }).join('');
 
-  list.querySelectorAll('.tema-item').forEach(li => {
+  list.querySelectorAll('.tw-main').forEach(li => {
     li.addEventListener('click', () => {
       temaActivo = li.dataset.cat;
       renderTemas();
