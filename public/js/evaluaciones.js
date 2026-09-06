@@ -93,17 +93,30 @@ function render() {
 }
 
 function cardHtml(e) {
+  const cl = folderColor(e.esFinal ? 'Final' : e.tema);
   return `
-    <a class="card tilt-card" href="/evaluar.html?id=${encodeURIComponent(e.id)}">
-      <span class="pill" data-cat="${escapeHtml(e.tema)}">${escapeHtml(e.tema)}</span>
-      <h3>${escapeHtml(e.titulo)}</h3>
-      <p>${escapeHtml(e.descripcion || 'Sin descripción')}</p>
-      <div class="meta">
-        <span>${e.preguntas} pregunta${e.preguntas === 1 ? '' : 's'}</span>
-        <span>·</span>
-        <span>${e.intentos} respuesta${e.intentos === 1 ? '' : 's'} registrada${e.intentos === 1 ? '' : 's'}</span>
+    <div class="tc-parent">
+      <div class="tc-card" style="--tc-c1:${cl.f1};--tc-c2:${cl.f2};--tc-dark:${cl.back}">
+        <div class="tc-glass">
+          <div class="tc-content">
+            <span class="pill" data-cat="${escapeHtml(e.tema)}">${escapeHtml(e.tema)}</span>
+            <span class="tc-title">${escapeHtml(e.titulo)}</span>
+            <span class="tc-text">${escapeHtml(e.descripcion || 'Sin descripción')}</span>
+            <span class="tc-meta">${e.preguntas} pregunta${e.preguntas === 1 ? '' : 's'} · ${e.intentos} respuesta${e.intentos === 1 ? '' : 's'} registrada${e.intentos === 1 ? '' : 's'}</span>
+          </div>
+          <div class="tc-bottom">
+            <a class="tc-ingresar" href="/evaluar.html?id=${encodeURIComponent(e.id)}">
+              Comenzar <span class="msym">arrow_outward</span>
+            </a>
+          </div>
+        </div>
+        <div class="tc-logo">
+          <span class="tc-circle tc-circle1"></span>
+          <span class="tc-circle tc-circle2"></span>
+          <span class="tc-circle tc-circle3"><span class="msym">${TEMA_ICONS[e.tema] || 'quiz'}</span></span>
+        </div>
       </div>
-    </a>
+    </div>
   `;
 }
 

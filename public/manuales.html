@@ -42,19 +42,18 @@
     <img class="page-header-art" src="/img/manuales-hero.svg" alt="Manual abierto con lomos de libros de colores representando los distintos sistemas">
   </div>
 
-  <div class="filters">
-    <input type="search" id="buscar" placeholder="Buscar manual...">
-  </div>
-
-  <div class="manuales-layout">
-    <ul class="manuales-temas" id="temasManuales"></ul>
-    <div class="manuales-lista" id="listaManuales"></div>
-    <aside class="manuales-preview" id="previewManuales">
-      <div class="manuales-preview-empty">
-        <span class="msym">visibility</span>
-        <p>Elegí un manual de la lista para verlo aquí completo.</p>
+  <div class="tramites-layout">
+    <aside class="tema-sidebar">
+      <div class="tema-sidebar-search">
+        <span class="msym">search</span>
+        <input type="search" id="buscar" placeholder="Buscar manual...">
       </div>
+      <div class="tema-sidebar-title">Temas</div>
+      <ul class="tema-list" id="temaList"></ul>
     </aside>
+    <section class="tema-content">
+      <div id="grid"></div>
+    </section>
   </div>
 </main>
 

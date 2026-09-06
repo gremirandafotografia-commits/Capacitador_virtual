@@ -415,27 +415,6 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 .card .meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-dim); margin-top: auto; }
 .card .actions { display: flex; gap: 6px; margin-top: 6px; }
 
-/* Tarjeta con inclinacion 3D y brillo de vidrio (evaluaciones por tema y manuales) */
-.tilt-card { position: relative; overflow: hidden; transition: transform .5s cubic-bezier(.2,.8,.2,1), box-shadow .5s ease, border-color .5s ease; }
-.tilt-card > * { position: relative; z-index: 1; }
-.tilt-card::before {
-  content: ""; position: absolute; inset: 0; z-index: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,.6), rgba(255,255,255,0) 55%);
-  opacity: 0; transition: opacity .5s ease; pointer-events: none;
-}
-.tilt-card::after {
-  content: ""; position: absolute; top: -35%; right: -35%; width: 75%; aspect-ratio: 1; z-index: 0;
-  border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--brand-light), transparent 70%);
-  opacity: 0; transform: scale(.8);
-  transition: opacity .5s ease, transform .5s ease; pointer-events: none;
-}
-.tilt-card:hover {
-  transform: perspective(900px) rotate3d(1, 1, 0, 6deg) translateY(-6px);
-  box-shadow: 0 26px 34px -18px rgba(0,25,110,.32);
-  border-color: transparent;
-}
-.tilt-card:hover::before { opacity: 1; }
-.tilt-card:hover::after { opacity: .9; transform: scale(1); }
 
 .pill {
   display: inline-flex; align-items: center; gap: 5px;
@@ -779,43 +758,6 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
   100% { height: 8px; }
 }
 
-/* ---------- Carpetas de tema (manuales) ---------- */
-.manuales-layout { display: flex; align-items: flex-start; gap: 20px; }
-.manuales-temas {
-  width: 220px; flex-shrink: 0; list-style: none; margin: 0;
-  display: flex; flex-direction: column; gap: 10px;
-  position: sticky; top: 108px; max-height: 74vh; overflow-y: auto; padding: 2px;
-}
-
-.manuales-lista { width: 270px; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px; max-height: 74vh; overflow-y: auto; padding-right: 4px; }
-.manual-lista-grupo-items { display: flex; flex-direction: column; gap: 8px; }
-.manual-row {
-  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px;
-  background: var(--surface); border: 1px solid var(--border); cursor: pointer; text-align: left;
-  font-family: inherit; width: 100%; transition: border-color .15s ease, background .15s ease, transform .15s ease;
-}
-.manual-row.act { border-color: var(--brand); background: var(--brand-light); }
-.manual-row .icono { font-size: 20px; flex-shrink: 0; }
-.manual-row .info { min-width: 0; }
-.manual-row .titulo { font-size: 13px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.manual-row .sub { font-size: 11px; color: var(--text-dim); }
-
-.manuales-preview {
-  flex: 1; min-width: 0; position: sticky; top: 108px;
-  background: var(--surface-alt); border: 1px solid var(--border); border-radius: 14px;
-  padding: 16px; min-height: 74vh; display: flex; flex-direction: column; gap: 10px;
-}
-.manuales-preview-empty {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 10px; color: var(--text-dim); text-align: center;
-}
-.manuales-preview-empty .msym { font-size: 40px; opacity: .5; }
-.manuales-preview-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.manuales-preview-head h3 { margin: 0; font-size: 16px; }
-.manuales-preview-body { flex: 1; min-height: 0; }
-.manuales-preview-body iframe { width: 100%; height: 100%; min-height: 68vh; border: 1px solid var(--border); border-radius: 10px; background: #fff; display: block; }
-.manuales-preview-body .manual-content { max-height: 68vh; overflow-y: auto; }
-
 /* ---------- Carpetas de tema 3D (Trámites) ---------- */
 .folder-item {
   list-style: none; display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -875,10 +817,3 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 }
 .folder-item.act .folder-label .nombre { color: var(--folder-back); }
 
-@media (max-width: 1100px) {
-  .manuales-layout { flex-direction: column; }
-  .manuales-temas { width: 100%; flex-direction: row; flex-wrap: wrap; max-height: none; position: static; }
-  .manuales-temas .folder-item { width: 140px; }
-  .manuales-lista { width: 100%; max-height: none; }
-  .manuales-preview { width: 100%; position: static; min-height: 480px; }
-}

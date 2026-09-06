@@ -3,7 +3,6 @@ const ICONS = { pdf: 'picture_as_pdf', md: 'description', markdown: 'description
 let CATEGORIAS = [];
 let MANUALES = [];
 let categoriaActiva = null; // null = ningún tema abierto todavía; '' = "Todos" abierto explícitamente
-let manualActivo = null;
 
 async function init() {
   const [cats, data] = await Promise.all([Api.listCategorias(), Api.listManuales()]);
@@ -11,9 +10,9 @@ async function init() {
   MANUALES = data.items;
 
   renderTemas();
-  renderLista();
+  render();
 
-  document.getElementById('buscar').addEventListener('input', renderLista);
+  document.getElementById('buscar').addEventListener('input', render);
   document.getElementById('btnSubir').addEventListener('click', () => adminGuard().then(() => toggleModal(true)));
   document.getElementById('fCancelar').addEventListener('click', () => toggleModal(false));
   document.getElementById('fSubir').addEventListener('click', subir);
@@ -42,7 +41,7 @@ async function subir() {
     const data = await Api.listManuales();
     MANUALES = data.items;
     renderTemas();
-    renderLista();
+    render();
   } catch (e) {
     toast(e.message, true);
   }
@@ -53,9 +52,9 @@ function renderTemas() {
   const temas = [...CATEGORIAS];
   if (MANUALES.some(m => !conocidas.has(m.categoria))) temas.push('Otros');
 
-  const el = document.getElementById('temasManuales');
-  el.innerHTML =
-    folderItemHtml('Todos', 'Todos', MANUALES.length, categoriaActiva === '') +
+  const list = document.getElementById('temaList');
+  list.innerHTML =
+    folderItemHtml('', 'Todos', MANUALES.length, categoriaActiva === '') +
     temas.map(cat => {
       const count = cat === 'Otros'
         ? MANUALES.filter(m => !conocidas.has(m.categoria)).length
@@ -63,21 +62,21 @@ function renderTemas() {
       return folderItemHtml(cat, cat, count, categoriaActiva === cat);
     }).join('');
 
-  el.querySelectorAll('.folder-item').forEach(li => {
+  list.querySelectorAll('.folder-item').forEach(li => {
     li.addEventListener('click', () => {
-      categoriaActiva = li.dataset.cat === 'Todos' ? '' : li.dataset.cat;
+      categoriaActiva = li.dataset.cat;
       renderTemas();
-      renderLista();
+      render();
     });
   });
 }
 
-function renderLista() {
+function render() {
   const q = document.getElementById('buscar').value.toLowerCase();
-  const lista = document.getElementById('listaManuales');
+  const grid = document.getElementById('grid');
 
   if (categoriaActiva === null && !q) {
-    lista.innerHTML = `
+    grid.innerHTML = `
       <div class="tema-placeholder">
         <span class="msym">arrow_back</span>
         <h3>Elegí un tema para ver sus manuales</h3>
@@ -96,19 +95,9 @@ function renderLista() {
   });
 
   if (!items.length) {
-    lista.innerHTML = `<div class="empty">No hay manuales que coincidan. Carga uno con "+ Cargar manual".</div>`;
+    grid.innerHTML = `<div class="empty">No hay manuales que coincidan. Carga uno con "+ Cargar manual".</div>`;
     return;
   }
-
-  const rowHtml = m => `
-    <button class="manual-row tilt-card${manualActivo && manualActivo.id === m.id ? ' act' : ''}" data-id="${escapeHtml(m.id)}">
-      <span class="msym icono">${ICONS[m.tipo] || 'description'}</span>
-      <div class="info">
-        <div class="titulo">${escapeHtml(m.titulo)}</div>
-        <div class="sub">${escapeHtml(m.categoria)} · ${m.tipo.toUpperCase()}</div>
-      </div>
-    </button>
-  `;
 
   if (!categoriaEfectiva) {
     const secciones = CATEGORIAS
@@ -117,68 +106,53 @@ function renderLista() {
     const otros = items.filter(m => !conocidas.has(m.categoria));
     if (otros.length) secciones.push({ cat: 'Otros', items: otros });
 
-    lista.innerHTML = secciones.map(sec => `
+    grid.innerHTML = secciones.map(sec => `
       <section class="cat-section">
         <div class="cat-section-head" data-cat="${escapeHtml(sec.cat)}">
           <span class="dot"></span>
           <h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
         </div>
-        <div class="manual-lista-grupo-items">${sec.items.map(rowHtml).join('')}</div>
+        <div class="grid">${sec.items.map(cardHtml).join('')}</div>
       </section>
     `).join('');
-  } else {
-    lista.innerHTML = items.map(rowHtml).join('');
+    return;
   }
 
-  lista.querySelectorAll('.manual-row').forEach(btn => {
-    btn.addEventListener('click', () => mostrarPreview(items.find(m => m.id === btn.dataset.id)));
-  });
-
-  if (manualActivo && !items.some(m => m.id === manualActivo.id)) {
-    manualActivo = null;
-    mostrarPreviewVacio();
-  }
-}
-
-function mostrarPreviewVacio() {
-  document.getElementById('previewManuales').innerHTML = `
-    <div class="manuales-preview-empty">
-      <span class="msym">visibility</span>
-      <p>Elegí un manual de la lista para verlo aquí completo.</p>
+  grid.innerHTML = `
+    <div class="tema-content-head">
+      <h2>${escapeHtml(categoriaActiva)}</h2>
+      <span class="count">${items.length} manual${items.length === 1 ? '' : 'es'}</span>
     </div>
+    <div class="grid">${items.map(cardHtml).join('')}</div>
   `;
 }
 
-async function mostrarPreview(manual) {
-  if (!manual) return;
-  manualActivo = manual;
-  renderLista();
-
-  const preview = document.getElementById('previewManuales');
-  preview.innerHTML = `
-    <div class="manuales-preview-head">
-      <div>
-        <span class="pill" data-cat="${escapeHtml(manual.categoria)}">${escapeHtml(manual.categoria)}</span>
-        <h3>${escapeHtml(manual.titulo)}</h3>
+function cardHtml(m) {
+  const cl = folderColor(m.categoria);
+  return `
+    <div class="tc-parent">
+      <div class="tc-card" style="--tc-c1:${cl.f1};--tc-c2:${cl.f2};--tc-dark:${cl.back}">
+        <div class="tc-glass">
+          <div class="tc-content">
+            <span class="pill" data-cat="${escapeHtml(m.categoria)}">${escapeHtml(m.categoria)}</span>
+            <span class="tc-title">${escapeHtml(m.titulo)}</span>
+            <span class="tc-text">${escapeHtml(m.descripcion || 'Sin descripción')}</span>
+            <span class="tc-meta">${m.tipo.toUpperCase()}</span>
+          </div>
+          <div class="tc-bottom">
+            <a class="tc-ingresar" href="/manual.html?id=${encodeURIComponent(m.id)}">
+              Abrir <span class="msym">arrow_outward</span>
+            </a>
+          </div>
+        </div>
+        <div class="tc-logo">
+          <span class="tc-circle tc-circle1"></span>
+          <span class="tc-circle tc-circle2"></span>
+          <span class="tc-circle tc-circle3"><span class="msym">${ICONS[m.tipo] || 'description'}</span></span>
+        </div>
       </div>
-      <a class="btn small" href="/manual.html?id=${encodeURIComponent(manual.id)}"><span class="msym" style="font-size:15px">open_in_new</span> Abrir página completa</a>
     </div>
-    <div class="manuales-preview-body" id="previewBody"><div class="empty">Cargando...</div></div>
   `;
-
-  const body = document.getElementById('previewBody');
-  try {
-    const contenido = await Api.getManualContenido(manual.archivo);
-    if (contenido.tipo === 'html') {
-      body.innerHTML = `<div class="manual-content">${contenido.html}</div>`;
-    } else if (contenido.tipo === 'texto') {
-      body.innerHTML = `<div class="manual-content"><pre style="white-space:pre-wrap;font-family:inherit">${escapeHtml(contenido.texto)}</pre></div>`;
-    } else {
-      body.innerHTML = `<iframe src="${contenido.url}"></iframe>`;
-    }
-  } catch (e) {
-    body.innerHTML = `<div class="empty">No se pudo cargar el contenido: ${escapeHtml(e.message)}</div>`;
-  }
 }
 
 init();
