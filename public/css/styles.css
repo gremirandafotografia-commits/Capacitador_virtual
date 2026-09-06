@@ -368,8 +368,7 @@ button { font-family: inherit; }
 
 .cat-section { margin-bottom: 12px; }
 .cat-section:last-child { margin-bottom: 0; }
-.cat-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; cursor: pointer; user-select: none; }
-.cat-section-head:hover h2 { color: var(--brand-dark); }
+.cat-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 .cat-section-head h2 { margin: 0; font-size: 15px; font-weight: 800; color: var(--text); }
 .cat-section-head .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; background: var(--cat-general); }
 .cat-section-head .count { font-size: 11.5px; font-weight: 700; color: var(--text-dim); background: var(--surface-alt); border-radius: 999px; padding: 2px 9px; }
@@ -381,6 +380,23 @@ button { font-family: inherit; }
 .cat-section-head[data-cat="MBA Case"] .dot { background: var(--cat-mba); }
 .cat-section-head[data-cat="Agentes de Ayuda"] .dot { background: var(--cat-agentes); }
 .cat-section-head[data-cat="General"] .dot { background: var(--cat-general); }
+
+/* Encabezados de acordeon animados (Evaluaciones) */
+.acordeon-head {
+  cursor: pointer; user-select: none; border-radius: 14px; padding: 14px 18px; margin-bottom: 10px;
+  background: linear-gradient(135deg, var(--ac-c1, var(--azul)), var(--ac-c2, var(--azul-osc)));
+  box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease;
+}
+.acordeon-head:hover { transform: translateY(-3px) scale(1.01); box-shadow: var(--shadow-lg); }
+.acordeon-head .dot { display: none; }
+.acordeon-head h2 { color: #fff; }
+.acordeon-head .count { background: rgba(255,255,255,.28); color: #fff; }
+.acordeon-head .cat-section-chevron { color: #fff; }
+.ac-icon {
+  width: 34px; height: 34px; border-radius: 9px; background: rgba(255,255,255,.22);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.ac-icon .msym { color: #fff; font-size: 18px; }
 
 .card {
   background: var(--surface);

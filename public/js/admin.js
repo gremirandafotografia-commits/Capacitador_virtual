@@ -124,10 +124,12 @@ function renderEvaluaciones() {
 
     grid.innerHTML = secciones.map(sec => {
       const abierta = seccionesAbiertasEval.has(sec.tema);
+      const cl = folderColor(sec.tema);
       return `
         <section class="cat-section${abierta ? '' : ' colapsada'}">
-          <div class="cat-section-head" data-cat="${escapeHtml(sec.tema)}">
-            <span class="dot"></span><h2>${escapeHtml(sec.tema)}</h2><span class="count">${sec.items.length}</span>
+          <div class="cat-section-head acordeon-head" data-cat="${escapeHtml(sec.tema)}" style="--ac-c1:${cl.f1};--ac-c2:${cl.back}">
+            <span class="ac-icon"><span class="msym">${TEMA_ICONS[sec.tema] || 'folder_open'}</span></span>
+            <h2>${escapeHtml(sec.tema)}</h2><span class="count">${sec.items.length}</span>
             <span class="msym cat-section-chevron">expand_more</span>
           </div>
           <div class="grid"${abierta ? '' : ' hidden'}>
