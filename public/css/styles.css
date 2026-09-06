@@ -116,38 +116,49 @@ button { font-family: inherit; }
   max-width: 1680px; width: 95%; margin: 0 auto;
 }
 .pestana-card {
-  display: flex; width: 214px; height: 56px; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; overflow: hidden; cursor: pointer; box-shadow: var(--shadow);
-  transition: width .3s ease, transform .3s ease, box-shadow .3s ease;
+  position: relative; display: flex; align-items: center; width: 200px; height: 58px;
+  border-radius: 14px; overflow: hidden; cursor: pointer; text-decoration: none;
+  background: rgba(255,255,255,.35);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.5);
+  box-shadow: 8px 10px 22px rgba(0,20,60,.10), -6px -6px 14px rgba(255,255,255,.5);
+  transition: transform .3s ease, box-shadow .3s ease;
 }
 .pestana-card:hover, .pestana-card.act {
-  transform: scale(1.03); box-shadow: var(--shadow-lg); text-decoration: none;
+  transform: translateY(-3px);
+  box-shadow: 8px 14px 26px rgba(0,20,60,.18), -6px -6px 14px rgba(255,255,255,.6);
+  text-decoration: none;
 }
-.pestana-card:hover { width: 56px; }
-.pc-left {
-  flex: 0 0 54px; position: relative; background: var(--pc, var(--cat-general));
-  display: flex; align-items: center; justify-content: center; overflow: hidden;
+.pc-bg {
+  position: absolute; inset: 3px; border-radius: 11px; z-index: 1;
+  background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(245,247,250,.75));
+  border: 1px solid rgba(255,255,255,.7);
 }
-.pc-icon { color: #fff; font-size: 22px; transition: transform .4s cubic-bezier(.34,1.5,.64,1); }
-.pestana-card:hover .pc-icon { transform: translateY(-3px) scale(1.08); }
-.pc-badge {
-  position: absolute; bottom: 6px; right: 6px; width: 14px; height: 14px; border-radius: 50%;
-  background: #fff; color: var(--pc, var(--cat-general)); font-size: 10px; display: flex; align-items: center; justify-content: center;
-  opacity: 0; transform: translateY(4px); transition: opacity .25s ease .15s, transform .25s ease .15s;
+.pc-aurora {
+  position: absolute; top: 50%; left: 30%; width: 90px; height: 90px; border-radius: 50%;
+  z-index: 0; opacity: .8; filter: blur(16px);
+  background: radial-gradient(circle, var(--pc), transparent 70%);
+  animation: pcAurora 6.5s infinite ease-in-out;
 }
-.pestana-card:hover .pc-badge { opacity: 1; transform: translateY(0); }
-.pc-right {
-  flex: 1 1 auto; min-width: 0; display: flex; align-items: center; justify-content: space-between;
-  padding: 0 12px 0 14px; white-space: nowrap; transition: opacity .2s ease;
+@keyframes pcAurora {
+  0% { transform: translate(-60%, -60%) scale(1); }
+  30% { transform: translate(-5%, -75%) scale(1.15); }
+  60% { transform: translate(0%, -25%) scale(1.05); }
+  80% { transform: translate(-75%, -35%) scale(1.2); }
+  100% { transform: translate(-60%, -60%) scale(1); }
 }
-.pestana-card:hover .pc-right { opacity: 0; }
-.pc-label { font-size: 13px; font-weight: 700; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.pc-right .msym { font-size: 17px; color: var(--text-dim); flex-shrink: 0; }
-.pestana-card.act .pc-label, .pestana-card.act .pc-right .msym { color: var(--pc, var(--brand)); }
-.pestana-card.act { border-color: var(--pc, var(--brand)); }
+.pc-content { position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; padding: 0 16px; width: 100%; min-width: 0; }
+.pc-icon {
+  width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--pc, var(--cat-general)); color: #fff; font-size: 18px;
+}
+.pc-label { font-size: 13.5px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pestana-card.act .pc-label { color: var(--pc, var(--brand)); }
 @media (max-width: 480px) {
-  .pestana-card { width: 54px; }
-  .pestana-card .pc-right { display: none; }
+  .pestana-card { width: 58px; }
+  .pestana-card .pc-label { display: none; }
+  .pc-content { padding: 0; justify-content: center; }
 }
 
 .container {
