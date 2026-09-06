@@ -19,6 +19,14 @@ async function init() {
   document.getElementById('btnNuevo').addEventListener('click', () => toggleModal(true));
   document.getElementById('nCancelar').addEventListener('click', () => toggleModal(false));
   document.getElementById('nCrear').addEventListener('click', crear);
+  document.getElementById('btnSalir').addEventListener('click', salir);
+}
+
+function salir() {
+  window.close();
+  setTimeout(() => {
+    toast('Para salir, cerrá esta pestaña del navegador', true);
+  }, 300);
 }
 
 function toggleModal(show) {

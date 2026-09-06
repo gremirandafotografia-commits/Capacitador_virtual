@@ -482,6 +482,30 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 .modal .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
 [hidden] { display: none !important; }
 
+/* Formulario de contraseña (acceso de administración y futuros accesos) */
+.login-card { text-align: center; }
+.login-title { margin: 4px 0 2px; }
+.login-input-wrap { position: relative; margin: 14px 0 6px; }
+.login-input-wrap input {
+  outline: none; border: 1px solid var(--border); width: 100%; box-sizing: border-box;
+  padding: 14px 44px 14px 14px; font-size: 14px; border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05); background: #fff; font-family: inherit;
+}
+.login-input-wrap input:focus { border-color: var(--brand); }
+.login-input-icon {
+  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+  color: var(--text-dim); font-size: 19px; pointer-events: none;
+}
+.login-submit {
+  display: block; width: 100%; padding: 13px 20px; margin-top: 4px;
+  background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; font-family: inherit;
+  border: none; border-radius: 10px; cursor: pointer; transition: background .15s ease;
+}
+.login-submit:hover { background: var(--brand-dark); }
+.login-back-link { color: var(--text-dim); font-size: 13px; margin: 14px 0 0; }
+.login-back-link a { text-decoration: underline; }
+
 /* Editor layout */
 .editor-shell { display: flex; flex-direction: column; gap: 18px; }
 .step-list { display: flex; flex-direction: column; gap: 14px; }

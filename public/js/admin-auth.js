@@ -17,15 +17,16 @@ function adminGuard() {
       overlay.className = 'modal-backdrop';
       overlay.id = 'adminGate';
       overlay.innerHTML = `
-        <div class="modal" style="max-width:360px">
-          <h2>Administración</h2>
-          <p class="helper">Ingresá la contraseña para continuar.</p>
-          <div class="field"><input type="password" id="adminGatePass" placeholder="Contraseña" autofocus></div>
-          <p id="adminGateError" style="color:var(--danger);font-size:13px;min-height:18px;margin:0"></p>
-          <div class="modal-actions">
-            <a class="btn" href="/index.html">Volver</a>
-            <button class="btn primary" id="adminGateEntrar" type="button">Entrar</button>
+        <div class="modal login-card" style="max-width:360px">
+          <h2 class="login-title">Administración</h2>
+          <p class="helper" style="text-align:center">Ingresá la contraseña para continuar.</p>
+          <div class="login-input-wrap">
+            <input type="password" id="adminGatePass" placeholder="Contraseña" autofocus>
+            <span class="msym login-input-icon">lock</span>
           </div>
+          <p id="adminGateError" style="color:var(--danger);font-size:13px;min-height:18px;margin:0;text-align:center"></p>
+          <button class="login-submit" id="adminGateEntrar" type="button">Entrar</button>
+          <p class="login-back-link"><a href="/index.html">Volver al inicio</a></p>
         </div>`;
       document.body.appendChild(overlay);
 
