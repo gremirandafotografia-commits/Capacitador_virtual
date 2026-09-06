@@ -22,7 +22,15 @@ fi
 
 if [ ! -f "$WHISPER_DIR/build/bin/whisper-cli" ]; then
   echo "[whisper] Compilando whisper.cpp..."
-  (cd "$WHISPER_DIR" && cmake -B build >/dev/null && cmake --build build --config Release -j"$(nproc)")
+  # -j alto (uno por CPU) puede quedarse sin memoria y matar la
+  # compilacion en contenedores de build con poca RAM aunque reporten
+  # varios CPU (Railway, por ejemplo) -eso deja el binario a medio
+  # compilar y la transcripcion silenciosamente no disponible. Con 2
+  # jobs tarda un poco mas pero no se queda sin memoria.
+  if ! (cd "$WHISPER_DIR" && cmake -B build && cmake --build build --config Release -j2); then
+    echo "[whisper] FALLO la compilacion de whisper.cpp (ver arriba el error). Se continua sin transcripcion."
+    exit 1
+  fi
 fi
 
 echo "[whisper] Listo: transcripcion de audio disponible."

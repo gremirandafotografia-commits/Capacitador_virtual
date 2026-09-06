@@ -598,6 +598,22 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 .capture-row .btn[data-accion="subir-imagen"]:hover { background: linear-gradient(135deg, #C97600, #8a5600); }
 .capture-row .btn[data-accion="pausar"]:hover { background: linear-gradient(135deg, #F0A02C, #c97f12); }
 .capture-row .btn[data-accion="detener"]:hover { background: linear-gradient(135deg, var(--danger), #a23026); }
+.capture-row .btn[data-accion="transcribir"]:hover { background: linear-gradient(135deg, #12876c, #0d5c4a); }
+
+/* Movimiento en hover para todos los botones del editor de tramites */
+.editor-pagina .btn,
+.editor-pagina .rte-toolbar button {
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+.editor-pagina .btn:hover:not([disabled]),
+.editor-pagina .rte-toolbar button:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 18px -6px rgba(0,25,110,.25);
+}
+.editor-pagina .btn:active:not([disabled]),
+.editor-pagina .rte-toolbar button:active {
+  transform: translateY(-1px) scale(1.01);
+}
 .rec-indicator {
   display: none; align-items: center; gap: 6px; color: var(--danger); font-weight: 700; font-size: 13px;
 }

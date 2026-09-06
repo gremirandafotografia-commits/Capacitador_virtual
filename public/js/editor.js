@@ -53,6 +53,93 @@ function bindDropZone(el, onFile) {
   });
 }
 
+function fmtTiempo(seg) {
+  const m = Math.floor(seg / 60);
+  const s = Math.floor(seg % 60);
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+// Maneja el flujo de "transcribir audio" (iniciar, consultar cada pocos
+// segundos hasta que termine, listar los fragmentos con su tiempo). Se
+// reutiliza tanto para el video externo de referencia como para el
+// video propio de cada paso -la logica es identica, solo cambia de
+// donde sale el nombre de archivo y que se hace con "Usar".
+function crearTranscriptor({ btn, getVideoEl, box, estadoEl, listaEl, getNombreArchivo, onUsar }) {
+  function renderSegmentos(segmentos) {
+    if (!segmentos.length) {
+      listaEl.innerHTML = '<span class="helper">No se detectó texto en el audio.</span>';
+      return;
+    }
+    listaEl.innerHTML = segmentos.map((s, i) => `
+      <div class="transcripcion-seg" data-idx="${i}">
+        <span class="ts">${fmtTiempo(s.inicio)}</span>
+        <span class="txt">${escapeHtml(s.texto)}</span>
+        <button type="button" class="btn small ghost btn-usar" data-idx="${i}">Usar</button>
+      </div>
+    `).join('');
+    listaEl.querySelectorAll('.transcripcion-seg').forEach((el) => {
+      const idx = parseInt(el.dataset.idx, 10);
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.btn-usar')) return;
+        const videoEl = getVideoEl();
+        if (!videoEl) return;
+        videoEl.currentTime = segmentos[idx].inicio;
+        videoEl.play().catch(() => { /* el usuario puede darle play manualmente */ });
+        listaEl.querySelectorAll('.transcripcion-seg').forEach(x => x.classList.remove('activo'));
+        el.classList.add('activo');
+      });
+    });
+    listaEl.querySelectorAll('.btn-usar').forEach((btnUsar) => {
+      btnUsar.addEventListener('click', () => onUsar(segmentos[parseInt(btnUsar.dataset.idx, 10)].texto));
+    });
+  }
+
+  async function consultar(nombreArchivo) {
+    const job = await Api.getTranscripcion(DOC.id, nombreArchivo);
+    if (job.error) { estadoEl.textContent = job.error; return true; }
+    if (!job.done) { estadoEl.textContent = 'Transcribiendo el audio... esto puede tardar varios minutos en videos largos.'; return false; }
+    estadoEl.textContent = '';
+    renderSegmentos(job.segmentos || []);
+    return true;
+  }
+
+  btn.addEventListener('click', async () => {
+    const nombreArchivo = getNombreArchivo();
+    if (!nombreArchivo) return;
+    box.hidden = false;
+    listaEl.innerHTML = '';
+    estadoEl.textContent = 'Iniciando transcripción...';
+    btn.disabled = true;
+    try {
+      await Api.iniciarTranscripcion(DOC.id, nombreArchivo);
+      for (let i = 0; i < 200; i++) {
+        const terminado = await consultar(nombreArchivo);
+        if (terminado) break;
+        await new Promise((r) => setTimeout(r, 3000));
+      }
+    } catch (e) {
+      estadoEl.textContent = e.message;
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  return {
+    revisarExistente() {
+      const nombreArchivo = getNombreArchivo();
+      if (!nombreArchivo) return;
+      Api.getTranscripcion(DOC.id, nombreArchivo)
+        .then((job) => {
+          if (job.iniciada && job.done && !job.error) {
+            box.hidden = false;
+            renderSegmentos(job.segmentos || []);
+          }
+        })
+        .catch(() => { /* sin transcripcion previa, no pasa nada */ });
+    }
+  };
+}
+
 async function init() {
   const id = qs('id');
   if (!id) { toast('Falta el id del trámite', true); return; }
@@ -141,6 +228,19 @@ function bindGlobal() {
   inputVideo.addEventListener('change', () => subirVideoExterno(inputVideo.files[0]));
   bindDropZone(zonaVideoExterno, (file) => subirVideoExterno(file));
 
+  const transcriptorExterno = crearTranscriptor({
+    btn: btnTranscribir,
+    getVideoEl: () => videoEl,
+    box: transcripcionBox,
+    estadoEl: transcripcionEstado,
+    listaEl: transcripcionLista,
+    getNombreArchivo: nombreArchivoVideoExterno,
+    onUsar: (texto) => {
+      textoSegmentoSeleccionado = texto;
+      toast('Texto listo: se va a usar en el próximo paso que captures con "Capturar fotograma"');
+    }
+  });
+
   if (DOC.videoExterno && DOC.videoExterno.src) {
     videoEl.src = DOC.videoExterno.src;
     videoEl.hidden = false;
@@ -149,14 +249,7 @@ function bindGlobal() {
     // Si ya se transcribio este video antes (persiste en el servidor
     // mientras no se reinicie), la mostramos sin que haga falta
     // volver a pedirla.
-    Api.getTranscripcion(DOC.id, nombreArchivoVideoExterno())
-      .then((job) => {
-        if (job.iniciada && job.done && !job.error) {
-          transcripcionBox.hidden = false;
-          renderTranscripcion(job.segmentos || []);
-        }
-      })
-      .catch(() => { /* sin transcripcion previa, no pasa nada */ });
+    transcriptorExterno.revisarExistente();
   }
 
   btnCapturar.addEventListener('click', async () => {
@@ -182,78 +275,6 @@ function bindGlobal() {
     } catch (e) { toast(e.message, true); }
   });
 
-  function fmtTiempo(seg) {
-    const m = Math.floor(seg / 60);
-    const s = Math.floor(seg % 60);
-    return `${m}:${String(s).padStart(2, '0')}`;
-  }
-
-  function renderTranscripcion(segmentos) {
-    if (!segmentos.length) {
-      transcripcionLista.innerHTML = '<span class="helper">No se detectó texto en el audio.</span>';
-      return;
-    }
-    transcripcionLista.innerHTML = segmentos.map((s, i) => `
-      <div class="transcripcion-seg" data-idx="${i}">
-        <span class="ts">${fmtTiempo(s.inicio)}</span>
-        <span class="txt">${escapeHtml(s.texto)}</span>
-        <button type="button" class="btn small ghost btn-usar" data-idx="${i}">Usar</button>
-      </div>
-    `).join('');
-    transcripcionLista.querySelectorAll('.transcripcion-seg').forEach((el) => {
-      const idx = parseInt(el.dataset.idx, 10);
-      el.addEventListener('click', (e) => {
-        if (e.target.closest('.btn-usar')) return;
-        videoEl.currentTime = segmentos[idx].inicio;
-        videoEl.play().catch(() => { /* el usuario puede darle play manualmente */ });
-        transcripcionLista.querySelectorAll('.transcripcion-seg').forEach(x => x.classList.remove('activo'));
-        el.classList.add('activo');
-      });
-    });
-    transcripcionLista.querySelectorAll('.btn-usar').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.dataset.idx, 10);
-        textoSegmentoSeleccionado = segmentos[idx].texto;
-        toast('Texto listo: se va a usar en el próximo paso que captures con "Capturar fotograma"');
-      });
-    });
-  }
-
-  async function consultarTranscripcion(nombreArchivo) {
-    const job = await Api.getTranscripcion(DOC.id, nombreArchivo);
-    if (job.error) {
-      transcripcionEstado.textContent = job.error;
-      return true;
-    }
-    if (!job.done) {
-      transcripcionEstado.textContent = 'Transcribiendo el audio... esto puede tardar varios minutos en videos largos.';
-      return false;
-    }
-    transcripcionEstado.textContent = '';
-    renderTranscripcion(job.segmentos || []);
-    return true;
-  }
-
-  btnTranscribir.addEventListener('click', async () => {
-    const nombreArchivo = nombreArchivoVideoExterno();
-    if (!nombreArchivo) return;
-    transcripcionBox.hidden = false;
-    transcripcionLista.innerHTML = '';
-    transcripcionEstado.textContent = 'Iniciando transcripción...';
-    btnTranscribir.disabled = true;
-    try {
-      await Api.iniciarTranscripcion(DOC.id, nombreArchivo);
-      for (let i = 0; i < 200; i++) {
-        const terminado = await consultarTranscripcion(nombreArchivo);
-        if (terminado) break;
-        await new Promise((r) => setTimeout(r, 3000));
-      }
-    } catch (e) {
-      transcripcionEstado.textContent = e.message;
-    } finally {
-      btnTranscribir.disabled = false;
-    }
-  });
 }
 
 function agregarEtiqueta() {
@@ -454,7 +475,36 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
   const inputVideo = stepEl.querySelector('[data-subir="video"]');
   const inputImagen = stepEl.querySelector('[data-subir="imagen"]');
   const btnFrame = stepEl.querySelector('[data-accion="frame-video"]');
+  const btnTranscribirPaso = stepEl.querySelector('[data-accion="transcribir"]');
+  const transcripcionBoxPaso = stepEl.querySelector('[data-transcripcion-box]');
+  const transcripcionEstadoPaso = stepEl.querySelector('[data-transcripcion-estado]');
+  const transcripcionListaPaso = stepEl.querySelector('[data-transcripcion-lista]');
+  const rte = stepEl.querySelector('[data-texto]');
   const allCaptureBtns = [btnPantalla, btnCamara, btnShot];
+
+  function nombreArchivoPaso() {
+    return (paso.media && paso.media.tipo === 'video' && paso.media.src) ? paso.media.src.split('/').pop() : null;
+  }
+
+  function actualizarBotonTranscribir() {
+    btnTranscribirPaso.disabled = !nombreArchivoPaso();
+  }
+
+  const transcriptorPaso = crearTranscriptor({
+    btn: btnTranscribirPaso,
+    getVideoEl: () => stage.querySelector('video'),
+    box: transcripcionBoxPaso,
+    estadoEl: transcripcionEstadoPaso,
+    listaEl: transcripcionListaPaso,
+    getNombreArchivo: nombreArchivoPaso,
+    onUsar: (texto) => {
+      rte.innerHTML = rte.innerHTML ? `${rte.innerHTML}<br>${escapeHtml(texto)}` : escapeHtml(texto);
+      paso.texto = rte.innerHTML;
+      toast('Texto agregado a la descripción del paso');
+    }
+  });
+  actualizarBotonTranscribir();
+  transcriptorPaso.revisarExistente();
 
   function setRecording(on) {
     indicador.classList.toggle('on', on);
@@ -504,6 +554,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       const res = await Api.uploadMedia(DOC.id, blob, `paso-${Date.now()}.webm`, (msg) => toast(msg));
       paso.media = { tipo: 'video', src: res.src };
       renderStageMedia(stage, paso);
+      actualizarBotonTranscribir();
       toast(mensajeSubida('Grabación guardada en el paso', res));
     } catch (e) { toast(e.message, true); }
   });
@@ -515,6 +566,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       const res = await Api.uploadMedia(DOC.id, blob, `pantallazo-${Date.now()}.png`);
       paso.media = { tipo: 'imagen', src: res.src };
       renderStageMedia(stage, paso);
+      actualizarBotonTranscribir();
       toast('Pantallazo agregado');
     } catch (e) {
       toast('No se pudo tomar el pantallazo: ' + e.message, true);
@@ -530,6 +582,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       const res = await Api.uploadMedia(DOC.id, file, file.name, (msg) => toast(msg));
       paso.media = { tipo: 'video', src: res.src };
       renderStageMedia(stage, paso);
+      actualizarBotonTranscribir();
       toast(mensajeSubida('Video agregado al paso', res));
     } catch (e) { toast(e.message, true); }
   }
@@ -539,6 +592,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
       const res = await Api.uploadMedia(DOC.id, file, file.name);
       paso.media = { tipo: 'imagen', src: res.src };
       renderStageMedia(stage, paso);
+      actualizarBotonTranscribir();
       toast('Imagen agregada al paso');
     } catch (e) { toast(e.message, true); }
   }
