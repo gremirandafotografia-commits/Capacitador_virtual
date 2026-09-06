@@ -347,6 +347,7 @@ function bindResultados() {
   document.getElementById('filtroFechaDesde').addEventListener('change', renderResultados);
   document.getElementById('filtroFechaHasta').addEventListener('change', renderResultados);
   document.getElementById('btnExportarCsv').addEventListener('click', exportarCsv);
+  document.getElementById('btnExportarPdf').addEventListener('click', exportarPdf);
   document.getElementById('revisarCancelar').addEventListener('click', () => { document.getElementById('modalRevisar').hidden = true; });
 }
 
@@ -638,6 +639,32 @@ function exportarCsv() {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
+
+async function exportarPdf() {
+  const filas = filasVisibles();
+  if (!filas.length) { toast('No hay resultados para exportar', true); return; }
+  const filasPdf = filas.map(({ ev, it }) => ({
+    tema: ev.tema,
+    evaluacion: ev.titulo,
+    empleado: `${it.apellido}, ${it.nombre}`,
+    fecha: (it.fecha || '').slice(0, 10),
+    nota: it.calificacionFinal === null ? `${it.puntajeAuto}/${it.totalAuto} parcial` : `${it.calificacionFinal}/100`,
+    estado: it.pendienteRevision ? 'Pendiente de revisión' : 'Revisado'
+  }));
+  try {
+    const blob = await Api.exportarResultadosPdf(filasPdf);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `evaluaciones-resultados-${new Date().toISOString().slice(0, 10)}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    toast(e.message, true);
+  }
 }
 
 adminGuard().then(init);

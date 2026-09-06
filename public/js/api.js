@@ -212,6 +212,22 @@ const Api = {
     if (!r.ok) throw new Error('Error al eliminar manual');
     return r.json();
   },
+  manualPdfUrl(id) {
+    return `/api/manuales/${encodeURIComponent(id)}/exportar-pdf`;
+  },
+  certificadoUrl(evaluacionId, intentoId) {
+    return `/api/evaluaciones/${encodeURIComponent(evaluacionId)}/intentos/${encodeURIComponent(intentoId)}/certificado`;
+  },
+  async exportarResultadosPdf(filas) {
+    const r = await fetch('/api/admin/resultados-pdf', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
+      body: JSON.stringify({ filas })
+    });
+    await checkAdminAuth(r);
+    if (!r.ok) throw new Error((await r.json()).error || 'No se pudo generar el PDF');
+    return r.blob();
+  },
   async listEvaluaciones() {
     const r = await fetch('/api/evaluaciones');
     return r.json();

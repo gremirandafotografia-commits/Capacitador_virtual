@@ -8,6 +8,7 @@ const { v4: uuidv4 } = require('uuid');
 const { nodewhisper } = require('nodejs-whisper');
 const nodemailer = require('nodemailer');
 const Anthropic = require('@anthropic-ai/sdk');
+const PDFDocument = require('pdfkit');
 
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
 const anthropicClient = ANTHROPIC_API_KEY ? new Anthropic({ apiKey: ANTHROPIC_API_KEY }) : null;
@@ -713,6 +714,38 @@ app.post('/api/manuales/upload', requireAdmin, manualUpload.single('archivo'), (
   res.status(201).json({ id: req.file.filename });
 });
 
+app.get('/api/manuales/:id/exportar-pdf', (req, res) => {
+  try {
+    const id = decodeURIComponent(req.params.id);
+    const full = path.join(MANUALES_DIR, id);
+    if (!full.startsWith(MANUALES_DIR) || !fs.existsSync(full)) {
+      return res.status(404).json({ error: 'Manual no encontrado' });
+    }
+    const meta = readJSON(MANUALES_META_FILE, {})[id] || {};
+    const titulo = meta.titulo || id;
+    const nombreArchivo = `${slugify(titulo)}.pdf`;
+    const ext = path.extname(full).toLowerCase();
+
+    if (ext === '.pdf') {
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${nombreArchivo}"`);
+      return fs.createReadStream(full).pipe(res);
+    }
+
+    const texto = extraerTextoManual(id);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${nombreArchivo}"`);
+    const doc = new PDFDocument({ margin: 56 });
+    doc.pipe(res);
+    doc.fontSize(18).fillColor('#00196E').text(titulo);
+    if (meta.categoria) doc.moveDown(0.3).fontSize(10).fillColor('#6B7C8C').text(meta.categoria.toUpperCase());
+    doc.moveDown(1).fontSize(11).fillColor('#1F2D3A').text(texto, { lineGap: 4 });
+    doc.end();
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
 app.put('/api/manuales/:id', requireAdmin, (req, res) => {
   const id = decodeURIComponent(req.params.id);
   const full = path.join(MANUALES_DIR, id);
@@ -1157,6 +1190,48 @@ app.post('/api/evaluaciones/:slug/intentos', (req, res) => {
   }
 });
 
+app.get('/api/evaluaciones/:slug/intentos/:intentoId/certificado', (req, res) => {
+  try {
+    const doc = readJSON(path.join(evalPath(req.params.slug), 'evaluacion.json'), null);
+    if (!doc) return res.status(404).json({ error: 'Evaluación no encontrada' });
+    const intento = readJSON(path.join(evalIntentosDir(req.params.slug), `${req.params.intentoId}.json`), null);
+    if (!intento) return res.status(404).json({ error: 'Intento no encontrado' });
+
+    const aprobado = intento.calificacionFinal !== null && intento.calificacionFinal >= NOTA_APROBATORIA;
+    const nombreArchivo = `certificado-${slugify(`${intento.apellido}-${intento.nombre}`)}.pdf`;
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${nombreArchivo}"`);
+
+    const pdf = new PDFDocument({ margin: 50, size: 'A4', layout: 'landscape' });
+    pdf.pipe(res);
+
+    pdf.rect(18, 18, pdf.page.width - 36, pdf.page.height - 36).lineWidth(2).stroke('#0072BC');
+    pdf.moveDown(2);
+    pdf.fontSize(12).fillColor('#6B7C8C')
+      .text('COOPELESCA R.L. · Capacitador de Atención de Trámites de Asociados', { align: 'center' });
+    pdf.moveDown(1.5);
+    pdf.fontSize(26).fillColor('#00196E')
+      .text(aprobado ? 'CERTIFICADO DE APROBACIÓN' : 'CONSTANCIA DE PARTICIPACIÓN', { align: 'center' });
+    pdf.moveDown(1.5);
+    pdf.fontSize(13).fillColor('#1F2D3A').text('Se certifica que', { align: 'center' });
+    pdf.moveDown(0.4);
+    pdf.fontSize(22).fillColor('#0072BC').text(`${intento.nombre} ${intento.apellido}`, { align: 'center' });
+    pdf.moveDown(0.8);
+    pdf.fontSize(13).fillColor('#1F2D3A').text(
+      intento.pendienteRevision
+        ? `completó la evaluación "${doc.titulo}" (tema: ${doc.tema}), pendiente de revisión final.`
+        : `completó la evaluación "${doc.titulo}" (tema: ${doc.tema}) con una nota de ${intento.calificacionFinal}/100.`,
+      { align: 'center' }
+    );
+    pdf.moveDown(1.5);
+    pdf.fontSize(10).fillColor('#6B7C8C')
+      .text(`Fecha: ${new Date(intento.fecha).toLocaleDateString('es-CR')}`, { align: 'center' });
+    pdf.end();
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
 app.get('/api/evaluaciones/:slug/intentos', requireAdmin, (req, res) => {
   try {
     const dir = evalIntentosDir(req.params.slug);
@@ -1167,6 +1242,62 @@ app.get('/api/evaluaciones/:slug/intentos', requireAdmin, (req, res) => {
       .filter(Boolean)
       .sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''));
     res.json({ items });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+app.post('/api/admin/resultados-pdf', requireAdmin, (req, res) => {
+  try {
+    const filas = Array.isArray((req.body || {}).filas) ? req.body.filas : [];
+    if (!filas.length) return res.status(400).json({ error: 'No hay resultados para exportar' });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="resultados-${new Date().toISOString().slice(0, 10)}.pdf"`);
+
+    const doc = new PDFDocument({ margin: 40, size: 'A4', layout: 'landscape' });
+    doc.pipe(res);
+
+    doc.fontSize(16).fillColor('#00196E').text('CATA · Resultados de evaluaciones');
+    doc.fontSize(9).fillColor('#6B7C8C').text(`Generado el ${new Date().toLocaleString('es-CR')} · ${filas.length} resultado${filas.length === 1 ? '' : 's'}`);
+    doc.moveDown(1);
+
+    const cols = [
+      { key: 'tema', label: 'Tema', width: 95 },
+      { key: 'evaluacion', label: 'Evaluación', width: 190 },
+      { key: 'empleado', label: 'Empleado', width: 150 },
+      { key: 'fecha', label: 'Fecha', width: 90 },
+      { key: 'nota', label: 'Nota', width: 70 },
+      { key: 'estado', label: 'Estado', width: 120 }
+    ];
+    const anchoTotal = cols.reduce((s, c) => s + c.width, 0);
+    const startX = doc.page.margins.left;
+    const rowHeight = 20;
+    let y = doc.y;
+
+    function drawHeaderRow() {
+      doc.rect(startX, y, anchoTotal, rowHeight).fill('#0072BC');
+      let x = startX;
+      doc.fontSize(9).fillColor('#fff');
+      cols.forEach(c => { doc.text(c.label, x + 4, y + 6, { width: c.width - 8 }); x += c.width; });
+      y += rowHeight;
+    }
+
+    drawHeaderRow();
+    filas.forEach((f, i) => {
+      if (y + rowHeight > doc.page.height - doc.page.margins.bottom) {
+        doc.addPage();
+        y = doc.page.margins.top;
+        drawHeaderRow();
+      }
+      if (i % 2 === 0) doc.rect(startX, y, anchoTotal, rowHeight).fill('#EAF4FC');
+      let x = startX;
+      doc.fontSize(8.5).fillColor('#1F2D3A');
+      cols.forEach(c => { doc.text(String(f[c.key] ?? ''), x + 4, y + 6, { width: c.width - 8, ellipsis: true }); x += c.width; });
+      y += rowHeight;
+    });
+
+    doc.end();
   } catch (e) {
     res.status(400).json({ error: e.message });
   }

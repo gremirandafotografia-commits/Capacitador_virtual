@@ -125,6 +125,10 @@ function mostrarResultado(intento) {
     document.getElementById('resultadoDetalle').textContent =
       `Respondiste correctamente ${intento.puntajeAuto} de ${intento.totalAuto} preguntas.`;
   }
+
+  const btnCertificado = document.getElementById('btnCertificado');
+  btnCertificado.href = Api.certificadoUrl(EVAL.id, intento.id);
+  btnCertificado.hidden = false;
 }
 
 init();

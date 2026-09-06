@@ -57,6 +57,9 @@ function fillHeader() {
   const descarga = document.getElementById('mDescarga');
   descarga.href = `/manuales/${MANUAL.archivo}`;
   descarga.hidden = false;
+  const descargaPdf = document.getElementById('mDescargaPdf');
+  descargaPdf.href = Api.manualPdfUrl(MANUAL.archivo);
+  descargaPdf.hidden = false;
 }
 
 async function guardarMeta() {
