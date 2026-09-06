@@ -1,7 +1,17 @@
 const CATEGORIAS_FIJAS = ['Sistema Open', 'Salesforce', 'Qupos', 'MBA Case', 'Agentes de Ayuda', 'General'];
 const TEMA_ICONS = {
-  'Sistema Open': 'dns', 'Salesforce': 'cloud', 'Qupos': 'point_of_sale',
-  'MBA Case': 'work', 'Agentes de Ayuda': 'support_agent', 'General': 'folder_open'
+  'Todos': 'apps', 'Sistema Open': 'dns', 'Salesforce': 'cloud', 'Qupos': 'point_of_sale',
+  'MBA Case': 'work', 'Agentes de Ayuda': 'support_agent', 'General': 'folder_open', 'Otros': 'folder_open'
+};
+const TEMA_FOLDER_COLORS = {
+  'Todos': { back: '#00196E', f1: '#0072BC', f2: '#4FA8DE' },
+  'Sistema Open': { back: '#00568F', f1: '#0072BC', f2: '#4FA8DE' },
+  'Salesforce': { back: '#124b6b', f1: '#1E77A8', f2: '#5AA9CE' },
+  'Qupos': { back: '#8a5600', f1: '#C97600', f2: '#F0A02C' },
+  'MBA Case': { back: '#4a3480', f1: '#6C4FBC', f2: '#9f7fe0' },
+  'Agentes de Ayuda': { back: '#8a2b28', f1: '#C13F3B', f2: '#e2726e' },
+  'General': { back: '#384049', f1: '#56636F', f2: '#8593a1' },
+  'Otros': { back: '#384049', f1: '#56636F', f2: '#8593a1' }
 };
 const ICONS = { pdf: 'picture_as_pdf', md: 'description', markdown: 'description', html: 'language', htm: 'language', txt: 'notes' };
 
@@ -50,41 +60,45 @@ function renderTemas() {
   const temas = [...CATEGORIAS_FIJAS];
   if (MANUALES.some(m => !conocidas.has(m.categoria))) temas.push('Otros');
 
-  const tileHtml = (cat, count) => `
-    <button class="tema-tile${categoriaActiva === cat ? ' act' : ''}" data-cat="${escapeHtml(cat)}" style="--tile-accent:var(${catAccentVar(cat)})">
-      <div class="img-section"><span class="msym">${TEMA_ICONS[cat] || 'folder_open'}</span></div>
-      <div class="tile-desc">
-        <span class="tile-count">${count}</span>
-        <span class="tile-title">${escapeHtml(cat)}</span>
-      </div>
-    </button>
-  `;
+  const folderHtml = (cat, label, count) => {
+    const cl = TEMA_FOLDER_COLORS[cat] || TEMA_FOLDER_COLORS['General'];
+    const activa = (categoriaActiva === '' && cat === 'Todos') || categoriaActiva === cat;
+    return `
+      <li class="folder-item${activa ? ' act' : ''}" data-cat="${escapeHtml(cat)}"
+          style="--folder-back:${cl.back};--folder-front1:${cl.f1};--folder-front2:${cl.f2}">
+        <div class="folder-3d">
+          <div class="folder-back"></div>
+          <div class="folder-paper folder-paper-a"></div>
+          <div class="folder-paper folder-paper-b"></div>
+          <div class="folder-paper folder-paper-c"></div>
+          <div class="folder-front"></div>
+        </div>
+        <div class="folder-label">
+          <span class="msym">${TEMA_ICONS[cat] || 'folder_open'}</span>
+          <span class="nombre">${escapeHtml(label)}</span>
+          <span class="count">${count}</span>
+        </div>
+      </li>
+    `;
+  };
 
   const el = document.getElementById('temasManuales');
   el.innerHTML =
-    tileHtml('Todos', MANUALES.length) +
+    folderHtml('Todos', 'Todos', MANUALES.length) +
     temas.map(cat => {
       const count = cat === 'Otros'
         ? MANUALES.filter(m => !conocidas.has(m.categoria)).length
         : MANUALES.filter(m => m.categoria === cat).length;
-      return tileHtml(cat, count);
+      return folderHtml(cat, cat, count);
     }).join('');
 
-  el.querySelectorAll('.tema-tile').forEach(btn => {
-    btn.addEventListener('click', () => {
-      categoriaActiva = btn.dataset.cat === 'Todos' ? '' : btn.dataset.cat;
+  el.querySelectorAll('.folder-item').forEach(li => {
+    li.addEventListener('click', () => {
+      categoriaActiva = li.dataset.cat === 'Todos' ? '' : li.dataset.cat;
       renderTemas();
       renderLista();
     });
   });
-}
-
-function catAccentVar(cat) {
-  const map = {
-    'Sistema Open': '--cat-open', 'Salesforce': '--cat-salesforce', 'Qupos': '--cat-qupos',
-    'MBA Case': '--cat-mba', 'Agentes de Ayuda': '--cat-agentes', 'General': '--cat-general'
-  };
-  return map[cat] || '--cat-general';
 }
 
 function renderLista() {
