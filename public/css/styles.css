@@ -565,21 +565,21 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 #appSplash {
   position: fixed; inset: 0; z-index: 9999;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 26px;
+  gap: 26px; padding: 24px; text-align: center; box-sizing: border-box;
   background: var(--wallpaper-grad);
   transition: opacity .5s ease, visibility .5s ease;
 }
 #appSplash.splash-hide { opacity: 0; visibility: hidden; pointer-events: none; }
 .splash-logo { height: 56px; display: block; animation: splashIn .6s cubic-bezier(.2,.7,.3,1) both; }
 .splash-title {
-  font-family: 'Audiowide', cursive; color: #fff; font-size: clamp(48px, 9vw, 96px);
+  font-family: 'Audiowide', cursive; color: #fff; font-size: clamp(40px, 11vw, 96px);
   letter-spacing: 4px; margin: 0; line-height: 1;
   text-shadow: 0 10px 40px rgba(0,10,40,.4);
   animation: splashIn .7s .1s cubic-bezier(.2,.7,.3,1) both;
 }
 .splash-sub {
   color: rgba(255,255,255,.85); font-size: 13.5px; letter-spacing: .06em; text-transform: uppercase;
-  margin-top: -14px; animation: splashIn .7s .18s cubic-bezier(.2,.7,.3,1) both;
+  margin-top: -14px; max-width: 40ch; animation: splashIn .7s .18s cubic-bezier(.2,.7,.3,1) both;
 }
 @keyframes splashIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
