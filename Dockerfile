@@ -3,13 +3,13 @@ FROM node:20-slim
 # ffmpeg no viene en la imagen base de Node; sin el, la app funciona
 # igual pero sin comprimir los videos que se suban/graben. cmake/
 # build-essential/git son para compilar whisper.cpp (transcripcion de
-# audio) durante el npm install de mas abajo; curl hace falta para que
-# ese mismo paso descargue el modelo (sin el, "node:20-slim" no trae
-# ningun cliente HTTP y la descarga falla antes de intentar compilar).
-# Si algo de esto faltara, el postinstall lo detecta y sigue sin romper
-# el build.
+# audio) durante el npm install de mas abajo; curl + ca-certificates
+# hacen falta para que ese mismo paso descargue el modelo (sin
+# ca-certificates, curl no tiene con que validar el HTTPS y falla con
+# "error setting certificate file"). Si algo de esto faltara, el
+# postinstall lo detecta y sigue sin romper el build.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg cmake build-essential git curl \
+    && apt-get install -y --no-install-recommends ffmpeg cmake build-essential git curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
