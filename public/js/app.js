@@ -43,15 +43,15 @@ const TEMA_ICONS = {
   '': 'apps', 'Sistema Open': 'dns', 'Salesforce': 'cloud', 'Qupos': 'point_of_sale',
   'MBA Case': 'work', 'Agentes de Ayuda': 'support_agent', 'General': 'folder_open', 'Otros': 'folder_open'
 };
-const TEMA_GRAD = {
-  '': ['#00196E', '#0072BC', '#4FA8DE'],
-  'Sistema Open': ['#00568F', '#0072BC', '#4FA8DE'],
-  'Salesforce': ['#124b6b', '#1E77A8', '#5AA9CE'],
-  'Qupos': ['#8a5600', '#C97600', '#F0A02C'],
-  'MBA Case': ['#4a3480', '#6C4FBC', '#9f7fe0'],
-  'Agentes de Ayuda': ['#8a2b28', '#C13F3B', '#e2726e'],
-  'General': ['#384049', '#56636F', '#8593a1'],
-  'Otros': ['#384049', '#56636F', '#8593a1']
+const TEMA_FOLDER_COLORS = {
+  '': { back: '#00196E', f1: '#0072BC', f2: '#4FA8DE' },
+  'Sistema Open': { back: '#00568F', f1: '#0072BC', f2: '#4FA8DE' },
+  'Salesforce': { back: '#124b6b', f1: '#1E77A8', f2: '#5AA9CE' },
+  'Qupos': { back: '#8a5600', f1: '#C97600', f2: '#F0A02C' },
+  'MBA Case': { back: '#4a3480', f1: '#6C4FBC', f2: '#9f7fe0' },
+  'Agentes de Ayuda': { back: '#8a2b28', f1: '#C13F3B', f2: '#e2726e' },
+  'General': { back: '#384049', f1: '#56636F', f2: '#8593a1' },
+  'Otros': { back: '#384049', f1: '#56636F', f2: '#8593a1' }
 };
 
 function renderTemas() {
@@ -62,18 +62,21 @@ function renderTemas() {
 
   const list = document.getElementById('temaList');
   const itemHtml = (cat, label, count) => {
-    const [c1, c2, c3] = TEMA_GRAD[cat] || TEMA_GRAD['General'];
+    const cl = TEMA_FOLDER_COLORS[cat] || TEMA_FOLDER_COLORS['General'];
     return `
-      <li class="tw-main${temaActivo === cat ? ' act' : ''}" data-cat="${escapeHtml(cat)}" style="--tw-c1:${c1};--tw-c2:${c2};--tw-c3:${c3}">
-        <div class="tw-card"></div>
-        <div class="tw-card_back">
-          <div class="tw-data">
-            <div class="tw-img"><span class="msym">${TEMA_ICONS[cat] || 'folder_open'}</span></div>
-            <div class="tw-text">
-              <div class="tw-text_m">${escapeHtml(label)}</div>
-              <div class="tw-text_s">${count} trámite${count === 1 ? '' : 's'}</div>
-            </div>
-          </div>
+      <li class="folder-item${temaActivo === cat ? ' act' : ''}" data-cat="${escapeHtml(cat)}"
+          style="--folder-back:${cl.back};--folder-front1:${cl.f1};--folder-front2:${cl.f2}">
+        <div class="folder-3d">
+          <div class="folder-back"></div>
+          <div class="folder-paper folder-paper-a"></div>
+          <div class="folder-paper folder-paper-b"></div>
+          <div class="folder-paper folder-paper-c"></div>
+          <div class="folder-front"></div>
+        </div>
+        <div class="folder-label">
+          <span class="msym">${TEMA_ICONS[cat] || 'folder_open'}</span>
+          <span class="nombre">${escapeHtml(label)}</span>
+          <span class="count">${count}</span>
         </div>
       </li>
     `;
@@ -88,7 +91,7 @@ function renderTemas() {
       return itemHtml(cat, cat, count);
     }).join('');
 
-  list.querySelectorAll('.tw-main').forEach(li => {
+  list.querySelectorAll('.folder-item').forEach(li => {
     li.addEventListener('click', () => {
       temaActivo = li.dataset.cat;
       renderTemas();
@@ -101,23 +104,33 @@ function cardHtml(t) {
   const tags = (t.etiquetas || []).map(e =>
     `<span class="tag-pill" style="--tc:${escapeHtml(e.color)}">${escapeHtml(e.texto)}</span>`
   ).join('');
+  const cl = TEMA_FOLDER_COLORS[t.categoria] || TEMA_FOLDER_COLORS['General'];
   return `
-    <div class="tema-card">
-      <span class="pill" data-cat="${escapeHtml(t.categoria)}">${escapeHtml(t.categoria)}</span>
-      ${tags ? `<div class="tag-row">${tags}</div>` : ''}
-      <h3>${escapeHtml(t.titulo)}</h3>
-      <p class="resumen">${escapeHtml(t.descripcion || 'Sin descripción')}</p>
-      <div class="meta">
-        <span>${t.pasos} paso${t.pasos === 1 ? '' : 's'}</span>
-        <span>·</span>
-        <span>Actualizado ${fmtDate(t.actualizado)}</span>
-      </div>
-      <div class="tema-card-actions">
-        <a class="btn-ingresar" href="/viewer.html?id=${encodeURIComponent(t.id)}">
-          Ingresar <span class="msym">arrow_outward</span>
-        </a>
-        <a class="btn small" href="/editor.html?id=${encodeURIComponent(t.id)}"><span class="msym" style="font-size:15px">edit</span> Editar</a>
-        <button class="btn small danger" data-del="${encodeURIComponent(t.id)}"><span class="msym" style="font-size:15px">delete</span></button>
+    <div class="tc-parent">
+      <div class="tc-card" style="--tc-c1:${cl.f1};--tc-c2:${cl.f2};--tc-dark:${cl.back}">
+        <div class="tc-glass">
+          <div class="tc-content">
+            <span class="pill" data-cat="${escapeHtml(t.categoria)}">${escapeHtml(t.categoria)}</span>
+            ${tags ? `<div class="tag-row">${tags}</div>` : ''}
+            <span class="tc-title">${escapeHtml(t.titulo)}</span>
+            <span class="tc-text">${escapeHtml(t.descripcion || 'Sin descripción')}</span>
+            <span class="tc-meta">${t.pasos} paso${t.pasos === 1 ? '' : 's'} · Actualizado ${fmtDate(t.actualizado)}</span>
+          </div>
+          <div class="tc-bottom">
+            <a class="tc-ingresar" href="/viewer.html?id=${encodeURIComponent(t.id)}">
+              Ingresar <span class="msym">arrow_outward</span>
+            </a>
+            <div class="tc-actions">
+              <a class="tc-action-btn" href="/editor.html?id=${encodeURIComponent(t.id)}" title="Editar"><span class="msym">edit</span></a>
+              <button class="tc-action-btn danger" data-del="${encodeURIComponent(t.id)}" title="Eliminar"><span class="msym">delete</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="tc-logo">
+          <span class="tc-circle tc-circle1"></span>
+          <span class="tc-circle tc-circle2"></span>
+          <span class="tc-circle tc-circle3"><span class="msym">${TEMA_ICONS[t.categoria] || 'folder_open'}</span></span>
+        </div>
       </div>
     </div>
   `;
