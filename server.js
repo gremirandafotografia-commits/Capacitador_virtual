@@ -100,6 +100,12 @@ if (!fs.existsSync(EMPLEADOS_FILE)) {
 }
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'coopelesca2026';
+if (!process.env.ADMIN_PASSWORD) {
+  console.warn('\n*** ALERTA DE SEGURIDAD ***');
+  console.warn('La variable de entorno ADMIN_PASSWORD no esta configurada.');
+  console.warn('Se esta usando la contrasena por defecto del codigo fuente, que es publica en el repositorio.');
+  console.warn('Configura ADMIN_PASSWORD con una contrasena propia antes de usar esto en produccion.\n');
+}
 const adminTokens = new Set();
 
 function requireAdmin(req, res, next) {

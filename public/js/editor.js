@@ -64,8 +64,28 @@ function fmtTiempo(seg) {
 // reutiliza tanto para el video externo de referencia como para el
 // video propio de cada paso -la logica es identica, solo cambia de
 // donde sale el nombre de archivo y que se hace con "Usar".
-function crearTranscriptor({ btn, getVideoEl, box, estadoEl, listaEl, getNombreArchivo, onUsar }) {
+function crearTranscriptor({ btn, getVideoEl, box, estadoEl, listaEl, getNombreArchivo, onUsar, descargarBtn }) {
+  let segmentosActuales = [];
+
+  function descargarTranscripcion() {
+    const nombreArchivo = getNombreArchivo();
+    const base = (nombreArchivo || 'transcripcion').replace(/\.[^./]+$/, '');
+    const texto = segmentosActuales.map(s => `[${fmtTiempo(s.inicio)}] ${s.texto}`).join('\n');
+    const blob = new Blob([texto], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${base}-transcripcion.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+  if (descargarBtn) descargarBtn.addEventListener('click', descargarTranscripcion);
+
   function renderSegmentos(segmentos) {
+    segmentosActuales = segmentos || [];
+    if (descargarBtn) descargarBtn.hidden = !segmentosActuales.length;
     if (!segmentos.length) {
       listaEl.innerHTML = '<span class="helper">No se detectó texto en el audio.</span>';
       return;
@@ -140,6 +160,61 @@ function crearTranscriptor({ btn, getVideoEl, box, estadoEl, listaEl, getNombreA
   };
 }
 
+// Dictado de notas por voz usando la Web Speech API del navegador (Chrome).
+// El texto reconocido se agrega a la descripcion del paso a medida que la
+// persona habla, sin necesidad de grabar video ni pasar por el servidor.
+function crearDictado({ btn, indicador, onTexto }) {
+  const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognitionCtor) {
+    btn.disabled = true;
+    btn.title = 'Este navegador no soporta dictado por voz (probá con Chrome)';
+    return;
+  }
+  const recognition = new SpeechRecognitionCtor();
+  recognition.lang = 'es-CR';
+  recognition.continuous = true;
+  recognition.interimResults = false;
+  let activo = false;
+
+  recognition.addEventListener('result', (e) => {
+    let texto = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) texto += e.results[i][0].transcript;
+    }
+    texto = texto.trim();
+    if (texto) onTexto(texto);
+  });
+  recognition.addEventListener('error', (e) => {
+    if (e.error === 'no-speech' || e.error === 'aborted') return;
+    toast('Error de dictado: ' + e.error, true);
+  });
+  recognition.addEventListener('end', () => {
+    // El navegador corta el reconocimiento cada cierto tiempo aunque uno
+    // siga hablando; si la persona no le dio "Detener", lo reiniciamos
+    // para que el dictado se sienta continuo.
+    if (activo) {
+      try { recognition.start(); } catch (e) { /* ya estaba iniciado */ }
+    } else {
+      btn.classList.remove('activo');
+      indicador.classList.remove('on');
+    }
+  });
+
+  btn.addEventListener('click', () => {
+    if (activo) {
+      activo = false;
+      recognition.stop();
+      toast('Dictado detenido');
+    } else {
+      activo = true;
+      btn.classList.add('activo');
+      indicador.classList.add('on');
+      toast('Escuchando... las notas se agregan a este paso');
+      try { recognition.start(); } catch (e) { /* ya estaba iniciado */ }
+    }
+  });
+}
+
 async function init() {
   const id = qs('id');
   if (!id) { toast('Falta el id del trámite', true); return; }
@@ -200,6 +275,7 @@ function bindGlobal() {
   const transcripcionBox = document.getElementById('transcripcionBox');
   const transcripcionEstado = document.getElementById('transcripcionEstado');
   const transcripcionLista = document.getElementById('transcripcionLista');
+  const btnDescargarTranscripcion = document.getElementById('btnDescargarTranscripcion');
   // Texto del fragmento de transcripcion que se eligio con "Usar": se
   // precarga como descripcion del proximo paso creado con "Capturar
   // fotograma", para no tener que escuchar el video de nuevo y
@@ -234,6 +310,7 @@ function bindGlobal() {
     box: transcripcionBox,
     estadoEl: transcripcionEstado,
     listaEl: transcripcionLista,
+    descargarBtn: btnDescargarTranscripcion,
     getNombreArchivo: nombreArchivoVideoExterno,
     onUsar: (texto) => {
       textoSegmentoSeleccionado = texto;
@@ -479,6 +556,9 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
   const transcripcionBoxPaso = stepEl.querySelector('[data-transcripcion-box]');
   const transcripcionEstadoPaso = stepEl.querySelector('[data-transcripcion-estado]');
   const transcripcionListaPaso = stepEl.querySelector('[data-transcripcion-lista]');
+  const btnDescargarTranscripcionPaso = stepEl.querySelector('[data-transcripcion-descargar]');
+  const btnDictar = stepEl.querySelector('[data-accion="dictar"]');
+  const dictadoIndicador = stepEl.querySelector('[data-dictado-indicador]');
   const rte = stepEl.querySelector('[data-texto]');
   const allCaptureBtns = [btnPantalla, btnCamara, btnShot];
 
@@ -496,6 +576,7 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
     box: transcripcionBoxPaso,
     estadoEl: transcripcionEstadoPaso,
     listaEl: transcripcionListaPaso,
+    descargarBtn: btnDescargarTranscripcionPaso,
     getNombreArchivo: nombreArchivoPaso,
     onUsar: (texto) => {
       rte.innerHTML = rte.innerHTML ? `${rte.innerHTML}<br>${escapeHtml(texto)}` : escapeHtml(texto);
@@ -505,6 +586,15 @@ function bindCapture(stepEl, paso, stage, annotator, capture) {
   });
   actualizarBotonTranscribir();
   transcriptorPaso.revisarExistente();
+
+  crearDictado({
+    btn: btnDictar,
+    indicador: dictadoIndicador,
+    onTexto: (texto) => {
+      rte.innerHTML = rte.innerHTML ? `${rte.innerHTML}<br>${escapeHtml(texto)}` : escapeHtml(texto);
+      paso.texto = rte.innerHTML;
+    }
+  });
 
   function setRecording(on) {
     indicador.classList.toggle('on', on);

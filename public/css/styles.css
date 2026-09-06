@@ -600,6 +600,8 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 .capture-row .btn[data-accion="pausar"]:hover { background: linear-gradient(135deg, #F0A02C, #c97f12); }
 .capture-row .btn[data-accion="detener"]:hover { background: linear-gradient(135deg, var(--danger), #a23026); }
 .capture-row .btn[data-accion="transcribir"]:hover { background: linear-gradient(135deg, #12876c, #0d5c4a); }
+.capture-row .btn[data-accion="dictar"]:hover { background: linear-gradient(135deg, var(--brand), var(--brand-dark)); }
+.capture-row .btn[data-accion="dictar"].activo { background: linear-gradient(135deg, var(--brand), var(--brand-dark)); color: #fff; border-color: transparent; }
 
 /* Movimiento en hover para todos los botones del editor de tramites */
 .editor-pagina .btn,
@@ -622,6 +624,8 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 .rec-indicator .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--danger); animation: pulse 1s infinite; }
 .rec-indicator.paused { color: var(--warn); }
 .rec-indicator.paused .dot { background: var(--warn); animation: none; }
+.rec-indicator.voz { color: var(--brand); }
+.rec-indicator.voz .dot { background: var(--brand); }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
 
 /* Annotation stage */
@@ -638,6 +642,9 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
 }
 /* Transcripcion de audio */
 .transcripcion-box { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px; }
+.transcripcion-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.transcripcion-head .helper { flex: 1; min-width: 220px; margin: 0; }
+.transcripcion-head .btn { flex-shrink: 0; }
 .transcripcion-lista { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
 .transcripcion-seg {
   display: flex; gap: 10px; align-items: baseline; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 13px;
