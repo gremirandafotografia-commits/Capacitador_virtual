@@ -110,7 +110,16 @@
     </div>
     <div class="field" id="nCampoTema">
       <label>Tema / Sistema</label>
-      <select id="nTema"></select>
+      <div style="display:flex;gap:8px">
+        <select id="nTema" style="flex:1"></select>
+        <button class="btn small" id="nTemaNuevo" type="button" title="Agregar un tema/sistema nuevo"><span class="msym" style="font-size:15px">add_circle</span></button>
+      </div>
+      <div class="field" id="nTemaNuevoBox" hidden style="margin-top:8px">
+        <div style="display:flex;gap:8px">
+          <input type="text" id="nTemaNuevoInput" placeholder="Nombre del tema nuevo, ej: Facturación Web" style="flex:1">
+          <button class="btn small primary" id="nTemaNuevoGuardar" type="button">Agregar</button>
+        </div>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn" id="nCancelar">Cancelar</button>

@@ -1,12 +1,14 @@
-const CATEGORIAS_FIJAS = ['Sistema Open', 'Salesforce', 'Qupos', 'MBA Case', 'Agentes de Ayuda', 'General'];
 const ICONS = { pdf: 'picture_as_pdf', md: 'description', markdown: 'description', html: 'language', htm: 'language', txt: 'notes' };
 
+let CATEGORIAS = [];
 let MANUALES = [];
 let categoriaActiva = '';
 let manualActivo = null;
+let seccionesAbiertas = new Set();
 
 async function init() {
-  const data = await Api.listManuales();
+  const [cats, data] = await Promise.all([Api.listCategorias(), Api.listManuales()]);
+  CATEGORIAS = cats.items || [];
   MANUALES = data.items;
 
   renderTemas();
@@ -18,7 +20,13 @@ async function init() {
   document.getElementById('fSubir').addEventListener('click', subir);
 }
 
-function toggleModal(show) { document.getElementById('modalSubir').hidden = !show; }
+function toggleModal(show) {
+  document.getElementById('modalSubir').hidden = !show;
+  if (show) {
+    const sel = document.getElementById('fCategoria');
+    sel.innerHTML = CATEGORIAS.map(c => `<option${c === 'General' ? ' selected' : ''}>${escapeHtml(c)}</option>`).join('');
+  }
+}
 
 async function subir() {
   const file = document.getElementById('fArchivo').files[0];
@@ -42,8 +50,8 @@ async function subir() {
 }
 
 function renderTemas() {
-  const conocidas = new Set(CATEGORIAS_FIJAS);
-  const temas = [...CATEGORIAS_FIJAS];
+  const conocidas = new Set(CATEGORIAS);
+  const temas = [...CATEGORIAS];
   if (MANUALES.some(m => !conocidas.has(m.categoria))) temas.push('Otros');
 
   const el = document.getElementById('temasManuales');
@@ -67,7 +75,7 @@ function renderTemas() {
 
 function renderLista() {
   const q = document.getElementById('buscar').value.toLowerCase();
-  const conocidas = new Set(CATEGORIAS_FIJAS);
+  const conocidas = new Set(CATEGORIAS);
   const items = MANUALES.filter(m => {
     const matchQ = !q || m.titulo.toLowerCase().includes(q) || (m.descripcion || '').toLowerCase().includes(q);
     const matchC = !categoriaActiva || (categoriaActiva === 'Otros' ? !conocidas.has(m.categoria) : m.categoria === categoriaActiva);
@@ -91,18 +99,35 @@ function renderLista() {
   `;
 
   if (!categoriaActiva) {
-    const secciones = CATEGORIAS_FIJAS
+    const secciones = CATEGORIAS
       .map(cat => ({ cat, items: items.filter(m => m.categoria === cat) }))
       .filter(s => s.items.length);
     const otros = items.filter(m => !conocidas.has(m.categoria));
     if (otros.length) secciones.push({ cat: 'Otros', items: otros });
 
-    lista.innerHTML = secciones.map(sec => `
-      <div class="manual-lista-grupo">
-        <div class="manual-lista-grupo-head">${escapeHtml(sec.cat)} <span class="count">${sec.items.length}</span></div>
-        ${sec.items.map(rowHtml).join('')}
-      </div>
-    `).join('');
+    lista.innerHTML = secciones.map(sec => {
+      const abierta = seccionesAbiertas.has(sec.cat);
+      const cl = folderColor(sec.cat);
+      return `
+        <section class="cat-section${abierta ? '' : ' colapsada'}">
+          <div class="cat-section-head acordeon-head" data-cat="${escapeHtml(sec.cat)}" style="--ac-c1:${cl.f1};--ac-c2:${cl.back}">
+            <span class="ac-icon"><span class="msym">${TEMA_ICONS[sec.cat] || 'folder_open'}</span></span>
+            <h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
+            <span class="msym cat-section-chevron">expand_more</span>
+          </div>
+          <div class="manual-lista-grupo-items"${abierta ? '' : ' hidden'}>${sec.items.map(rowHtml).join('')}</div>
+        </section>
+      `;
+    }).join('');
+
+    lista.querySelectorAll('.cat-section-head').forEach(head => {
+      head.addEventListener('click', () => {
+        const cat = head.dataset.cat;
+        if (seccionesAbiertas.has(cat)) seccionesAbiertas.delete(cat);
+        else seccionesAbiertas.add(cat);
+        renderLista();
+      });
+    });
   } else {
     lista.innerHTML = items.map(rowHtml).join('');
   }

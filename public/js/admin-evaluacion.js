@@ -1,6 +1,7 @@
 let EVAL = null;
 let TRAMITES_AUX = [];
 let CATEGORIAS_AUX = [];
+let MANUALES_AUX = [];
 
 function qs(name) { return new URLSearchParams(location.search).get(name); }
 function makeId() { return 'x' + Math.random().toString(36).slice(2, 9); }
@@ -9,14 +10,16 @@ async function init() {
   const id = qs('id');
   if (!id) { toast('Falta el id de la evaluación', true); return; }
 
-  const [doc, listadoEval, listadoTramites] = await Promise.all([
+  const [doc, listadoEval, listadoTramites, listadoManuales] = await Promise.all([
     Api.getEvaluacion(id),
     Api.listEvaluaciones(),
-    Api.listTramites()
+    Api.listTramites(),
+    Api.listManuales()
   ]);
   EVAL = doc;
   CATEGORIAS_AUX = listadoEval.categorias;
   TRAMITES_AUX = listadoTramites.items;
+  MANUALES_AUX = listadoManuales.items || [];
 
   document.getElementById('app').hidden = false;
   document.getElementById('tituloTopbar').textContent = EVAL.titulo;
@@ -25,6 +28,7 @@ async function init() {
   renderMeta();
   renderPreguntas();
   bindGlobal();
+  bindGenerarIA();
 }
 
 function renderMeta() {
@@ -168,6 +172,119 @@ async function guardar() {
   } catch (e) {
     toast(e.message, true);
   }
+}
+
+/* ---------- Generador asistido de preguntas con IA ---------- */
+
+let DRAFTS_IA = [];
+
+function bindGenerarIA() {
+  const modal = document.getElementById('modalGenerarIA');
+  const selManual = document.getElementById('iaManual');
+  const textoBox = document.getElementById('iaTexto');
+
+  selManual.innerHTML = '<option value="">(pegar texto manualmente)</option>' +
+    MANUALES_AUX.map(m => `<option value="${escapeHtml(m.archivo)}">${escapeHtml(m.titulo)} · ${escapeHtml(m.categoria)}</option>`).join('');
+
+  function toggle(show) {
+    modal.hidden = !show;
+    if (show) {
+      document.getElementById('iaResultado').innerHTML = '';
+      DRAFTS_IA = [];
+    }
+  }
+
+  document.getElementById('btnGenerarIA').addEventListener('click', () => toggle(true));
+  document.getElementById('iaCancelar').addEventListener('click', () => toggle(false));
+
+  selManual.addEventListener('change', async () => {
+    const archivo = selManual.value;
+    textoBox.value = '';
+    if (!archivo) return;
+    try {
+      const contenido = await Api.getManualContenido(archivo);
+      if (contenido.tipo === 'texto') {
+        textoBox.value = contenido.texto;
+      } else if (contenido.tipo === 'html') {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = contenido.html;
+        textoBox.value = (tmp.innerText || tmp.textContent || '').trim();
+      } else {
+        textoBox.placeholder = 'Este tipo de manual (por ejemplo PDF) no se puede leer automáticamente todavía: pegá aquí el texto relevante.';
+      }
+    } catch (e) {
+      toast(e.message, true);
+    }
+  });
+
+  document.getElementById('iaGenerar').addEventListener('click', async () => {
+    const texto = textoBox.value.trim();
+    if (!texto) { toast('Elegí un manual o pegá el texto del que se generarán las preguntas', true); return; }
+    const cantidad = document.getElementById('iaCantidad').value;
+    const btn = document.getElementById('iaGenerar');
+    const resultado = document.getElementById('iaResultado');
+    btn.disabled = true;
+    resultado.innerHTML = `<p class="helper"><span class="msym spin" style="font-size:16px;vertical-align:-3px">progress_activity</span> Generando preguntas, puede tardar unos segundos...</p>`;
+    try {
+      const data = await Api.generarPreguntasIA({ texto, cantidad });
+      DRAFTS_IA = data.preguntas.map(p => ({ ...p, incluir: true }));
+      renderDraftsIA();
+    } catch (e) {
+      resultado.innerHTML = '';
+      toast(e.message, true);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+}
+
+function renderDraftsIA() {
+  const resultado = document.getElementById('iaResultado');
+  if (!DRAFTS_IA.length) { resultado.innerHTML = ''; return; }
+
+  resultado.innerHTML = `
+    <p class="helper">${DRAFTS_IA.length} pregunta${DRAFTS_IA.length === 1 ? '' : 's'} generada${DRAFTS_IA.length === 1 ? '' : 's'}. Desmarcá las que no querés, editá el texto si hace falta y agregalas a la evaluación.</p>
+    <div id="iaDraftList"></div>
+    <div class="modal-actions">
+      <button class="btn primary" id="iaAgregarSeleccionadas"><span class="msym" style="font-size:16px">add_circle</span> Agregar seleccionadas</button>
+    </div>
+  `;
+
+  const list = document.getElementById('iaDraftList');
+  list.innerHTML = DRAFTS_IA.map((p, idx) => `
+    <div class="ia-draft-item">
+      <div class="ia-draft-head">
+        <input type="checkbox" data-ia-check="${idx}" ${p.incluir ? 'checked' : ''}>
+        <textarea rows="2" data-ia-texto="${idx}">${escapeHtml(p.texto)}</textarea>
+      </div>
+      <div class="ia-draft-opciones">
+        ${p.opciones.map(o => `<span class="op${o.correcta ? ' correcta' : ''}">${o.correcta ? '✓' : '·'} ${escapeHtml(o.texto)}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('[data-ia-check]').forEach(cb => {
+    cb.addEventListener('change', () => { DRAFTS_IA[+cb.dataset.iaCheck].incluir = cb.checked; });
+  });
+  list.querySelectorAll('[data-ia-texto]').forEach(ta => {
+    ta.addEventListener('input', () => { DRAFTS_IA[+ta.dataset.iaTexto].texto = ta.value; });
+  });
+
+  document.getElementById('iaAgregarSeleccionadas').addEventListener('click', () => {
+    const seleccionadas = DRAFTS_IA.filter(p => p.incluir);
+    if (!seleccionadas.length) { toast('Marcá al menos una pregunta', true); return; }
+    seleccionadas.forEach(p => {
+      EVAL.preguntas.push({
+        id: makeId(),
+        texto: p.texto.trim(),
+        tipo: p.tipo,
+        opciones: p.opciones.map(o => ({ id: makeId(), texto: o.texto, correcta: !!o.correcta }))
+      });
+    });
+    document.getElementById('modalGenerarIA').hidden = true;
+    renderPreguntas();
+    toast(`${seleccionadas.length} pregunta${seleccionadas.length === 1 ? '' : 's'} agregada${seleccionadas.length === 1 ? '' : 's'}. Recordá guardar los cambios.`);
+  });
 }
 
 adminGuard().then(init);

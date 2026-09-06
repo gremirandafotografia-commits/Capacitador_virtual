@@ -9,6 +9,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.124.0",
     "express": "^4.19.2",
     "marked": "^12.0.2",
     "multer": "^2.0.1",

@@ -12,6 +12,21 @@ async function checkAdminAuth(r) {
 }
 
 const Api = {
+  async listCategorias() {
+    const r = await fetch('/api/categorias');
+    return r.json();
+  },
+  async crearCategoria(nombre) {
+    const r = await fetch('/api/categorias', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
+      body: JSON.stringify({ nombre })
+    });
+    await checkAdminAuth(r);
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || 'No se pudo crear el tema');
+    return data;
+  },
   async listTramites() {
     const r = await fetch('/api/tramites');
     return r.json();
@@ -231,6 +246,17 @@ const Api = {
     await checkAdminAuth(r);
     if (!r.ok) throw new Error('Error al eliminar');
     return r.json();
+  },
+  async generarPreguntasIA(data) {
+    const r = await fetch('/api/ia/generar-preguntas', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...adminHeaders() },
+      body: JSON.stringify(data)
+    });
+    await checkAdminAuth(r);
+    const out = await r.json();
+    if (!r.ok) throw new Error(out.error || 'No se pudo generar preguntas con IA');
+    return out;
   },
   async enviarIntento(id, data) {
     const r = await fetch(`/api/evaluaciones/${encodeURIComponent(id)}/intentos`, {

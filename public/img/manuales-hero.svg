@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 360" role="img" aria-label="Manual abierto con lomos de libros de colores representando los distintos sistemas">
+  <ellipse cx="230" cy="184" rx="215" ry="168" fill="#F1EDFB"/>
+
+  <ellipse cx="228" cy="322" rx="150" ry="13" fill="#00196E" opacity=".08"/>
+
+  <circle cx="76" cy="98" r="17" fill="#8CC63F"/>
+  <path d="M69 98l5 5 9-10" stroke="#FFFFFF" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <circle cx="392" cy="118" r="15" fill="#FFFFFF" stroke="#6C4FBC" stroke-width="3"/>
+  <circle cx="388" cy="114" r="4.4" fill="none" stroke="#6C4FBC" stroke-width="2.4"/>
+  <path d="M391 117l4.5 4.5" stroke="#6C4FBC" stroke-width="2.4" stroke-linecap="round"/>
+
+  <g opacity=".95">
+    <rect x="118" y="150" width="20" height="92" rx="4" fill="#0072BC" transform="rotate(-7 128 196)"/>
+    <rect x="140" y="140" width="20" height="102" rx="4" fill="#C97600" transform="rotate(-4 150 191)"/>
+    <rect x="300" y="140" width="20" height="102" rx="4" fill="#C13F3B" transform="rotate(4 310 191)"/>
+    <rect x="322" y="150" width="20" height="92" rx="4" fill="#1E77A8" transform="rotate(7 332 196)"/>
+  </g>
+
+  <path d="M110 132l120 -14 120 14 v150 c-40 -12 -80 -12 -120 0 c-40 -12 -80 -12 -120 0 z" fill="#00196E" opacity=".07"/>
+
+  <path d="M230 122v168c-34 -14 -76 -14 -112 0v-156c34 -13 78 -13 112 -12z" fill="#FFFFFF" stroke="#C9D5E3" stroke-width="3"/>
+  <path d="M230 122v168c34 -14 76 -14 112 0v-156c-34 -13 -78 -13 -112 -12z" fill="#FFFFFF" stroke="#C9D5E3" stroke-width="3"/>
+
+  <rect x="140" y="152" width="72" height="7" rx="3.5" fill="#DCE8F5"/>
+  <rect x="140" y="170" width="80" height="7" rx="3.5" fill="#DCE8F5"/>
+  <rect x="140" y="188" width="60" height="7" rx="3.5" fill="#EDEAFB"/>
+  <rect x="140" y="206" width="76" height="7" rx="3.5" fill="#DCE8F5"/>
+  <rect x="140" y="224" width="52" height="7" rx="3.5" fill="#EDEAFB"/>
+  <rect x="140" y="242" width="68" height="7" rx="3.5" fill="#DCE8F5"/>
+
+  <rect x="248" y="152" width="72" height="7" rx="3.5" fill="#EDEAFB"/>
+  <rect x="248" y="170" width="64" height="7" rx="3.5" fill="#DCE8F5"/>
+  <rect x="248" y="188" width="76" height="7" rx="3.5" fill="#EDEAFB"/>
+  <rect x="248" y="206" width="56" height="7" rx="3.5" fill="#DCE8F5"/>
+  <rect x="248" y="224" width="72" height="7" rx="3.5" fill="#EDEAFB"/>
+
+  <rect x="220" y="98" width="20" height="56" rx="3" fill="#6C4FBC"/>
+  <path d="M220 144l10 10 10-10z" fill="#6C4FBC"/>
+</svg>

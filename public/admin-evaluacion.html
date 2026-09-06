@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+Symbols+2&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=description,menu_book,quiz,admin_panel_settings,add_circle,save,edit,visibility,delete,arrow_back,arrow_upward,arrow_downward,check_circle,close,open_in_new,chevron_right,lock">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=description,menu_book,quiz,admin_panel_settings,add_circle,save,edit,visibility,delete,arrow_back,arrow_upward,arrow_downward,check_circle,close,open_in_new,chevron_right,lock,auto_awesome,progress_activity">
 <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -65,13 +65,42 @@
   <section>
     <div class="page-header" style="margin-bottom:10px">
       <h1 style="font-size:19px;margin:0">Preguntas</h1>
-      <button class="btn primary small" id="btnAgregarPregunta"><span class="msym" style="font-size:16px">add_circle</span> Agregar pregunta</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn small" id="btnGenerarIA"><span class="msym" style="font-size:16px">auto_awesome</span> Generar con IA</button>
+        <button class="btn primary small" id="btnAgregarPregunta"><span class="msym" style="font-size:16px">add_circle</span> Agregar pregunta</button>
+      </div>
     </div>
     <div class="step-list" id="preguntaList"></div>
     <div class="empty" id="preguntasEmpty" hidden>Aún no hay preguntas. Agregá la primera.</div>
   </section>
 
 </main>
+
+<div class="modal-backdrop" id="modalGenerarIA" hidden>
+  <div class="modal" style="max-width:560px">
+    <h2><span class="msym" style="font-size:18px;vertical-align:-3px">auto_awesome</span> Generar preguntas con IA</h2>
+    <p class="helper">La IA propone preguntas a partir de un manual. Revisá y editá cada una antes de guardar: nada se agrega a la evaluación sin tu confirmación.</p>
+    <div class="field">
+      <label>Manual de referencia</label>
+      <select id="iaManual"><option value="">(pegar texto manualmente)</option></select>
+    </div>
+    <div class="field">
+      <label>Texto del manual</label>
+      <textarea id="iaTexto" rows="6" placeholder="Se completa solo al elegir un manual, o pegá vos el texto relevante (por ejemplo, si el manual es un PDF)"></textarea>
+    </div>
+    <div class="field-row">
+      <div class="field" style="max-width:160px">
+        <label>Cantidad de preguntas</label>
+        <input type="number" id="iaCantidad" value="5" min="1" max="15">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="iaCancelar">Cancelar</button>
+      <button class="btn primary" id="iaGenerar"><span class="msym" style="font-size:16px">auto_awesome</span> Generar borrador</button>
+    </div>
+    <div id="iaResultado" style="margin-top:14px"></div>
+  </div>
+</div>
 
 <template id="tplPregunta">
   <div class="step-card" data-pregunta>

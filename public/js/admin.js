@@ -208,6 +208,29 @@ function bindModalNueva() {
   document.getElementById('nEsFinal').addEventListener('change', (e) => {
     document.getElementById('nCampoTema').hidden = e.target.checked;
   });
+
+  document.getElementById('nTemaNuevo').addEventListener('click', () => {
+    const box = document.getElementById('nTemaNuevoBox');
+    box.hidden = !box.hidden;
+    if (!box.hidden) document.getElementById('nTemaNuevoInput').focus();
+  });
+  document.getElementById('nTemaNuevoGuardar').addEventListener('click', async () => {
+    const input = document.getElementById('nTemaNuevoInput');
+    const nombre = input.value.trim();
+    if (!nombre) { toast('Escribe el nombre del tema', true); return; }
+    try {
+      const data = await Api.crearCategoria(nombre);
+      CATEGORIAS_EVAL = data.items;
+      const sel = document.getElementById('nTema');
+      const opt = new Option(data.nombre, data.nombre, false, true);
+      sel.appendChild(opt);
+      input.value = '';
+      document.getElementById('nTemaNuevoBox').hidden = true;
+      renderTemasEval();
+      toast(`Tema "${data.nombre}" agregado`);
+    } catch (e) { toast(e.message, true); }
+  });
+
   document.getElementById('nCrear').addEventListener('click', async () => {
     const titulo = document.getElementById('nTitulo').value.trim();
     if (!titulo) { toast('Escribe un título', true); return; }

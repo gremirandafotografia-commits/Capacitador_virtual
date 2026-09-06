@@ -7,6 +7,13 @@ const { marked } = require('marked');
 const { v4: uuidv4 } = require('uuid');
 const { nodewhisper } = require('nodejs-whisper');
 const nodemailer = require('nodemailer');
+const Anthropic = require('@anthropic-ai/sdk');
+
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+const anthropicClient = ANTHROPIC_API_KEY ? new Anthropic({ apiKey: ANTHROPIC_API_KEY }) : null;
+if (!ANTHROPIC_API_KEY) {
+  console.log('ANTHROPIC_API_KEY no definida: el generador asistido de preguntas con IA no esta disponible');
+}
 
 let FFMPEG_AVAILABLE = false;
 try {
@@ -104,7 +111,12 @@ function requireAdmin(req, res, next) {
 }
 
 const SLUG_RE = /^[a-z0-9-]+$/;
-const CATEGORIAS = [
+// Lista de temas/sistemas (Sistema Open, Salesforce, etc.) usada para
+// clasificar tramites, manuales y evaluaciones por igual. Se persiste en
+// disco para poder agregar temas nuevos a futuro (vía el panel de
+// Administración) sin tener que tocar el codigo ni redesplegar.
+const CATEGORIAS_FILE = path.join(DATA_DIR, 'categorias.json');
+const CATEGORIAS_DEFAULT = [
   'Sistema Open',
   'Salesforce',
   'Qupos',
@@ -112,6 +124,7 @@ const CATEGORIAS = [
   'Agentes de Ayuda',
   'General'
 ];
+let CATEGORIAS;
 
 function slugify(text) {
   return (text || '')
@@ -145,6 +158,21 @@ function readJSON(file, fallback) {
 
 function writeJSON(file, data) {
   fs.writeFileSync(file, JSON.stringify(data, null, 2), 'utf8');
+}
+
+CATEGORIAS = readJSON(CATEGORIAS_FILE, null) || CATEGORIAS_DEFAULT.slice();
+if (!fs.existsSync(CATEGORIAS_FILE)) writeJSON(CATEGORIAS_FILE, CATEGORIAS);
+
+function agregarCategoria(nombre) {
+  const limpio = (nombre || '').trim();
+  if (!limpio) throw new Error('El nombre del tema es requerido');
+  if (limpio.length > 40) throw new Error('El nombre del tema es demasiado largo');
+  if (CATEGORIAS.some(c => c.toLowerCase() === limpio.toLowerCase())) {
+    throw new Error('Ya existe un tema con ese nombre');
+  }
+  CATEGORIAS.push(limpio);
+  writeJSON(CATEGORIAS_FILE, CATEGORIAS);
+  return limpio;
 }
 
 function listTramites() {
@@ -288,6 +316,21 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(ROOT, 'public')));
 app.use('/tramites', express.static(TRAMITES_DIR));
 app.use('/manuales', express.static(MANUALES_DIR));
+
+// ---------- Temas / categorías (compartidos por trámites, manuales y evaluaciones) ----------
+
+app.get('/api/categorias', (req, res) => {
+  res.json({ items: CATEGORIAS });
+});
+
+app.post('/api/categorias', requireAdmin, (req, res) => {
+  try {
+    const nombre = agregarCategoria((req.body || {}).nombre);
+    res.status(201).json({ items: CATEGORIAS, nombre });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
 
 // ---------- Trámites ----------
 
@@ -974,6 +1017,90 @@ app.delete('/api/evaluaciones/:slug', requireAdmin, (req, res) => {
     if (!fs.existsSync(dir)) return res.status(404).json({ error: 'No encontrada' });
     fs.rmSync(dir, { recursive: true, force: true });
     res.json({ ok: true });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
+// ---------- Generador asistido de preguntas con IA ----------
+
+function extraerTextoManual(rel) {
+  if (typeof rel !== 'string' || rel.includes('..')) throw new Error('Ruta invalida');
+  const full = path.join(MANUALES_DIR, rel);
+  if (!full.startsWith(MANUALES_DIR) || !fs.existsSync(full)) throw new Error('Manual no encontrado');
+  const ext = path.extname(full).toLowerCase();
+  if (ext === '.md' || ext === '.markdown' || ext === '.txt') {
+    return fs.readFileSync(full, 'utf8');
+  }
+  if (ext === '.html' || ext === '.htm') {
+    return fs.readFileSync(full, 'utf8')
+      .replace(/<(script|style)[^>]*>[\s\S]*?<\/\1>/gi, ' ')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  throw new Error('Este tipo de manual (por ejemplo PDF) todavia no se puede leer automaticamente. Pega el texto relevante manualmente.');
+}
+
+async function generarPreguntasConIA(texto, cantidad) {
+  const instrucciones = `Sos un asistente que ayuda a preparar evaluaciones de capacitacion interna para empleados de COOPELESCA (una cooperativa de electrificacion rural), a partir del contenido de un manual de procedimientos.
+
+Con base UNICAMENTE en el siguiente contenido, generá ${cantidad} preguntas de evaluación en español. Usá una mezcla de opción múltiple (tipo "opcion", con 4 opciones donde exactamente una es correcta) y verdadero/falso (tipo "vf", con opciones "Verdadero" y "Falso"). No inventes datos, nombres, montos ni pasos que no esten explicitos en el texto. Si el contenido no alcanza para ${cantidad} preguntas utiles y sin inventar información, generá menos.
+
+Respondé EXCLUSIVAMENTE con un JSON valido (sin texto adicional, sin bloques de markdown) con esta forma exacta:
+{"preguntas":[{"texto":"...","tipo":"opcion","opciones":[{"texto":"...","correcta":true},{"texto":"...","correcta":false},{"texto":"...","correcta":false},{"texto":"...","correcta":false}]},{"texto":"...","tipo":"vf","opciones":[{"texto":"Verdadero","correcta":true},{"texto":"Falso","correcta":false}]}]}
+
+Contenido del manual:
+"""
+${texto}
+"""`;
+
+  const response = await anthropicClient.messages.create({
+    model: 'claude-opus-5',
+    max_tokens: 4096,
+    messages: [{ role: 'user', content: instrucciones }]
+  });
+
+  const bloque = response.content.find(b => b.type === 'text');
+  if (!bloque) throw new Error('La IA no devolvió texto');
+
+  let payload;
+  try {
+    payload = JSON.parse(bloque.text);
+  } catch (e) {
+    const match = bloque.text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('La respuesta de la IA no fue un JSON valido');
+    payload = JSON.parse(match[0]);
+  }
+
+  const preguntas = Array.isArray(payload.preguntas) ? payload.preguntas : [];
+  return preguntas
+    .filter(p => p && typeof p.texto === 'string' && p.texto.trim() && (p.tipo === 'opcion' || p.tipo === 'vf'))
+    .map(p => ({
+      texto: p.texto.trim(),
+      tipo: p.tipo,
+      opciones: (Array.isArray(p.opciones) ? p.opciones : [])
+        .filter(o => o && typeof o.texto === 'string' && o.texto.trim())
+        .map(o => ({ texto: o.texto.trim(), correcta: !!o.correcta }))
+    }))
+    .filter(p => p.opciones.filter(o => o.correcta).length === 1);
+}
+
+app.post('/api/ia/generar-preguntas', requireAdmin, async (req, res) => {
+  if (!anthropicClient) {
+    return res.status(503).json({ error: 'El generador con IA no esta configurado en este servidor (falta ANTHROPIC_API_KEY).' });
+  }
+  try {
+    const { manualId, texto: textoManual, cantidad } = req.body || {};
+    let texto = (textoManual || '').trim();
+    if (!texto && manualId) texto = extraerTextoManual(manualId).trim();
+    if (!texto) return res.status(400).json({ error: 'Elegí un manual o pegá el texto del que se generarán las preguntas' });
+
+    const n = Math.min(Math.max(parseInt(cantidad, 10) || 5, 1), 15);
+    const preguntas = await generarPreguntasConIA(texto.slice(0, 24000), n);
+    if (!preguntas.length) return res.status(502).json({ error: 'La IA no genero preguntas utilizables a partir de ese contenido. Probá con otro manual o con más texto.' });
+    res.json({ preguntas });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
