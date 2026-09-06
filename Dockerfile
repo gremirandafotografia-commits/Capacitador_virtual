@@ -13,6 +13,11 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY scripts ./scripts
+# El cache remoto del builder a veces reutiliza esta capa aunque cambien
+# los scripts (por ejemplo setup-whisper.sh), asi que se fuerza a
+# reconstruir cambiando este valor cuando haga falta reinstalar/recompilar
+# de verdad (whisper.cpp, por ejemplo).
+ARG CACHEBUST=2026-09-06-01
 RUN npm install --omit=dev
 
 COPY . .
