@@ -1,35 +1,67 @@
+let EVALUACIONES = [];
+let CATEGORIAS = [];
+let temaActivo = '';
+
 async function init() {
   const data = await Api.listEvaluaciones();
-  const grid = document.getElementById('grid');
-  // Las practicas de refuerzo son personales (generadas para un empleado
-  // puntual) y se comparten por enlace directo, no se listan para todos.
-  const items = (data.items || []).filter(e => !e.esPractica);
+  EVALUACIONES = (data.items || []).filter(e => !e.esPractica);
+  CATEGORIAS = data.categorias || [];
 
-  if (!items.length) {
+  renderTemas();
+  render();
+}
+
+function temas() {
+  const t = [...CATEGORIAS];
+  if (EVALUACIONES.some(e => e.esFinal)) t.push('Final');
+  return t;
+}
+
+function renderTemas() {
+  const list = document.getElementById('temaList');
+  list.innerHTML =
+    folderItemHtml('', 'Todas', EVALUACIONES.length, temaActivo === '') +
+    temas().map(cat => {
+      const count = cat === 'Final'
+        ? EVALUACIONES.filter(e => e.esFinal).length
+        : EVALUACIONES.filter(e => !e.esFinal && e.tema === cat).length;
+      return folderItemHtml(cat, cat, count, temaActivo === cat);
+    }).join('');
+
+  list.querySelectorAll('.folder-item').forEach(li => {
+    li.addEventListener('click', () => {
+      temaActivo = li.dataset.cat;
+      renderTemas();
+      render();
+    });
+  });
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  if (!EVALUACIONES.length) {
     grid.innerHTML = `<div class="empty">Todavía no hay evaluaciones cargadas. Se crean desde "Administración".</div>`;
     return;
   }
 
-  const finales = items.filter(e => e.esFinal);
-  const porTema = data.categorias
-    .map(cat => ({ tema: cat, items: items.filter(e => !e.esFinal && e.tema === cat) }))
-    .filter(s => s.items.length);
+  const items = EVALUACIONES.filter(e => {
+    if (!temaActivo) return true;
+    if (temaActivo === 'Final') return e.esFinal;
+    return !e.esFinal && e.tema === temaActivo;
+  });
 
-  const secciones = [...porTema];
-  if (finales.length) secciones.push({ tema: 'Final', items: finales });
+  if (!items.length) {
+    grid.innerHTML = `<div class="empty">No hay evaluaciones en este tema.</div>`;
+    return;
+  }
 
-  grid.innerHTML = secciones.map(sec => `
-    <section class="cat-section">
-      <div class="cat-section-head" data-cat="${escapeHtml(sec.tema)}">
-        <span class="dot"></span>
-        <h2>${escapeHtml(sec.tema)}</h2>
-        <span class="count">${sec.items.length}</span>
-      </div>
-      <div class="grid">
-        ${sec.items.map(cardHtml).join('')}
-      </div>
-    </section>
-  `).join('');
+  grid.innerHTML = `
+    <div class="tema-content-head">
+      <h2>${escapeHtml(temaActivo || 'Todas')}</h2>
+      <span class="count">${items.length} evaluación${items.length === 1 ? '' : 'es'}</span>
+    </div>
+    <div class="grid">${items.map(cardHtml).join('')}</div>
+  `;
 }
 
 function cardHtml(e) {

@@ -21,6 +21,7 @@ async function init() {
   const selFiltroEmp = document.getElementById('filtroEmpleadoResultados');
   EMPLEADOS.forEach(e => selFiltroEmp.appendChild(new Option(`${e.apellido}, ${e.nombre}`, e.id)));
 
+  renderTemasEval();
   renderEvaluaciones();
   renderEmpleados();
   await cargarTodosLosIntentos();
@@ -61,31 +62,84 @@ function bindTabs() {
 
 /* ---------- Tab: Evaluaciones ---------- */
 
+let temaActivoEval = '';
+
+function renderTemasEval() {
+  const list = document.getElementById('temaListEval');
+  const finales = EVALUACIONES.filter(e => e.esFinal);
+  const practicas = EVALUACIONES.filter(e => e.esPractica);
+  const temas = [...CATEGORIAS_EVAL];
+  if (finales.length) temas.push('Final');
+  if (practicas.length) temas.push('Prácticas de refuerzo');
+
+  list.innerHTML =
+    folderItemHtml('', 'Todas', EVALUACIONES.length, temaActivoEval === '') +
+    temas.map(cat => {
+      let count;
+      if (cat === 'Final') count = finales.length;
+      else if (cat === 'Prácticas de refuerzo') count = practicas.length;
+      else count = EVALUACIONES.filter(e => !e.esFinal && !e.esPractica && e.tema === cat).length;
+      return folderItemHtml(cat, cat, count, temaActivoEval === cat);
+    }).join('');
+
+  list.querySelectorAll('.folder-item').forEach(li => {
+    li.addEventListener('click', () => {
+      temaActivoEval = li.dataset.cat;
+      renderTemasEval();
+      renderEvaluaciones();
+    });
+  });
+}
+
 function renderEvaluaciones() {
   const grid = document.getElementById('gridEval');
   if (!EVALUACIONES.length) {
     grid.innerHTML = '<div class="empty">Todavía no hay evaluaciones. Creá la primera con "+ Nueva evaluación".</div>';
     return;
   }
-  const porTema = CATEGORIAS_EVAL
-    .map(c => ({ tema: c, items: EVALUACIONES.filter(e => !e.esFinal && !e.esPractica && e.tema === c) }))
-    .filter(s => s.items.length);
-  const finales = EVALUACIONES.filter(e => e.esFinal);
-  const practicas = EVALUACIONES.filter(e => e.esPractica);
-  const secciones = [...porTema];
-  if (finales.length) secciones.push({ tema: 'Final', items: finales });
-  if (practicas.length) secciones.push({ tema: 'Prácticas de refuerzo', items: practicas });
 
-  grid.innerHTML = secciones.map(sec => `
-    <section class="cat-section">
-      <div class="cat-section-head" data-cat="${escapeHtml(sec.tema)}">
-        <span class="dot"></span><h2>${escapeHtml(sec.tema)}</h2><span class="count">${sec.items.length}</span>
+  const matches = e => {
+    if (!temaActivoEval) return true;
+    if (temaActivoEval === 'Final') return e.esFinal;
+    if (temaActivoEval === 'Prácticas de refuerzo') return e.esPractica;
+    return !e.esFinal && !e.esPractica && e.tema === temaActivoEval;
+  };
+  const items = EVALUACIONES.filter(matches);
+
+  if (!items.length) {
+    grid.innerHTML = '<div class="empty">No hay evaluaciones en este tema.</div>';
+    return;
+  }
+
+  if (!temaActivoEval) {
+    const porTema = CATEGORIAS_EVAL
+      .map(c => ({ tema: c, items: EVALUACIONES.filter(e => !e.esFinal && !e.esPractica && e.tema === c) }))
+      .filter(s => s.items.length);
+    const finales = EVALUACIONES.filter(e => e.esFinal);
+    const practicas = EVALUACIONES.filter(e => e.esPractica);
+    const secciones = [...porTema];
+    if (finales.length) secciones.push({ tema: 'Final', items: finales });
+    if (practicas.length) secciones.push({ tema: 'Prácticas de refuerzo', items: practicas });
+
+    grid.innerHTML = secciones.map(sec => `
+      <section class="cat-section">
+        <div class="cat-section-head" data-cat="${escapeHtml(sec.tema)}">
+          <span class="dot"></span><h2>${escapeHtml(sec.tema)}</h2><span class="count">${sec.items.length}</span>
+        </div>
+        <div class="grid">
+          ${sec.items.map(cardEvaluacionHtml).join('')}
+        </div>
+      </section>
+    `).join('');
+  } else {
+    grid.innerHTML = `
+      <div class="tema-content-head">
+        <h2>${escapeHtml(temaActivoEval)}</h2>
+        <span class="count">${items.length} evaluación${items.length === 1 ? '' : 'es'}</span>
       </div>
-      <div class="grid">
-        ${sec.items.map(cardEvaluacionHtml).join('')}
-      </div>
-    </section>
-  `).join('');
+      <div class="grid">${items.map(cardEvaluacionHtml).join('')}</div>
+    `;
+  }
 
   grid.querySelectorAll('[data-del-eval]').forEach(btn => {
     btn.addEventListener('click', async () => {
@@ -94,6 +148,7 @@ function renderEvaluaciones() {
       try {
         await Api.deleteEvaluacion(decodeURIComponent(btn.dataset.delEval));
         EVALUACIONES = EVALUACIONES.filter(e => e.id !== decodeURIComponent(btn.dataset.delEval));
+        renderTemasEval();
         renderEvaluaciones();
         toast('Evaluación eliminada');
       } catch (e) { toast(e.message, true); }
@@ -413,6 +468,7 @@ async function generarPractica(empleadoId) {
       actualizado: doc.actualizado, preguntas: doc.preguntas.length, intentos: 0
     });
     INTENTOS_POR_EVAL.set(doc.id, []);
+    renderTemasEval();
     renderEvaluaciones();
     toast('Práctica de refuerzo creada. Enviala desde la lista de Evaluaciones (sección "Prácticas de refuerzo").');
   } catch (e) { toast(e.message, true); }
