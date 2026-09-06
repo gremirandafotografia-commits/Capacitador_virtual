@@ -1,7 +1,6 @@
 let EVALUACIONES = [];
 let CATEGORIAS = [];
-let temaActivo = '';
-let seccionesAbiertas = new Set();
+let temaActivo = null; // null = ningún tema abierto todavía; '' = "Todas" abierto explícitamente
 
 async function init() {
   const data = await Api.listEvaluaciones();
@@ -45,36 +44,33 @@ function render() {
     return;
   }
 
-  if (!temaActivo) {
+  if (temaActivo === null) {
+    grid.innerHTML = `
+      <div class="tema-placeholder">
+        <span class="msym">arrow_back</span>
+        <h3>Elegí un tema para ver sus evaluaciones</h3>
+        <p>Seleccioná una opción del menú de la izquierda para ver las evaluaciones disponibles.</p>
+      </div>
+    `;
+    return;
+  }
+
+  if (temaActivo === '') {
     const secciones = CATEGORIAS
       .map(cat => ({ cat, items: EVALUACIONES.filter(e => !e.esFinal && e.tema === cat) }))
       .filter(s => s.items.length);
     const finales = EVALUACIONES.filter(e => e.esFinal);
     if (finales.length) secciones.push({ cat: 'Final', items: finales });
 
-    grid.innerHTML = secciones.map(sec => {
-      const abierta = seccionesAbiertas.has(sec.cat);
-      const cl = folderColor(sec.cat);
-      return `
-        <section class="cat-section${abierta ? '' : ' colapsada'}">
-          <div class="cat-section-head acordeon-head" data-cat="${escapeHtml(sec.cat)}" style="--ac-c1:${cl.f1};--ac-c2:${cl.back}">
-            <span class="ac-icon"><span class="msym">${TEMA_ICONS[sec.cat] || 'folder_open'}</span></span>
-            <h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
-            <span class="msym cat-section-chevron">expand_more</span>
-          </div>
-          <div class="grid"${abierta ? '' : ' hidden'}>${sec.items.map(cardHtml).join('')}</div>
-        </section>
-      `;
-    }).join('');
-
-    grid.querySelectorAll('.cat-section-head').forEach(head => {
-      head.addEventListener('click', () => {
-        const cat = head.dataset.cat;
-        if (seccionesAbiertas.has(cat)) seccionesAbiertas.delete(cat);
-        else seccionesAbiertas.add(cat);
-        render();
-      });
-    });
+    grid.innerHTML = secciones.map(sec => `
+      <section class="cat-section">
+        <div class="cat-section-head" data-cat="${escapeHtml(sec.cat)}">
+          <span class="dot"></span>
+          <h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
+        </div>
+        <div class="grid">${sec.items.map(cardHtml).join('')}</div>
+      </section>
+    `).join('');
     return;
   }
 

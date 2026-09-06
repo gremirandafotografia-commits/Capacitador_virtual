@@ -2,9 +2,8 @@ const ICONS = { pdf: 'picture_as_pdf', md: 'description', markdown: 'description
 
 let CATEGORIAS = [];
 let MANUALES = [];
-let categoriaActiva = '';
+let categoriaActiva = null; // null = ningún tema abierto todavía; '' = "Todos" abierto explícitamente
 let manualActivo = null;
-let seccionesAbiertas = new Set();
 
 async function init() {
   const [cats, data] = await Promise.all([Api.listCategorias(), Api.listManuales()]);
@@ -75,14 +74,27 @@ function renderTemas() {
 
 function renderLista() {
   const q = document.getElementById('buscar').value.toLowerCase();
+  const lista = document.getElementById('listaManuales');
+
+  if (categoriaActiva === null && !q) {
+    lista.innerHTML = `
+      <div class="tema-placeholder">
+        <span class="msym">arrow_back</span>
+        <h3>Elegí un tema para ver sus manuales</h3>
+        <p>Seleccioná una opción del menú de la izquierda (o buscá directamente) para ver los manuales disponibles.</p>
+      </div>
+    `;
+    return;
+  }
+
   const conocidas = new Set(CATEGORIAS);
+  const categoriaEfectiva = categoriaActiva === null ? '' : categoriaActiva;
   const items = MANUALES.filter(m => {
     const matchQ = !q || m.titulo.toLowerCase().includes(q) || (m.descripcion || '').toLowerCase().includes(q);
-    const matchC = !categoriaActiva || (categoriaActiva === 'Otros' ? !conocidas.has(m.categoria) : m.categoria === categoriaActiva);
+    const matchC = !categoriaEfectiva || (categoriaEfectiva === 'Otros' ? !conocidas.has(m.categoria) : m.categoria === categoriaEfectiva);
     return matchQ && matchC;
   });
 
-  const lista = document.getElementById('listaManuales');
   if (!items.length) {
     lista.innerHTML = `<div class="empty">No hay manuales que coincidan. Carga uno con "+ Cargar manual".</div>`;
     return;
@@ -98,36 +110,22 @@ function renderLista() {
     </button>
   `;
 
-  if (!categoriaActiva) {
+  if (!categoriaEfectiva) {
     const secciones = CATEGORIAS
       .map(cat => ({ cat, items: items.filter(m => m.categoria === cat) }))
       .filter(s => s.items.length);
     const otros = items.filter(m => !conocidas.has(m.categoria));
     if (otros.length) secciones.push({ cat: 'Otros', items: otros });
 
-    lista.innerHTML = secciones.map(sec => {
-      const abierta = seccionesAbiertas.has(sec.cat);
-      const cl = folderColor(sec.cat);
-      return `
-        <section class="cat-section${abierta ? '' : ' colapsada'}">
-          <div class="cat-section-head acordeon-head" data-cat="${escapeHtml(sec.cat)}" style="--ac-c1:${cl.f1};--ac-c2:${cl.back}">
-            <span class="ac-icon"><span class="msym">${TEMA_ICONS[sec.cat] || 'folder_open'}</span></span>
-            <h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
-            <span class="msym cat-section-chevron">expand_more</span>
-          </div>
-          <div class="manual-lista-grupo-items"${abierta ? '' : ' hidden'}>${sec.items.map(rowHtml).join('')}</div>
-        </section>
-      `;
-    }).join('');
-
-    lista.querySelectorAll('.cat-section-head').forEach(head => {
-      head.addEventListener('click', () => {
-        const cat = head.dataset.cat;
-        if (seccionesAbiertas.has(cat)) seccionesAbiertas.delete(cat);
-        else seccionesAbiertas.add(cat);
-        renderLista();
-      });
-    });
+    lista.innerHTML = secciones.map(sec => `
+      <section class="cat-section">
+        <div class="cat-section-head" data-cat="${escapeHtml(sec.cat)}">
+          <span class="dot"></span>
+          <h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
+        </div>
+        <div class="manual-lista-grupo-items">${sec.items.map(rowHtml).join('')}</div>
+      </section>
+    `).join('');
   } else {
     lista.innerHTML = items.map(rowHtml).join('');
   }
