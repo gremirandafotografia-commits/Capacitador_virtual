@@ -124,10 +124,17 @@ button { font-family: inherit; }
   box-shadow: 8px 10px 22px rgba(0,20,60,.10), -6px -6px 14px rgba(255,255,255,.5);
   transition: transform .3s ease, box-shadow .3s ease;
 }
-.pestana-card:hover, .pestana-card.act {
+.pestana-card:hover {
   transform: translateY(-3px);
   box-shadow: 8px 14px 26px rgba(0,20,60,.18), -6px -6px 14px rgba(255,255,255,.6);
   text-decoration: none;
+}
+.pestana-card.act {
+  box-shadow: 0 0 0 2px var(--pc, var(--brand)) inset, 8px 10px 22px rgba(0,20,60,.10), -6px -6px 14px rgba(255,255,255,.5);
+}
+.pestana-card.act:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 2px var(--pc, var(--brand)) inset, 8px 14px 26px rgba(0,20,60,.18), -6px -6px 14px rgba(255,255,255,.6);
 }
 .pc-bg {
   position: absolute; inset: 3px; border-radius: 11px; z-index: 1;
@@ -707,7 +714,17 @@ a.card:hover { text-decoration: none; border-color: var(--brand); }
   position: sticky; top: 108px; max-height: 74vh; overflow-y: auto; padding: 2px;
 }
 
-.manuales-lista { width: 270px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; max-height: 74vh; overflow-y: auto; padding-right: 4px; }
+.manuales-lista { width: 270px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; max-height: 74vh; overflow-y: auto; padding-right: 4px; }
+.manual-lista-grupo { display: flex; flex-direction: column; gap: 8px; }
+.manual-lista-grupo-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--text-dim); padding: 0 2px;
+}
+.manual-lista-grupo-head .count {
+  font-size: 10px; font-weight: 700; background: var(--surface-alt); border-radius: 999px; padding: 1px 7px;
+  text-transform: none; letter-spacing: normal;
+}
 .manual-row {
   display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px;
   background: var(--surface); border: 1px solid var(--border); cursor: pointer; text-align: left;

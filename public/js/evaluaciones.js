@@ -44,11 +44,27 @@ function render() {
     return;
   }
 
-  const items = EVALUACIONES.filter(e => {
-    if (!temaActivo) return true;
-    if (temaActivo === 'Final') return e.esFinal;
-    return !e.esFinal && e.tema === temaActivo;
-  });
+  if (!temaActivo) {
+    const secciones = CATEGORIAS
+      .map(cat => ({ cat, items: EVALUACIONES.filter(e => !e.esFinal && e.tema === cat) }))
+      .filter(s => s.items.length);
+    const finales = EVALUACIONES.filter(e => e.esFinal);
+    if (finales.length) secciones.push({ cat: 'Final', items: finales });
+
+    grid.innerHTML = secciones.map(sec => `
+      <section class="cat-section">
+        <div class="cat-section-head" data-cat="${escapeHtml(sec.cat)}">
+          <span class="dot"></span><h2>${escapeHtml(sec.cat)}</h2><span class="count">${sec.items.length}</span>
+        </div>
+        <div class="grid">${sec.items.map(cardHtml).join('')}</div>
+      </section>
+    `).join('');
+    return;
+  }
+
+  const items = temaActivo === 'Final'
+    ? EVALUACIONES.filter(e => e.esFinal)
+    : EVALUACIONES.filter(e => !e.esFinal && e.tema === temaActivo);
 
   if (!items.length) {
     grid.innerHTML = `<div class="empty">No hay evaluaciones en este tema.</div>`;
@@ -57,7 +73,7 @@ function render() {
 
   grid.innerHTML = `
     <div class="tema-content-head">
-      <h2>${escapeHtml(temaActivo || 'Todas')}</h2>
+      <h2>${escapeHtml(temaActivo)}</h2>
       <span class="count">${items.length} evaluación${items.length === 1 ? '' : 'es'}</span>
     </div>
     <div class="grid">${items.map(cardHtml).join('')}</div>

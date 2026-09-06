@@ -80,7 +80,7 @@ function renderLista() {
     return;
   }
 
-  lista.innerHTML = items.map(m => `
+  const rowHtml = m => `
     <button class="manual-row${manualActivo && manualActivo.id === m.id ? ' act' : ''}" data-id="${escapeHtml(m.id)}">
       <span class="msym icono">${ICONS[m.tipo] || 'description'}</span>
       <div class="info">
@@ -88,7 +88,24 @@ function renderLista() {
         <div class="sub">${escapeHtml(m.categoria)} · ${m.tipo.toUpperCase()}</div>
       </div>
     </button>
-  `).join('');
+  `;
+
+  if (!categoriaActiva) {
+    const secciones = CATEGORIAS_FIJAS
+      .map(cat => ({ cat, items: items.filter(m => m.categoria === cat) }))
+      .filter(s => s.items.length);
+    const otros = items.filter(m => !conocidas.has(m.categoria));
+    if (otros.length) secciones.push({ cat: 'Otros', items: otros });
+
+    lista.innerHTML = secciones.map(sec => `
+      <div class="manual-lista-grupo">
+        <div class="manual-lista-grupo-head">${escapeHtml(sec.cat)} <span class="count">${sec.items.length}</span></div>
+        ${sec.items.map(rowHtml).join('')}
+      </div>
+    `).join('');
+  } else {
+    lista.innerHTML = items.map(rowHtml).join('');
+  }
 
   lista.querySelectorAll('.manual-row').forEach(btn => {
     btn.addEventListener('click', () => mostrarPreview(items.find(m => m.id === btn.dataset.id)));
