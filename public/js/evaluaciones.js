@@ -94,7 +94,7 @@ function render() {
 
 function cardHtml(e) {
   return `
-    <a class="card" href="/evaluar.html?id=${encodeURIComponent(e.id)}">
+    <a class="card tilt-card" href="/evaluar.html?id=${encodeURIComponent(e.id)}">
       <span class="pill" data-cat="${escapeHtml(e.tema)}">${escapeHtml(e.tema)}</span>
       <h3>${escapeHtml(e.titulo)}</h3>
       <p>${escapeHtml(e.descripcion || 'Sin descripción')}</p>

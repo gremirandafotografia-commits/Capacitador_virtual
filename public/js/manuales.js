@@ -101,7 +101,7 @@ function renderLista() {
   }
 
   const rowHtml = m => `
-    <button class="manual-row${manualActivo && manualActivo.id === m.id ? ' act' : ''}" data-id="${escapeHtml(m.id)}">
+    <button class="manual-row tilt-card${manualActivo && manualActivo.id === m.id ? ' act' : ''}" data-id="${escapeHtml(m.id)}">
       <span class="msym icono">${ICONS[m.tipo] || 'description'}</span>
       <div class="info">
         <div class="titulo">${escapeHtml(m.titulo)}</div>
