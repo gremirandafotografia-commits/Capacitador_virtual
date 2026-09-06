@@ -10,7 +10,7 @@
     '</div>';
   document.write(html);
 
-  var minTime = new Promise(function (resolve) { setTimeout(resolve, 900); });
+  var minTime = new Promise(function (resolve) { setTimeout(resolve, 4000); });
   var loaded = new Promise(function (resolve) {
     if (document.readyState === 'complete') resolve();
     else window.addEventListener('load', resolve, { once: true });
